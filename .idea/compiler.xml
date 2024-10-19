@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="fmi-project-server" />
         <module name="fmi-project-client" />
+        <module name="fmi-http-server" />
       </profile>
     </annotationProcessing>
   </component>
