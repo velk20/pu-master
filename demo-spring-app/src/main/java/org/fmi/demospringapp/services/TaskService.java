@@ -2,7 +2,6 @@ package org.fmi.demospringapp.services;
 
 import org.fmi.demospringapp.models.Task;
 import org.fmi.demospringapp.models.TaskStatus;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
