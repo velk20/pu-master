@@ -33,12 +33,7 @@ public class TaskController {
     @GetMapping("/{id}")
     @ResponseBody
     public Task getTask(@PathVariable String id) {
-        Optional<Task> task = taskService.getById(id);
-        if (task.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
-        }
-
-        return task.get();
+        return taskService.getById(id);
     }
 
     @GetMapping
@@ -61,22 +56,12 @@ public class TaskController {
     @PutMapping("/{id}")
     @ResponseBody
     public Task updateTask(@PathVariable String id,@RequestBody Task task) {
-        Optional<Task> updatedTask = taskService.updateTask(id, task);
-        if (updatedTask.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
-        }
-
-        return updatedTask.get();
+        return taskService.updateTask(id, task);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable String id) {
-        Optional<Task> task = taskService.getById(id);
-        if (task.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
-        }
-
         taskService.deleteTask(id);
     }
 }

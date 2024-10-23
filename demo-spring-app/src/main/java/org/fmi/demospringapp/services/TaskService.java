@@ -1,5 +1,6 @@
 package org.fmi.demospringapp.services;
 
+import org.fmi.demospringapp.exceptions.TaskException;
 import org.fmi.demospringapp.models.Task;
 import org.fmi.demospringapp.models.TaskStatus;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,10 @@ import java.util.UUID;
 public class TaskService {
     private final Map<String, Task> tasksRepo = new HashMap<>();
 
-    public Optional<Task> getById(String id) {
-        return Optional.ofNullable(tasksRepo.getOrDefault(id, null));
+    public Task getById(String id) {
+        return Optional
+                .ofNullable(tasksRepo.get(id))
+                .orElseThrow(()->new TaskException("Task not found!"));
     }
 
     public Task createTask(Task task) {
@@ -40,17 +43,15 @@ public class TaskService {
         return allTasks;
     }
 
-    public Optional<Task> updateTask(String id, Task task) {
-        Optional<Task> optionalTask = getById(id);
-        if (optionalTask.isEmpty()){
-            return optionalTask;
-        }
+    public Task updateTask(String id, Task task) {
+        getById(id);
         task.setId(id);
         tasksRepo.put(id, task);
-        return Optional.of(task);
+        return task;
     }
 
     public void deleteTask(String id) {
+        getById(id);
         tasksRepo.remove(id);
     }
 }

@@ -1,0 +1,33 @@
+@hostname = http://localhost:8080
+
+###
+GET  {{hostname}}/tasks/021bc35f-6fe8-4988-82cc-9a6bbf22e480
+###
+GET {{hostname}}/tasks
+###
+GET {{hostname}}/tasks?status=PENDING
+###
+GET {{hostname}}/tasks?sortBy=dueDate
+###
+POST {{hostname}}/tasks
+Content-Type: application/json
+
+{
+    "title": "New Task name",
+    "description": "Go to the kitchen",
+    "status":"PENDING",
+    "dueDate" : "2017-01-13T17:09:42.411"
+}
+###
+PUT {{hostname}}/tasks/c79d882d-3ebc-4452-87e8-ce81f83bca72
+Content-Type: application/json
+
+{
+    "title":"My nigga",
+    "description":"My nigga",
+    "status":"COMPLETED",
+    "dueDate" : "2023-01-13T17:09:42.411"
+}
+
+###
+DELETE {{hostname}}/tasks/c79d882d-3ebc-4452-87e8-ce81f83bca72
