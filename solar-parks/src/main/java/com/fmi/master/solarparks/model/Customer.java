@@ -14,6 +14,17 @@ public class Customer {
     private Long id;
     private String name;
     private int numberOfProjects;
+    @Column(name = "is_active")
+    private int active = 1;
+
+    public int isActive() {
+        return active;
+    }
+
+    public Customer setActive(int active) {
+        this.active = active;
+        return this;
+    }
 
     public int getNumberOfProjects() {
         return numberOfProjects;

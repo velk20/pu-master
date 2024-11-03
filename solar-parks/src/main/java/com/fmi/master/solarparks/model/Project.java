@@ -16,6 +16,9 @@ public class Project {
     private Long id;
     private String name;
     private double cost;
+    @Column(name = "is_active")
+    private int active = 1;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
     @ManyToMany
@@ -25,6 +28,15 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "contacts_id")
     )
     private List<Contact> contacts;
+
+    public int isActive() {
+        return active;
+    }
+
+    public Project setActive(int active) {
+        this.active = active;
+        return this;
+    }
 
     public Long getId() {
         return id;

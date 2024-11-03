@@ -18,12 +18,23 @@ public class Contact {
     private String lastName;
     private String email;
     private String phone;
+    @Column(name = "is_active")
+    private int active = 1;
 
     @ManyToMany(mappedBy = "contacts")
     private List<Project> projects;
 
     public Long getId() {
         return id;
+    }
+
+    public int isActive() {
+        return active;
+    }
+
+    public Contact setActive(int active) {
+        this.active = active;
+        return this;
     }
 
     public Contact setId(Long id) {

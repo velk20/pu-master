@@ -16,11 +16,23 @@ public class Sites {
     private String address;
     private Double configCost;
     private Double otherCost;
+    @Column(name = "is_active")
+    private int active = 1;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Project project;
 
     public Long getId() {
         return id;
+    }
+
+    public int isActive() {
+        return active;
+    }
+
+    public Sites setActive(int active) {
+        this.active = active;
+        return this;
     }
 
     public Sites setId(Long id) {
