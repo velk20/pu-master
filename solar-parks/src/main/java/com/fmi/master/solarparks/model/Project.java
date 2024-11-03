@@ -1,5 +1,6 @@
 package com.fmi.master.solarparks.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -22,11 +23,8 @@ public class Project {
     @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
     @ManyToMany
-    @JoinTable(
-            name = "contacts_projects",
-            joinColumns = @JoinColumn(name = "projects_id"),
-            inverseJoinColumns = @JoinColumn(name = "contacts_id")
-    )
+    @JoinTable(name = "contacts_projects")
+    @JsonBackReference
     private List<Contact> contacts;
 
     public int isActive() {

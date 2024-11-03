@@ -5,6 +5,8 @@ import com.fmi.master.solarparks.service.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
@@ -16,7 +18,7 @@ public class CustomerController {
 
     @GetMapping
     @ResponseBody
-    private ResponseEntity<Customer> getCustomers() {
+    private List<Customer> getCustomers() {
         return customerService.getAllCustomers();
     }
 

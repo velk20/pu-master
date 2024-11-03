@@ -1,5 +1,6 @@
 package com.fmi.master.solarparks.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class Contact {
     private int active = 1;
 
     @ManyToMany(mappedBy = "contacts")
+    @JsonBackReference
     private List<Project> projects;
 
     public Long getId() {

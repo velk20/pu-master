@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "sites")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Sites {
+public class Site {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,12 +30,12 @@ public class Sites {
         return active;
     }
 
-    public Sites setActive(int active) {
+    public Site setActive(int active) {
         this.active = active;
         return this;
     }
 
-    public Sites setId(Long id) {
+    public Site setId(Long id) {
         this.id = id;
         return this;
     }
@@ -44,7 +44,7 @@ public class Sites {
         return name;
     }
 
-    public Sites setName(String name) {
+    public Site setName(String name) {
         this.name = name;
         return this;
     }
@@ -53,7 +53,7 @@ public class Sites {
         return address;
     }
 
-    public Sites setAddress(String address) {
+    public Site setAddress(String address) {
         this.address = address;
         return this;
     }
@@ -62,7 +62,7 @@ public class Sites {
         return configCost;
     }
 
-    public Sites setConfigCost(Double configCost) {
+    public Site setConfigCost(Double configCost) {
         this.configCost = configCost;
         return this;
     }
@@ -71,7 +71,7 @@ public class Sites {
         return otherCost;
     }
 
-    public Sites setOtherCost(Double otherCost) {
+    public Site setOtherCost(Double otherCost) {
         this.otherCost = otherCost;
         return this;
     }
@@ -80,7 +80,7 @@ public class Sites {
         return project;
     }
 
-    public Sites setProject(Project project) {
+    public Site setProject(Project project) {
         this.project = project;
         return this;
     }

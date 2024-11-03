@@ -33,7 +33,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    public Project createProject(@RequestBody Project project) {
+    public ResponseEntity<Project> createProject(@RequestBody Project project) {
         return projectService.createProject(project);
     }
 
