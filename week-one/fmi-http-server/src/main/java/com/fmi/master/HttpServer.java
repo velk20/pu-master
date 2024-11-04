@@ -1,8 +1,9 @@
 package com.fmi.master;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.fmi.master.controllers.CustomerController;
+import com.fmi.master.controllers.HomeController;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +12,7 @@ public class HttpServer {
 
     private static final String NEW_LINE = "\r\n";
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(1423);
         System.out.println("Server is listening on port: " + serverSocket.getLocalPort());
 
@@ -21,9 +22,36 @@ public class HttpServer {
             InputStream request = socket.getInputStream();
             OutputStream response = socket.getOutputStream();
 
-            Thread.sleep(500);
+            InputStreamReader reader = new InputStreamReader(request, StandardCharsets.UTF_8);
+            BufferedReader httpRequestReader = new BufferedReader(reader);
 
-            String message = buildHTTPResponse("Hello, World!");
+            String currentLine;
+
+            String httpMethod = "";
+            String httpEndpoint = "";
+
+
+            while ((currentLine = httpRequestReader.readLine()) != null) {
+                String[] httpHeaderTitleCollection = currentLine.split(" ");
+                httpMethod = httpHeaderTitleCollection[0];
+                httpEndpoint = httpHeaderTitleCollection[1];
+                break;
+            }
+
+            String controllerMessage = "Controller not found!";
+
+            if (httpMethod.equals("GET") && httpEndpoint.equals("/home")) {
+                HomeController controller = new HomeController();
+                controllerMessage = controller.index();
+            }
+
+            if (httpMethod.equals("GET") && httpEndpoint.equals("/customer")) {
+                CustomerController controller = new CustomerController();
+                controllerMessage = controller.index();
+            }
+
+
+            String message = buildHTTPResponse(controllerMessage);
             response.write(message.getBytes(StandardCharsets.UTF_8));
 
             response.close();
