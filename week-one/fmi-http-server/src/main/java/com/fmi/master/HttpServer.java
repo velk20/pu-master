@@ -2,8 +2,10 @@ package com.fmi.master;
 
 import com.fmi.master.controllers.CustomerController;
 import com.fmi.master.controllers.HomeController;
+import com.fmi.master.system.ApplicationLoader;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -12,7 +14,11 @@ public class HttpServer {
 
     private static final String NEW_LINE = "\r\n";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ApplicationLoader applicationLoader = new ApplicationLoader();
+        applicationLoader.findAllClasses("com.fmi.master");
+
+        //HTTP Server
         ServerSocket serverSocket = new ServerSocket(1423);
         System.out.println("Server is listening on port: " + serverSocket.getLocalPort());
 
@@ -38,17 +44,16 @@ public class HttpServer {
                 break;
             }
 
-            String controllerMessage = "Controller not found!";
-
-            if (httpMethod.equals("GET") && httpEndpoint.equals("/home")) {
-                HomeController controller = new HomeController();
-                controllerMessage = controller.index();
-            }
-
-            if (httpMethod.equals("GET") && httpEndpoint.equals("/customer")) {
-                CustomerController controller = new CustomerController();
-                controllerMessage = controller.index();
-            }
+            String controllerMessage = applicationLoader.executeController(httpMethod, httpEndpoint);
+//            if (httpMethod.equals("GET") && httpEndpoint.equals("/home")) {
+//                HomeController controller = new HomeController();
+//                controllerMessage = controller.index();
+//            }
+//
+//            if (httpMethod.equals("GET") && httpEndpoint.equals("/customer")) {
+//                CustomerController controller = new CustomerController();
+//                controllerMessage = controller.index();
+//            }
 
 
             String message = buildHTTPResponse(controllerMessage);
