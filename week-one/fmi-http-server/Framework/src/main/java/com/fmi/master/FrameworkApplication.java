@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 public class FrameworkApplication {
     private static final String NEW_LINE = "\r\n";
-    private static ApplicationLoader applicationLoader = new ApplicationLoader();
+    private static final ApplicationLoader applicationLoader = new ApplicationLoader();
 
     public static void run(Class<?> mainClass) {
         try {
