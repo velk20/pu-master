@@ -17,9 +17,10 @@ public class ApplicationLoader {
     private ClassLoader classLoader = ClassLoader.getSystemClassLoader();
     private Map<RequestInfo, ControllerMeta> controllerLookupTable = new HashMap<>();
 
-    public String executeController(String httpMethod, String httpEndpoint)
+    public String executeController(RequestInfo httpRequest)
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-       ControllerMeta controllerMethodReference = this.controllerLookupTable.get(new RequestInfo(httpMethod, httpEndpoint));
+        ControllerMeta controllerMethodReference = this.controllerLookupTable.get(
+                new RequestInfo(httpRequest.getHttpMethod(), httpRequest.getHttpEndpoint()));
 
         if(controllerMethodReference == null) {
             return "";
