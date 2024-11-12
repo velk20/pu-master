@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +23,9 @@ public class ProjectService {
     }
 
     public List<Project> getProjectsByCustomerId(Long customerId) {
-        return null;
+        return projectRepository
+                .findAllByCustomerId(customerId)
+                .orElse(new ArrayList<>());
     }
 
     public ResponseEntity<Project> getProjectById(Long id) {

@@ -26,9 +26,7 @@ public class ContactService {
     }
 
     public List<Contact> getContactsByProjectId(Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("Project not found!"));
-
+        Project project = findProjectByIdOrThrow(projectId);
         return project.getContacts();
     }
 
@@ -55,6 +53,11 @@ public class ContactService {
         Contact contact = findContactOrThrow(id);
         contactRepository.delete(contact);
         return ResponseEntity.noContent().build();
+    }
+
+    private Project findProjectByIdOrThrow(Long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found!"));
     }
 
     private Contact findContactOrThrow(Long id) {

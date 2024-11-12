@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +23,9 @@ public class SiteService {
     }
 
     public List<Site> getSitesByProjectId(Long projectId) {
-        return null;
+        return siteRepository
+                .findAllByProjectId(projectId)
+                .orElse(new ArrayList<>());
     }
 
     public ResponseEntity<Site> getSiteById(Long id) {
