@@ -52,4 +52,12 @@ public class Customer {
         this.id = id;
         return this;
     }
+
+    public void increaseNumberOfProjects() {
+        this.numberOfProjects++;
+    }
+
+    public void decreaseNumberOfProjects() {
+        this.numberOfProjects--;
+    }
 }

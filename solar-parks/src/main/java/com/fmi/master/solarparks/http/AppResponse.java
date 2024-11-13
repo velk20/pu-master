@@ -20,6 +20,14 @@ public class AppResponse {
         return new AppResponse();
     }
 
+    public static AppResponse created() {
+
+        response = new HashMap<>();
+        response.put("status", "created");
+        response.put("code", HttpStatus.CREATED.value());
+        return new AppResponse();
+    }
+
     public static AppResponse success() {
 
         response = new HashMap<>();
@@ -28,11 +36,11 @@ public class AppResponse {
         return new AppResponse();
     }
 
-    public static AppResponse error() {
+    public static AppResponse error(HttpStatus status) {
 
         response = new HashMap<>();
         response.put("status", "error");
-        response.put("code", HttpStatus.BAD_REQUEST.value());
+        response.put("code", status.value());
         return new AppResponse();
     }
 
@@ -49,6 +57,16 @@ public class AppResponse {
         return this;
     }
 
+    public AppResponse withDetailedMessage(String message) {
+        response.put("detailed-message", message);
+        return this;
+    }
+
+    public AppResponse withStackTrace(String stackTrace) {
+        response.put("stack-trace", stackTrace);
+        return this;
+    }
+
     public AppResponse withData(Object data) {
         List<Object> list = new ArrayList<>();
         if (!(data instanceof List<?>)) {
@@ -56,7 +74,7 @@ public class AppResponse {
         } else {
             list = (List<Object>) data;
         }
-        response.put("data", data);
+        response.put("data", list);
         return this;
     }
 

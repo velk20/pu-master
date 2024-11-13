@@ -1,11 +1,13 @@
 package com.fmi.master.solarparks.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "contacts")
@@ -22,9 +24,6 @@ public class Contact {
     @Column(name = "is_active")
     private int active = 1;
 
-    @ManyToMany(mappedBy = "contacts")
-    @JsonBackReference
-    private List<Project> projects;
 
     public Long getId() {
         return id;
@@ -80,15 +79,17 @@ public class Contact {
         return this;
     }
 
-    public List<Project> getProjects() {
-        return projects;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contact contact = (Contact) o;
+        return active == contact.active && Objects.equals(id, contact.id) && Objects.equals(firstName, contact.firstName) && Objects.equals(lastName, contact.lastName) && Objects.equals(email, contact.email) && Objects.equals(phone, contact.phone);
     }
 
-    public Contact setProjects(List<Project> projects) {
-        this.projects = projects;
-        return this;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, phone, active);
     }
-
-
 }
 

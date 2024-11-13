@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Constants} from "./constants";
+import {Constants} from "../util/constants";
 import {Observable} from "rxjs";
 import {Customer} from "../models/customer";
 

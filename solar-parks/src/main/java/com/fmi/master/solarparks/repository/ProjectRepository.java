@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<List<Project>> findAllByCustomerId(Long customerId);
-
+    Optional<List<Project>> findAllByContactsId(Long contactsId);
 }

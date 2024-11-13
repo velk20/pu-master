@@ -24,7 +24,7 @@ VALUES (1, 'Evaluation Area 1', '123 Main St, City A', 12000.00, 3000.00, 1, 1),
        (3, 'Evaluation Area 3', '789 Pine St, City C', 25000.00, 7000.00, 3, 1);
 
 -- Assuming contacts_projects is a join table between contacts and projects
-INSERT INTO contacts_projects (contacts_id, projects_id)
+INSERT INTO contacts_projects (contacts_id, project_id)
 VALUES (1, 1),
        (2, 2),
        (3, 3);

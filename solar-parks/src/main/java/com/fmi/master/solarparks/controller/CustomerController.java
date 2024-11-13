@@ -3,6 +3,7 @@ package com.fmi.master.solarparks.controller;
 import com.fmi.master.solarparks.http.AppResponse;
 import com.fmi.master.solarparks.model.Customer;
 import com.fmi.master.solarparks.service.CustomerService;
+import com.fmi.master.solarparks.util.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +13,11 @@ import java.util.List;
 @RequestMapping("/customers")
 public class CustomerController {
     private final CustomerService customerService;
+    private final DtoMapper dtoMapper;
 
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, DtoMapper dtoMapper) {
         this.customerService = customerService;
+        this.dtoMapper = dtoMapper;
     }
 
     @GetMapping
@@ -23,44 +26,45 @@ public class CustomerController {
         List<Customer> allCustomers = customerService.getAllCustomers();
 
         return AppResponse.success()
-                .withData(allCustomers)
+                .withData(dtoMapper.convertCustomer(allCustomers))
                 .build();
     }
 
     @GetMapping("/{id}")
     @ResponseBody
     private ResponseEntity<?> getCustomerById(@PathVariable long id) {
-        ResponseEntity<Customer> customerById = customerService.getCustomerById(id);
+        Customer customerById = customerService.getCustomerById(id);
 
         return AppResponse.success()
-                .withData(customerById.getBody())
+                .withData(dtoMapper.convertCustomer(customerById))
                 .build();
     }
 
     @PostMapping
     @ResponseBody
     private ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
-        ResponseEntity<Customer> newCustomer = customerService.createCustomer(customer);
+        Customer newCustomer = customerService.createCustomer(customer);
 
-        return AppResponse.success()
+        return AppResponse.created()
                 .withMessage("Customer created successfully")
-                .withData(newCustomer.getBody())
+                .withData(dtoMapper.convertCustomer(newCustomer))
                 .build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
-        ResponseEntity<Customer> customerResponseEntity = customerService.updateCustomer(id, customer);
+        Customer customerResponseEntity = customerService.updateCustomer(id, customer);
 
         return AppResponse.success()
-                .withData(customerResponseEntity.getBody())
+                .withData(dtoMapper.convertCustomer(customerResponseEntity))
                 .build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
-
-        return AppResponse.deleted().build();
+        return AppResponse.deleted()
+                .withMessage("Customer deleted successfully")
+                .build();
     }
 }

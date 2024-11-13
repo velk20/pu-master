@@ -1,6 +1,7 @@
 package com.fmi.master.solarparks.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -20,11 +21,12 @@ public class Project {
     @Column(name = "is_active")
     private int active = 1;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", nullable = true)
     private Customer customer;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "contacts_projects")
-    @JsonBackReference
+    @JsonManagedReference
     private List<Contact> contacts;
 
     public int isActive() {
@@ -40,6 +42,9 @@ public class Project {
         return id;
     }
 
+    public void addContact(Contact contact) {
+        this.contacts.add(contact);
+    }
     public Project setId(Long id) {
         this.id = id;
         return this;
@@ -79,5 +84,9 @@ public class Project {
     public Project setContacts(List<Contact> contacts) {
         this.contacts = contacts;
         return this;
+    }
+
+    public void removeContact(Contact contact) {
+        this.contacts.remove(contact);
     }
 }

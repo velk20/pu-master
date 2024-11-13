@@ -1,7 +1,10 @@
 package com.fmi.master.solarparks.controller;
 
+import com.fmi.master.solarparks.dto.create.CreateSiteDTO;
+import com.fmi.master.solarparks.http.AppResponse;
 import com.fmi.master.solarparks.model.Site;
 import com.fmi.master.solarparks.service.SiteService;
+import com.fmi.master.solarparks.util.DtoMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,38 +15,60 @@ import java.util.List;
 public class SitesController {
 
     private final SiteService siteService;
+    private final DtoMapper dtoMapper;
 
-    public SitesController(SiteService siteService) {
+    public SitesController(SiteService siteService, DtoMapper dtoMapper) {
         this.siteService = siteService;
+        this.dtoMapper = dtoMapper;
     }
 
     @GetMapping
-    public List<Site> getAllSites() {
-        return siteService.getAllSites();
+    public ResponseEntity<?> getAllSites() {
+        List<Site> allSites = siteService.getAllSites();
+        return AppResponse.success()
+                .withData(dtoMapper.convertSite(allSites))
+                .build();
     }
 
     @GetMapping("/project/{projectId}")
-    public List<Site> getSitesByProjectId(@PathVariable Long projectId) {
-        return siteService.getSitesByProjectId(projectId);
+    public ResponseEntity<?> getSitesByProjectId(@PathVariable Long projectId) {
+        List<Site> sitesByProjectId = siteService.getSitesByProjectId(projectId);
+        return AppResponse.success()
+                .withData(dtoMapper.convertSite(sitesByProjectId))
+                .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Site> getSiteById(@PathVariable Long id) {
-        return siteService.getSiteById(id);
+    public ResponseEntity<?> getSiteById(@PathVariable Long id) {
+        Site siteById = siteService.getSiteById(id);
+        return AppResponse.success()
+                .withData(dtoMapper.convertSite(siteById))
+                .build();
     }
 
     @PostMapping
-    public ResponseEntity<Site> createSite(@RequestBody Site site) {
-        return siteService.createSite(site);
+    public ResponseEntity<?> createSite(@RequestBody CreateSiteDTO siteDTO) {
+        Site newSite = siteService.createSite(siteDTO);
+        return AppResponse.created()
+                .withData(dtoMapper.convertSite(newSite))
+                .withMessage("Site created successfully")
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Site> updateSite(@PathVariable Long id, @RequestBody Site site) {
-        return siteService.updateSite(id, site);
+    public ResponseEntity<?> updateSite(@PathVariable Long id, @RequestBody CreateSiteDTO siteDTO) {
+        Site siteResponseEntity = siteService.updateSite(id, siteDTO);
+        return AppResponse.success()
+                .withData(dtoMapper.convertSite(siteResponseEntity))
+                .withMessage("Site updated successfully")
+                .build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSite(@PathVariable Long id) {
-        return siteService.deleteSite(id);
+    public ResponseEntity<?> deleteSite(@PathVariable Long id) {
+        siteService.deleteSite(id);
+        return AppResponse.deleted()
+                .withMessage("Site deleted successfully")
+                .build();
     }
 }
