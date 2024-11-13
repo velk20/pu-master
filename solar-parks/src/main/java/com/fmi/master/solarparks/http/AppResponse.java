@@ -12,6 +12,14 @@ public class AppResponse {
 
     private static HashMap<String, Object> response;
 
+    public static AppResponse deleted() {
+
+        response = new HashMap<>();
+        response.put("status", "deleted");
+        response.put("code", HttpStatus.NO_CONTENT.value());
+        return new AppResponse();
+    }
+
     public static AppResponse success() {
 
         response = new HashMap<>();
@@ -42,15 +50,14 @@ public class AppResponse {
     }
 
     public AppResponse withData(Object data) {
+        List<Object> list = new ArrayList<>();
+        if (!(data instanceof List<?>)) {
+            list.add(data);
+        } else {
+            list = (List<Object>) data;
+        }
         response.put("data", data);
         return this;
-    }
-
-    public AppResponse withDataAsArray(Object data) {
-
-        List<Object> list = new ArrayList<>();
-        list.add(data);
-        return this.withData(list);
     }
 
     public ResponseEntity<Object> build() {
