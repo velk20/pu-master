@@ -1,0 +1,36 @@
+### SOLAR PARKS ###
+@hostname = http://localhost:8080
+
+### CONTACTS ###
+## getAll() ###
+GET  {{hostname}}/contacts
+### getById()
+GET  {{hostname}}/contacts/1
+### getByProjectId()
+GET  {{hostname}}/contacts/project/1
+### create()
+POST {{hostname}}/contacts
+Content-Type: application/json
+
+{
+    "firstName": "Solar electric 2",
+    "lastName": "Solar electric 1",
+    "email": "solar@abv.bg",
+    "phone": "123456879",
+    "active": 1,
+    "projects": [1,2,3]
+}
+### update()
+PUT {{hostname}}/contacts/1
+Content-Type: application/json
+
+{
+    "firstName": "Solar electric 2",
+    "lastName": "Solar electric 1",
+    "email": "solar@abv.bg",
+    "phone": "123456879",
+    "active": 1,
+    "projects": [1]
+}
+### delete()
+DELETE {{hostname}}/contacts/2

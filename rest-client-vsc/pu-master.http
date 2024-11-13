@@ -3,7 +3,7 @@
 ###
 GET  {{hostname}}/tasks/021bc35f-6fe8-4988-82cc-9a6bbf22e480
 ###
-GET {{hostname}}/tasks
+GET {{hostname}}/customers/11
 ###
 GET {{hostname}}/tasks?status=PENDING
 ###

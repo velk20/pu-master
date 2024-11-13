@@ -1,0 +1,25 @@
+### SOLAR PARKS ###
+@hostname = http://localhost:8080
+@customers = customers
+
+### CUSTOMERS ###
+## getAll() ###
+GET  {{hostname}}/{{customers}}
+### getById()
+GET  {{hostname}}/customers/1
+### create()
+POST {{hostname}}/customers
+Content-Type: application/json
+
+{
+    "name": "Solar electric 2"
+}
+### update()
+PUT {{hostname}}/customers/5
+Content-Type: application/json
+
+{
+    "name": "Solar electric NEW"
+}
+### delete()
+DELETE {{hostname}}/customers/1

@@ -1,0 +1,19 @@
+
+########################################
+### FMI HTTP SERVER ########
+########################################
+GET http://localhost:1423/customer
+###
+POST http://localhost:1423/customer
+Content-Type: application/json
+
+{
+    "title": "New Task name",
+    "description": "Go to the kitchen",
+    "status":"PENDING",
+    "dueDate" : "2017-01-13T17:09:42.411"
+}
+
+###
+GET http://localhost:1423/customer/1
+###

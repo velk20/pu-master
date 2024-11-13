@@ -1,0 +1,34 @@
+### SOLAR PARKS ###
+@hostname = http://localhost:8080
+
+### CONTACTS ###
+## getAll() ###
+GET  {{hostname}}/sites
+### getById()
+GET  {{hostname}}/sites/1
+### getByProjectId()
+GET  {{hostname}}/sites/project/2
+### create()
+POST {{hostname}}/sites
+Content-Type: application/json
+
+{
+    "name": "Solar electric 2",
+    "address": "HRISTO BOTEV 123",
+    "configCost": 122,
+    "otherCost": 11231231,
+    "project": 1
+}
+### update()
+PUT {{hostname}}/sites/4
+Content-Type: application/json
+
+{
+    "name": "Solar electric 2",
+    "address": "HRISTO BOTEV 123",
+    "configCost": 122,
+    "otherCost": 11231231,
+    "project": 2
+}
+### delete()
+DELETE {{hostname}}/sites/2
