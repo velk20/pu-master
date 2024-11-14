@@ -63,9 +63,14 @@ public class CarController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCar(@PathVariable int id) {
-        carService.deleteCar(id);
-        return AppResponse.success()
-                .withMessage("Car successfully deleted")
+        if (carService.deleteCar(id)) {
+            return AppResponse.success()
+                    .withMessage("Car successfully deleted")
+                    .build();
+        }
+
+        return AppResponse.error(HttpStatus.BAD_REQUEST)
+                .withMessage("Car was not successfully deleted")
                 .build();
     }
 }

@@ -18,4 +18,5 @@ public class Offer {
     private double totalPrice;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean isAccepted;
 }

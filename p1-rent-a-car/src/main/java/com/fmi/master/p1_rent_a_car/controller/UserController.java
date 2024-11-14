@@ -2,8 +2,12 @@ package com.fmi.master.p1_rent_a_car.controller;
 
 import com.fmi.master.p1_rent_a_car.entity.User;
 import com.fmi.master.p1_rent_a_car.service.UserService;
+import com.fmi.master.p1_rent_a_car.util.AppResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -16,26 +20,54 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
-        return null;
+        User user = userService.getUserById(id);
+        return AppResponse.success()
+                .withData(user)
+                .build();
     }
 
     @GetMapping
     public ResponseEntity<?> getAll() {
-        return null;
+        List<User> allUsers = userService.getAllUsers();
+        return AppResponse.success()
+                .withData(allUsers)
+                .build();
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody User user) {
-        return null;
+    public ResponseEntity<?> create(@RequestBody User user) {
+        if (userService.createUser(user)) {
+            return AppResponse.created()
+                    .withMessage("User created successfully")
+                    .build();
+        }
+        return AppResponse.error(HttpStatus.BAD_REQUEST)
+                .withMessage("Creating user was not successful")
+                .build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody User user) {
-        return null;
+        if (userService.updateUser(id, user)) {
+            return AppResponse.success()
+                    .withMessage("User updated successfully")
+                    .build();
+        }
+        return AppResponse.error(HttpStatus.BAD_REQUEST)
+                .withMessage("Updating user was not successful")
+                .build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
-        return null;
+        if (userService.deleteUser(id)) {
+            return AppResponse.deleted()
+                    .withMessage("User deleted successfully")
+                    .build();
+        }
+
+        return AppResponse.error(HttpStatus.BAD_REQUEST)
+                .withMessage("Deleting user was not successful")
+                .build();
     }
 }

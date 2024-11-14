@@ -1,7 +1,6 @@
 package com.fmi.master.p1_rent_a_car.util;
 
 public class CarSqlUtil {
-    public static final String TABLE_NAME = "tb_cars";
     public static final String GET_CAR_BY_ID = "SELECT * FROM tb_cars WHERE is_active = 1 AND id = %s";
     public static final String GET_CAR_BY_CITY = "SELECT * FROM tb_cars WHERE is_active = 1 AND city = '%s'";
     public static final String CREATE_CAR = "INSERT INTO tb_cars (brand, model, create_year, price_per_day, city) VALUES ('%s', '%s', %s, %s, '%s')";

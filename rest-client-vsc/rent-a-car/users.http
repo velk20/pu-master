@@ -3,19 +3,20 @@
 
 ### USERS ###
 ## getById() ###
-GET  {{hostname}}/users/1
-### getAllByCity()
-GET  {{hostname}}/users/Sofia
+GET  {{hostname}}/users/5
+### getAll()
+GET  {{hostname}}/users
 ### create()
 POST {{hostname}}/users
 Content-Type: application/json
 
 {
-  "brand": "BMW",
-  "model": "3 Series",
-  "city": "Varna",
-  "year": 2020,
-  "pricePerDay": 80.0
+      "firstName": "Angel",
+      "lastName": "Mladenov",
+      "city": "Kavarna",
+      "phone": "1122334455",
+      "years": 40,
+      "previousAccidents": false
 }
 
 ### update()
@@ -23,11 +24,12 @@ PUT {{hostname}}/users/1
 Content-Type: application/json
 
 {
-  "brand": "BMW",
-  "model": "3 Series",
-  "city": "Varna",
-  "year": 2020,
-  "pricePerDay": 80.0
+      "firstName": "Angel",
+      "lastName": "Mladenov",
+      "city": "Kavarna",
+      "phone": "1122334455",
+      "years": 40,
+      "previousAccidents": false
 }
 ### delete()
 DELETE {{hostname}}/users/2

@@ -55,8 +55,9 @@ public class CarService {
     }
 
     // Method to delete a car
-    public void deleteCar(int carId) {
+    public boolean deleteCar(int carId) {
         String sql = String.format(CarSqlUtil.DELETE_CAR, 0, carId);
         db.execute(sql);
+        return true;
     }
 }

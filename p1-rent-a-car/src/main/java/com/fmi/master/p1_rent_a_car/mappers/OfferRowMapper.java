@@ -19,6 +19,7 @@ public class OfferRowMapper implements RowMapper<Offer> {
                 .totalPrice(rs.getDouble("total_price"))
                 .startDate(rs.getObject("start_date", LocalDate.class))
                 .endDate(rs.getObject("end_date", LocalDate.class))
+                .isAccepted(rs.getBoolean("is_accepted"))
                 .build();
     }
 }
