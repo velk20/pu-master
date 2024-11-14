@@ -18,9 +18,15 @@ public class CarController {
         this.carService = carService;
     }
 
-    @GetMapping("/user/{city}")
-    public ResponseEntity<?> getAllCarsByCity(@PathVariable String city) {
-        List<Car> carsByCity = carService.getAllCarsByCity(city);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getAllCarsByCity(@PathVariable int userId) {
+        List<Car> carsByCity = carService.getAllCarsByCity(userId);
+        if (carsByCity == null)
+        {
+            return AppResponse.error(HttpStatus.BAD_REQUEST)
+                    .withMessage("Cars are not available in the user's city")
+                    .build();
+        }
         return AppResponse.success()
                 .withData(carsByCity)
                 .build();
@@ -29,6 +35,11 @@ public class CarController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getCarById(@PathVariable int id){
         Car car = carService.getCarById(id);
+        if (car == null) {
+            return AppResponse.error(HttpStatus.NOT_FOUND)
+                    .withMessage(String.format("Car with id: %s not found", id))
+                    .build();
+        }
         return AppResponse.success()
                 .withData(car)
                 .build();

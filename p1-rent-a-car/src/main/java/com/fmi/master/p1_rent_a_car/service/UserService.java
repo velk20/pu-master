@@ -3,6 +3,8 @@ package com.fmi.master.p1_rent_a_car.service;
 import com.fmi.master.p1_rent_a_car.entity.User;
 import com.fmi.master.p1_rent_a_car.mappers.UserRowMapper;
 import com.fmi.master.p1_rent_a_car.util.UserSqlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Service
 public class UserService {
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final JdbcTemplate db;
 
     public UserService(JdbcTemplate db) {
@@ -41,7 +44,12 @@ public class UserService {
                 user.getPhone(),
                 user.getYears(),
                 user.isPreviousAccidents());
-        db.execute(sql);
+        try {
+            db.execute(sql);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return false;
+        }
 
         return true;
     }
@@ -56,13 +64,23 @@ public class UserService {
                 user.isPreviousAccidents(),
                 id);
 
-        db.execute(sql);
+        try {
+            db.execute(sql);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return false;
+        }
         return true;
     }
 
     public boolean deleteUser(int id) {
         String sql = String.format(UserSqlUtil.DELETE_USER, 0, id);
-        db.execute(sql);
+        try {
+            db.execute(sql);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return false;
+        }
         return true;
     }
 

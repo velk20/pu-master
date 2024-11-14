@@ -5,15 +5,19 @@ import com.fmi.master.p1_rent_a_car.entity.Offer;
 import com.fmi.master.p1_rent_a_car.entity.User;
 import com.fmi.master.p1_rent_a_car.mappers.OfferRowMapper;
 import com.fmi.master.p1_rent_a_car.util.OfferSqlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
 public class OfferService {
+    private final Logger logger = LoggerFactory.getLogger(OfferService.class);
     private final JdbcTemplate db;
     private final CarService carService;
     private final UserService userService;
@@ -59,25 +63,62 @@ public class OfferService {
                 "FALSE"
                 );
 
-        db.execute(sql);
+        try {
+            db.execute(sql);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return false;
+        }
         return true;
 
     }
 
-    private double calculateAnyAdditionalPrices(User user, Car car, LocalDate startDate, LocalDate endDate) {
-        //TODO
-        return 0;
-    }
-
     public boolean acceptOffer(int id) {
         String sql = String.format(OfferSqlUtil.ACCEPT_OFFER, id);
-        db.execute(sql);
+        try {
+            db.execute(sql);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+
         return true;
     }
 
     public boolean deleteOffer(int id) {
         String sql = String.format(OfferSqlUtil.DELETE_OFFER, 0, id);
-        db.execute(sql);
+        try {
+            db.execute(sql);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return false;
+        }
         return true;
+    }
+
+    private double calculateAnyAdditionalPrices(User user, Car car, LocalDate startDate, LocalDate endDate) {
+        double additionalPrices = 0;
+        if (user.isPreviousAccidents()) {
+            additionalPrices += 200;
+        }
+        if (includesWeekend(startDate, endDate)) {
+            additionalPrices += additionalPrices * 0.10; //Additional 10 %
+        }
+        return additionalPrices;
+    }
+
+    private static boolean includesWeekend(LocalDate startDate, LocalDate endDate) {
+        LocalDate date = startDate;
+
+        while (!date.isAfter(endDate)) {
+            // Check if the current date is a Saturday or Sunday
+            if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                return true;
+            }
+            // Move to the next day
+            date = date.plusDays(1);
+        }
+
+        return false; // No weekends found in the range
     }
 }

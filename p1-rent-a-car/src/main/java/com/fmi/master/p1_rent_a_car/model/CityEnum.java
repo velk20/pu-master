@@ -1,7 +1,7 @@
 package com.fmi.master.p1_rent_a_car.model;
 
 public enum CityEnum {
-    PLOVDIV("Plvdiv"),
+    PLOVDIV("Plovdiv"),
     SOFIA("Sofia"),
     VARNA("Varna"),
     BURGAS("Burgas");
@@ -14,5 +14,14 @@ public enum CityEnum {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public static boolean exists(String cityName) {
+        for (CityEnum city : CityEnum.values()) {
+            if (city.getDisplayName().equalsIgnoreCase(cityName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
