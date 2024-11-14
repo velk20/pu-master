@@ -1,6 +1,7 @@
 package com.fmi.master.p1_rent_a_car.controller;
 
 import com.fmi.master.p1_rent_a_car.entity.User;
+import com.fmi.master.p1_rent_a_car.service.OfferService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,12 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/offers")
 public class OfferController {
+
+    private final OfferService offerService;
+
+    public OfferController(OfferService offerService) {
+        this.offerService = offerService;
+    }
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getAllOffersByUserId(@PathVariable String userId) {

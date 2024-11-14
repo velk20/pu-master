@@ -1,0 +1,33 @@
+### RENT a CAR ###
+@hostname = http://localhost:8165
+
+### USERS ###
+## getById() ###
+GET  {{hostname}}/users/1
+### getAllByCity()
+GET  {{hostname}}/users/Sofia
+### create()
+POST {{hostname}}/users
+Content-Type: application/json
+
+{
+  "brand": "BMW",
+  "model": "3 Series",
+  "city": "Varna",
+  "year": 2020,
+  "pricePerDay": 80.0
+}
+
+### update()
+PUT {{hostname}}/users/1
+Content-Type: application/json
+
+{
+  "brand": "BMW",
+  "model": "3 Series",
+  "city": "Varna",
+  "year": 2020,
+  "pricePerDay": 80.0
+}
+### delete()
+DELETE {{hostname}}/users/2
