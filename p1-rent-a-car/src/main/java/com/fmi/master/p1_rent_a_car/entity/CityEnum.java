@@ -1,4 +1,4 @@
-package com.fmi.master.p1_rent_a_car.model;
+package com.fmi.master.p1_rent_a_car.entity;
 
 public enum CityEnum {
     PLOVDIV("Plovdiv"),

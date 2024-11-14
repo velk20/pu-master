@@ -3,6 +3,8 @@ package com.fmi.master.p1_rent_a_car.service;
 import com.fmi.master.p1_rent_a_car.entity.Car;
 import com.fmi.master.p1_rent_a_car.entity.Offer;
 import com.fmi.master.p1_rent_a_car.entity.User;
+import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
+import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.mappers.OfferRowMapper;
 import com.fmi.master.p1_rent_a_car.util.OfferSqlUtil;
 import org.slf4j.Logger;
@@ -44,8 +46,10 @@ public class OfferService {
     }
 
     public boolean createOffer(int userId, int carId, LocalDate startDate, LocalDate endDate) {
-        User user = userService.getUserById(userId);
-        Car car = carService.getCarById(carId);
+        User user = userService.getUserById(userId)
+                .orElseThrow(()->new UserNotFoundException("User with id " + userId + " not found"));
+        Car car = carService.getCarById(carId)
+                .orElseThrow(()->new CarNotFoundException("Car with id " + carId + " not found"));
 
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         double price = daysBetween * car.getPricePerDay();

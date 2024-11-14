@@ -1,6 +1,7 @@
 package com.fmi.master.p1_rent_a_car.controller;
 
 import com.fmi.master.p1_rent_a_car.entity.User;
+import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.service.UserService;
 import com.fmi.master.p1_rent_a_car.util.AppResponse;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
-        User user = userService.getUserById(id);
+        User user = userService.getUserById(id)
+                .orElseThrow(()-> new UserNotFoundException("User with id " + id + " not found"));
         return AppResponse.success()
                 .withData(user)
                 .build();

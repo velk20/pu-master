@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,15 +20,11 @@ public class UserService {
         this.db = db;
     }
 
-    public User getUserById(int id) {
+    public Optional<User> getUserById(int id) {
         String sql = String.format(UserSqlUtil.GET_USER_BY_ID, id);
 
         List<User> users = db.query(sql, new UserRowMapper());
-        if (users.isEmpty()){
-            return null;
-        }
-
-        return users.get(0);
+        return users.stream().findFirst();
     }
 
     public List<User> getAllUsers() {
