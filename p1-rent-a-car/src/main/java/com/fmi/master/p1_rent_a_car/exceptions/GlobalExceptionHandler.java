@@ -16,6 +16,13 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(OfferNotFoundException.class)
+    public ResponseEntity<?> handleOfferNotFoundException(OfferNotFoundException ex){
+        return AppResponse.error(HttpStatus.NOT_FOUND)
+                .withMessage(ex.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex){
         return AppResponse.error(HttpStatus.NOT_FOUND)

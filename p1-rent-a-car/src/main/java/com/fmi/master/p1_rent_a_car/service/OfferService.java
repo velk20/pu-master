@@ -16,6 +16,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OfferService {
@@ -30,14 +31,10 @@ public class OfferService {
         this.userService = userService;
     }
 
-    public Offer getOfferById(int id) {
+    public Optional<Offer> getOfferById(int id) {
         String sql = String.format(OfferSqlUtil.GET_OFFER_BY_ID, id);
         List<Offer> offers = db.query(sql, new OfferRowMapper());
-        if (offers.isEmpty()) {
-            return null;
-        }
-
-        return offers.get(0);
+        return offers.stream().findFirst();
     }
 
     public List<Offer> getAllOffersByUserId(int userId) {
@@ -53,7 +50,7 @@ public class OfferService {
 
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         double price = daysBetween * car.getPricePerDay();
-        double additionalPrices = calculateAnyAdditionalPrices(user, car, startDate, endDate);
+        double additionalPrices = calculateAnyAdditionalPrices(user, startDate, endDate);
         double total = price + additionalPrices;
 
         String sql = String.format(OfferSqlUtil.CREATE_OFFER,
@@ -100,7 +97,7 @@ public class OfferService {
         return true;
     }
 
-    private double calculateAnyAdditionalPrices(User user, Car car, LocalDate startDate, LocalDate endDate) {
+    private double calculateAnyAdditionalPrices(User user, LocalDate startDate, LocalDate endDate) {
         double additionalPrices = 0;
         if (user.isPreviousAccidents()) {
             additionalPrices += 200;

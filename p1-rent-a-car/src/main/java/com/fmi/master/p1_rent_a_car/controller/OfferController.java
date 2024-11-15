@@ -1,6 +1,7 @@
 package com.fmi.master.p1_rent_a_car.controller;
 
 import com.fmi.master.p1_rent_a_car.entity.Offer;
+import com.fmi.master.p1_rent_a_car.exceptions.OfferNotFoundException;
 import com.fmi.master.p1_rent_a_car.service.OfferService;
 import com.fmi.master.p1_rent_a_car.util.AppResponse;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,12 +32,9 @@ public class OfferController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOfferById(@PathVariable int id) {
-        Offer offer = offerService.getOfferById(id);
-        if (offer == null) {
-            return AppResponse.error(HttpStatus.NOT_FOUND)
-                    .withMessage("Offer with id:%s not found")
-                    .build();
-        }
+        Offer offer = offerService.getOfferById(id)
+                .orElseThrow(()->new OfferNotFoundException("Offer with id " + id + " not found"));
+
         return AppResponse.success()
                 .withData(offer)
                 .build();
