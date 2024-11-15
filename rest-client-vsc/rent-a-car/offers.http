@@ -7,10 +7,15 @@ GET  {{hostname}}/offers/1
 ### getAllByCity()
 GET  {{hostname}}/offers/users/1
 ### create()
-POST {{hostname}}/offers/1/1?startDate=2023-10-01&endDate=2023-10-10
+POST {{hostname}}/offers
 Content-Type: application/json
 
-
+{
+    "userId":2,
+    "carId":2,
+    "startDate": "2023-10-01",
+    "endDate":"2023-10-05"
+}
 ### acceptOffer()
 PUT {{hostname}}/offers/5
 Content-Type: application/json
