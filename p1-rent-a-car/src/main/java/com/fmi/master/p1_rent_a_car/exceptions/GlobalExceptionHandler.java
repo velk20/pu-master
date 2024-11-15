@@ -33,7 +33,6 @@ public class GlobalExceptionHandler {
     // General handler for all other exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneralException(Exception ex) {
-
         return AppResponse.error(HttpStatus.INTERNAL_SERVER_ERROR)
                 .withDetailedMessage(ex.getMessage())
                 .withMessage("An unexpected error occurred")

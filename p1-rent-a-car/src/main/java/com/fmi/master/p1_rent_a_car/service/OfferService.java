@@ -1,9 +1,11 @@
 package com.fmi.master.p1_rent_a_car.service;
 
+import com.fmi.master.p1_rent_a_car.dto.CreateOfferDTO;
 import com.fmi.master.p1_rent_a_car.entity.Car;
 import com.fmi.master.p1_rent_a_car.entity.Offer;
 import com.fmi.master.p1_rent_a_car.entity.User;
 import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
+import com.fmi.master.p1_rent_a_car.exceptions.OfferNotFoundException;
 import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.mappers.OfferRowMapper;
 import com.fmi.master.p1_rent_a_car.util.OfferSqlUtil;
@@ -38,11 +40,18 @@ public class OfferService {
     }
 
     public List<Offer> getAllOffersByUserId(int userId) {
+        userService.getUserById(userId)
+                .orElseThrow(()->new UserNotFoundException("User with id:"+userId+" not found"));
         String sql = String.format(OfferSqlUtil.GET_ALL_OFFERS_BY_USER_ID, userId);
         return db.query(sql, new OfferRowMapper());
     }
 
-    public boolean createOffer(int userId, int carId, LocalDate startDate, LocalDate endDate) {
+    public boolean createOffer(CreateOfferDTO createOfferDTO) {
+        int userId = createOfferDTO.getUserId();
+        int carId = createOfferDTO.getCarId();
+        LocalDate startDate = createOfferDTO.getStartDate();
+        LocalDate endDate = createOfferDTO.getEndDate();
+
         User user = userService.getUserById(userId)
                 .orElseThrow(()->new UserNotFoundException("User with id " + userId + " not found"));
         Car car = carService.getCarById(carId)
@@ -75,6 +84,7 @@ public class OfferService {
     }
 
     public boolean acceptOffer(int id) {
+        getOfferById(id).orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
         String sql = String.format(OfferSqlUtil.ACCEPT_OFFER, id);
         try {
             db.execute(sql);
@@ -87,6 +97,7 @@ public class OfferService {
     }
 
     public boolean deleteOffer(int id) {
+        getOfferById(id).orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
         String sql = String.format(OfferSqlUtil.DELETE_OFFER, 0, id);
         try {
             db.execute(sql);
@@ -99,7 +110,7 @@ public class OfferService {
 
     private double calculateAnyAdditionalPrices(User user, LocalDate startDate, LocalDate endDate) {
         double additionalPrices = 0;
-        if (user.isPreviousAccidents()) {
+        if (user.getPreviousAccidents()) {
             additionalPrices += 200;
         }
         if (includesWeekend(startDate, endDate)) {

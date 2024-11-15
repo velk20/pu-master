@@ -2,6 +2,7 @@ package com.fmi.master.p1_rent_a_car.service;
 
 import com.fmi.master.p1_rent_a_car.entity.Car;
 import com.fmi.master.p1_rent_a_car.entity.User;
+import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
 import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.mappers.CarRowMapper;
 import com.fmi.master.p1_rent_a_car.entity.CityEnum;
@@ -32,7 +33,7 @@ public class CarService {
         return cars.stream().findFirst();
     }
 
-    // Method to get all cars by city
+    // Method to get all cars by user's city
     public List<Car> getAllCarsByCity(int userId) {
         User user = userService.getUserById(userId)
                 .orElseThrow(()->new UserNotFoundException("User with id " + userId + " not found"));
@@ -66,6 +67,8 @@ public class CarService {
 
     // Method to update an existing car
     public boolean updateCar(int id, Car car) {
+        getCarById(id).orElseThrow(() -> new CarNotFoundException("Car with id:" + id + " not found"));
+
         String sql = String.format(CarSqlUtil.UPDATE_CAR, car.getBrand(), car.getModel(), car.getYear(), car.getPricePerDay(), car.getCity(), id);
         try {
             db.execute(sql);
@@ -78,6 +81,8 @@ public class CarService {
 
     // Method to delete a car
     public boolean deleteCar(int carId) {
+        getCarById(carId).orElseThrow(() -> new CarNotFoundException("Car with id:" + carId + " not found"));
+
         String sql = String.format(CarSqlUtil.DELETE_CAR, 0, carId);
         try {
             db.execute(sql);

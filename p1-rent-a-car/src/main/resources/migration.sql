@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS tb_users (
                           id INT PRIMARY KEY AUTO_INCREMENT,
                           first_name VARCHAR(50) NOT NULL,
                           last_name VARCHAR(50) NOT NULL,
-                          city VARCHAR(50),
-                          phone VARCHAR(20),
+                          city VARCHAR(50) NOT NULL,
+                          phone VARCHAR(20) NOT NULL,
                           years INT NOT NULL,
                           previous_accidents BOOLEAN NOT NULL,
                           is_active INT DEFAULT 1
@@ -26,11 +26,11 @@ VALUES ('Maria', 'Petrova', 'Burgas', '6677889900', 35, TRUE, 1);
 -- cars table
 CREATE TABLE IF NOT EXISTS tb_cars (
                          id INT PRIMARY KEY AUTO_INCREMENT,
-                         brand VARCHAR(50),
-                         model VARCHAR(50),
-                         create_year INT,
-                         city VARCHAR(50),
-                         price_per_day NUMBER,
+                         brand VARCHAR(50) NOT NULL,
+                         model VARCHAR(50) NOT NULL,
+                         create_year INT NOT NULL,
+                         city VARCHAR(50) NOT NULL,
+                         price_per_day NUMBER NOT NULL,
                          is_active INT DEFAULT 1
 );
 
