@@ -5,7 +5,6 @@ import com.fmi.master.entities.RequestInfo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.Objects;
 
 public class HttpProcessor {
     private final ApplicationLoader appLoader = ApplicationLoader.getInstance();
@@ -19,7 +18,8 @@ public class HttpProcessor {
         for (RequestInfo requestInfoControllerMetaEntry : this.appLoader.getControllerLookupTable().keySet()) {
 
             if(requestInfoControllerMetaEntry.isProcessable(httpMethod, httpRequestEndpoint)){
-                controllerMethodReference = this.appLoader.getControllerLookupTable().get(requestInfoControllerMetaEntry);
+                controllerMethodReference = this.appLoader.getControllerLookupTable()
+                        .get(requestInfoControllerMetaEntry);
                 httpRequest.setPathVariables(requestInfoControllerMetaEntry.getPathVariables());
                 break;
             }
