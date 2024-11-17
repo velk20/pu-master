@@ -1,5 +1,6 @@
 package com.fmi.master.p1_rent_a_car.entity;
 
+import com.fmi.master.p1_rent_a_car.util.validation.EnumValue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,6 +19,7 @@ public class Car {
     @NotEmpty(message = "model is required.")
     private String model;
     @NotEmpty(message = "city is required.")
+    @EnumValue(enumClass = CityEnum.class, message = "city must be between: Sofia, Plovdiv, Varna, Burgas")
     private String city;
     @Min(value = 1980,message = "Minimum year is 1980.")
     @Max(value = 2100,message = "Maximum year is 2100.")
