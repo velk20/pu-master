@@ -9,6 +9,8 @@ public class RequestInfo {
     private String httpEndpoint;
     private String httpBody;
     private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> pathVariables = new HashMap<>();
+
 
     public RequestInfo() {
         this.httpMethod = "";
@@ -26,6 +28,59 @@ public class RequestInfo {
         this.httpBody = httpBody;
     }
 
+    public boolean isEmpty() {
+        return httpMethod.isEmpty() || httpEndpoint.isEmpty();
+    }
+
+    public RequestInfo setPathVariables(Map<String, String> pathVariables) {
+        this.pathVariables = pathVariables;
+        return this;
+    }
+
+    public boolean isProcessable(String method, String endpoint) {
+        if (!this.httpMethod.equals(method)) {
+            return false;
+        }
+
+        return isTemplateEndpointMatchRequestEndpoint(endpoint);
+    }
+    public boolean isTemplateEndpointMatchRequestEndpoint(String requestEndpoint) {
+        String[] templateEndpointPartCollection = this.getHttpEndpoint().split("/");
+        String[] requestEndpointPartCollection = requestEndpoint.split("/");
+
+        if (templateEndpointPartCollection.length != requestEndpointPartCollection.length) {
+            return false;
+        }
+
+        for (int i = 0; i < templateEndpointPartCollection.length; i++) {
+            if (isUrlPartDynamic(templateEndpointPartCollection[i])){
+                String pathVariableName = extractUrlVariable(templateEndpointPartCollection[i]);
+                String pathVariableValue = requestEndpointPartCollection[i];
+                pathVariables.put(pathVariableName, pathVariableValue);
+                continue;
+            }
+            if (!templateEndpointPartCollection[i].equals(requestEndpointPartCollection[i])) {
+                return false;
+            }
+
+
+
+        }
+
+        return true;
+    }
+
+    public Map<String, String> getPathVariables() {
+        return pathVariables;
+    }
+
+    private String extractUrlVariable(String template) {
+        return template.substring(1, template.length() - 1);
+    }
+    private boolean isUrlPartDynamic(String urlPart)    {
+        return urlPart.startsWith("{")
+                && urlPart.endsWith("}");
+    }
     public int getContentLength(){
         String value = this.getHeader("Content-Length");
         if (Objects.isNull(value)) {

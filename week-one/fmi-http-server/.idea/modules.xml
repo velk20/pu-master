@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/fmi-http-server.iml" filepath="$PROJECT_DIR$/fmi-http-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Framework/Framework.iml" filepath="$PROJECT_DIR$/Framework/Framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fmi-http-server.iml" filepath="$PROJECT_DIR$/.idea/fmi-http-server.iml" />
     </modules>
   </component>
 </project>

@@ -2,6 +2,7 @@ package com.fmi.master;
 
 import com.fmi.master.entities.RequestInfo;
 import com.fmi.master.system.ApplicationLoader;
+import com.fmi.master.system.HttpProcessor;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -11,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 public class FrameworkApplication {
     private static final String NEW_LINE = "\r\n";
-    private static final ApplicationLoader applicationLoader = new ApplicationLoader();
+    private static HttpProcessor httpProcessor = new HttpProcessor();
 
     public static void run(Class<?> mainClass) {
         try {
@@ -40,7 +41,7 @@ public class FrameworkApplication {
 
 
     private static void bootstrap(Class<?> mainClass) throws IOException, ClassNotFoundException {
-        applicationLoader.findAllClasses(mainClass.getPackageName());
+        ApplicationLoader.getInstance().findAllClasses(mainClass.getPackageName());
     }
 
     private static RequestInfo parseHttpRequest(InputStream inputStream) throws IOException {
@@ -66,7 +67,7 @@ public class FrameworkApplication {
 
             String[] headerParseCollection = currentLine.split(": ");
             String headerKey = headerParseCollection[0];
-            String headerValue = headerParseCollection[0];
+            String headerValue = headerParseCollection[1];
             httpRequest.setHeader(headerKey, headerValue);
 
         }
@@ -100,7 +101,11 @@ public class FrameworkApplication {
 
             RequestInfo requestInfo = parseHttpRequest(request);
 
-            String controllerMessage = applicationLoader.executeController(requestInfo);
+            if (requestInfo.isEmpty()){
+                continue;
+            }
+
+            String controllerMessage = httpProcessor.executeController(requestInfo);
 
             String message = buildHTTPResponse(controllerMessage);
             response.write(message.getBytes(StandardCharsets.UTF_8));

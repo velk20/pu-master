@@ -1,4 +1,6 @@
-package com.fmi.master;
+package main.java.com.fmi.master;
+
+import com.fmi.master.FrameworkApplication;
 
 public class HttpServer {
 
