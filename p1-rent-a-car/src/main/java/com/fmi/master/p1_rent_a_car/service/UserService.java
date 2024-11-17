@@ -1,6 +1,7 @@
 package com.fmi.master.p1_rent_a_car.service;
 
 import com.fmi.master.p1_rent_a_car.entity.User;
+import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.mappers.UserRowMapper;
 import com.fmi.master.p1_rent_a_car.util.UserSqlUtil;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class UserService {
                 user.getCity(),
                 user.getPhone(),
                 user.getYears(),
-                user.isPreviousAccidents());
+                user.getPreviousAccidents());
         try {
             db.execute(sql);
         }catch (Exception e){
@@ -52,13 +53,15 @@ public class UserService {
     }
 
     public boolean updateUser(int id, User user) {
+        getUserById(id).orElseThrow(()->new UserNotFoundException("User with id:" + id + " not found"));
+
         String sql = String.format(UserSqlUtil.UPDATE_USER,
                 user.getFirstName(),
                 user.getLastName(),
                 user.getCity(),
                 user.getPhone(),
                 user.getYears(),
-                user.isPreviousAccidents(),
+                user.getPreviousAccidents(),
                 id);
 
         try {
@@ -71,6 +74,8 @@ public class UserService {
     }
 
     public boolean deleteUser(int id) {
+        getUserById(id).orElseThrow(()->new UserNotFoundException("User with id:" + id + " not found"));
+
         String sql = String.format(UserSqlUtil.DELETE_USER, 0, id);
         try {
             db.execute(sql);

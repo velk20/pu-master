@@ -4,11 +4,15 @@ import com.fmi.master.p1_rent_a_car.entity.User;
 import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.service.UserService;
 import com.fmi.master.p1_rent_a_car.util.AppResponse;
+import jakarta.validation.Valid;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -22,7 +26,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
         User user = userService.getUserById(id)
-                .orElseThrow(()-> new UserNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(()-> new UserNotFoundException("User with id:" + id + " not found"));
         return AppResponse.success()
                 .withData(user)
                 .build();
@@ -37,39 +41,63 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody User user) {
-        if (userService.createUser(user)) {
-            return AppResponse.created()
-                    .withMessage("User created successfully")
+    public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessage = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponse.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessage)
                     .build();
         }
-        return AppResponse.error(HttpStatus.BAD_REQUEST)
-                .withMessage("Creating user was not successful")
+
+        if (!userService.createUser(user)) {
+            return AppResponse.error(HttpStatus.BAD_REQUEST)
+                    .withMessage("Creating user was not successful")
+                    .build();
+        }
+
+        return AppResponse.created()
+                .withMessage("User created successfully")
                 .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, @RequestBody User user) {
-        if (userService.updateUser(id, user)) {
-            return AppResponse.success()
-                    .withMessage("User updated successfully")
+    public ResponseEntity<?> update(@PathVariable int id, @Valid @RequestBody User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessage = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponse.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessage)
                     .build();
         }
-        return AppResponse.error(HttpStatus.BAD_REQUEST)
-                .withMessage("Updating user was not successful")
+
+        if (!userService.updateUser(id, user)) {
+            return AppResponse.error(HttpStatus.BAD_REQUEST)
+                    .withMessage("Updating user was not successful")
+                    .build();
+        }
+
+        return AppResponse.success()
+                .withMessage("User updated successfully")
                 .build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
-        if (userService.deleteUser(id)) {
-            return AppResponse.deleted()
-                    .withMessage("User deleted successfully")
+        if (!userService.deleteUser(id)) {
+            return AppResponse.error(HttpStatus.BAD_REQUEST)
+                    .withMessage("Deleting user was not successful")
                     .build();
         }
 
-        return AppResponse.error(HttpStatus.BAD_REQUEST)
-                .withMessage("Deleting user was not successful")
+        return AppResponse.deleted()
+                .withMessage("User deleted successfully")
                 .build();
     }
 }

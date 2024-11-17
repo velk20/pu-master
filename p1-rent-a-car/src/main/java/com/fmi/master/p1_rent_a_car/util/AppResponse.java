@@ -57,6 +57,11 @@ public class AppResponse {
         return this;
     }
 
+    public AppResponse withErrors(List<String> errors){
+        response.put("errors", errors);
+        return this;
+    }
+
     public AppResponse withDetailedMessage(String message) {
         response.put("detailed-message", message);
         return this;

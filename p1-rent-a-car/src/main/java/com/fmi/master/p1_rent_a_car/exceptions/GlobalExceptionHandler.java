@@ -16,6 +16,13 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(OfferNotFoundException.class)
+    public ResponseEntity<?> handleOfferNotFoundException(OfferNotFoundException ex){
+        return AppResponse.error(HttpStatus.NOT_FOUND)
+                .withMessage(ex.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex){
         return AppResponse.error(HttpStatus.NOT_FOUND)
@@ -26,7 +33,6 @@ public class GlobalExceptionHandler {
     // General handler for all other exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneralException(Exception ex) {
-
         return AppResponse.error(HttpStatus.INTERNAL_SERVER_ERROR)
                 .withDetailedMessage(ex.getMessage())
                 .withMessage("An unexpected error occurred")

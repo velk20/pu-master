@@ -1,9 +1,11 @@
 package com.fmi.master.p1_rent_a_car.service;
 
+import com.fmi.master.p1_rent_a_car.dto.CreateOfferDTO;
 import com.fmi.master.p1_rent_a_car.entity.Car;
 import com.fmi.master.p1_rent_a_car.entity.Offer;
 import com.fmi.master.p1_rent_a_car.entity.User;
 import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
+import com.fmi.master.p1_rent_a_car.exceptions.OfferNotFoundException;
 import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.mappers.OfferRowMapper;
 import com.fmi.master.p1_rent_a_car.util.OfferSqlUtil;
@@ -16,6 +18,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OfferService {
@@ -30,22 +33,25 @@ public class OfferService {
         this.userService = userService;
     }
 
-    public Offer getOfferById(int id) {
+    public Optional<Offer> getOfferById(int id) {
         String sql = String.format(OfferSqlUtil.GET_OFFER_BY_ID, id);
         List<Offer> offers = db.query(sql, new OfferRowMapper());
-        if (offers.isEmpty()) {
-            return null;
-        }
-
-        return offers.get(0);
+        return offers.stream().findFirst();
     }
 
     public List<Offer> getAllOffersByUserId(int userId) {
+        userService.getUserById(userId)
+                .orElseThrow(()->new UserNotFoundException("User with id:"+userId+" not found"));
         String sql = String.format(OfferSqlUtil.GET_ALL_OFFERS_BY_USER_ID, userId);
         return db.query(sql, new OfferRowMapper());
     }
 
-    public boolean createOffer(int userId, int carId, LocalDate startDate, LocalDate endDate) {
+    public boolean createOffer(CreateOfferDTO createOfferDTO) {
+        int userId = createOfferDTO.getUserId();
+        int carId = createOfferDTO.getCarId();
+        LocalDate startDate = createOfferDTO.getStartDate();
+        LocalDate endDate = createOfferDTO.getEndDate();
+
         User user = userService.getUserById(userId)
                 .orElseThrow(()->new UserNotFoundException("User with id " + userId + " not found"));
         Car car = carService.getCarById(carId)
@@ -53,7 +59,7 @@ public class OfferService {
 
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         double price = daysBetween * car.getPricePerDay();
-        double additionalPrices = calculateAnyAdditionalPrices(user, car, startDate, endDate);
+        double additionalPrices = calculateAnyAdditionalPrices(user, startDate, endDate);
         double total = price + additionalPrices;
 
         String sql = String.format(OfferSqlUtil.CREATE_OFFER,
@@ -78,6 +84,7 @@ public class OfferService {
     }
 
     public boolean acceptOffer(int id) {
+        getOfferById(id).orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
         String sql = String.format(OfferSqlUtil.ACCEPT_OFFER, id);
         try {
             db.execute(sql);
@@ -90,6 +97,7 @@ public class OfferService {
     }
 
     public boolean deleteOffer(int id) {
+        getOfferById(id).orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
         String sql = String.format(OfferSqlUtil.DELETE_OFFER, 0, id);
         try {
             db.execute(sql);
@@ -100,9 +108,9 @@ public class OfferService {
         return true;
     }
 
-    private double calculateAnyAdditionalPrices(User user, Car car, LocalDate startDate, LocalDate endDate) {
+    private double calculateAnyAdditionalPrices(User user, LocalDate startDate, LocalDate endDate) {
         double additionalPrices = 0;
-        if (user.isPreviousAccidents()) {
+        if (user.getPreviousAccidents()) {
             additionalPrices += 200;
         }
         if (includesWeekend(startDate, endDate)) {

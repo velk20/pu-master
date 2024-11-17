@@ -1,0 +1,630 @@
+{
+	"info": {
+		"_postman_id": "1d6e83d1-cf98-4980-baec-6aaafd595bf7",
+		"name": "p1-rent-a-car",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18839086"
+	},
+	"item": [
+		{
+			"name": "Cars",
+			"item": [
+				{
+					"name": "Get car by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/cars/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all cars by user's city by his id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/cars/user/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create car",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"brand\": \"BMW\",\r\n  \"model\": \"3 Series\",\r\n  \"city\": \"Varna\",\r\n  \"year\": 2020,\r\n  \"pricePerDay\": 80.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/cars",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Car",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"brand\": \"BMW\",\r\n  \"model\": \"3 Series\",\r\n  \"city\": \"Varna\",\r\n  \"year\": 2020,\r\n  \"pricePerDay\": 80.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/cars/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Car",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/cars/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cars Exceptions",
+			"item": [
+				{
+					"name": "Get car by non existing id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/cars/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create car with no data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"brand\": \"BMW\",\r\n  \"year\": 2020,\r\n  \"pricePerDay\": 80.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/cars",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Car with no data",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"brand\": \"BMW\",\r\n  \"model\": \"3 Series\",\r\n  \"city\": \"Varna\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/cars/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Car with wrong id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/cars/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"cars",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Offers",
+			"item": [
+				{
+					"name": "Get offers by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/users/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get offer by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create offer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":2,\r\n    \"carId\":2,\r\n    \"startDate\": \"2023-10-01\",\r\n    \"endDate\":\"2023-10-05\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/offers",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept offer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete offer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Offers Exceptions",
+			"item": [
+				{
+					"name": "Get offers by wrong user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/users/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"users",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get offer by wrong id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create offer with error",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":2,\r\n    \"startDate\": \"2023-10-05\",\r\n    \"endDate\":\"2023-10-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/offers",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept offer with wrong id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete offer with wrong id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/offers/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"offers",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/users",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/users/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"firstName\": \"Angel\",\r\n      \"lastName\": \"Mladenov\",\r\n      \"city\": \"Kavarna\",\r\n      \"phone\": \"1122334455\",\r\n      \"years\": 40,\r\n      \"previousAccidents\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/users",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"firstName\": \"Angel\",\r\n      \"lastName\": \"Mladenov\",\r\n      \"city\": \"Kavarna\",\r\n      \"phone\": \"1122334455\",\r\n      \"years\": 40,\r\n      \"previousAccidents\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/users/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/users/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users Exceptions",
+			"item": [
+				{
+					"name": "Get user by non existing id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/users/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user with wrong data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"firstName\": \"Angel\",\r\n      \"lastName\": \"Mladenov\",\r\n      \"years\":1\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/users",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user with wrong data",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"firstName\": \"Angel\",\r\n      \"lastName\": \"Mladenov\",\r\n      \"city\": \"Kavarna\",\r\n      \"phone\": \"1122334455\",\r\n      \"years\": 40,\r\n      \"previousAccidents\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/users/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete non existing user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}/users/11",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"users",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
