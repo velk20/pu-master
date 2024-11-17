@@ -15,10 +15,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/cars/1",
+							"raw": "http://localhost:8165/cars/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars",
 								"1"
@@ -33,10 +35,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/cars/user/1",
+							"raw": "http://localhost:8165/cars/user/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars",
 								"user",
@@ -61,10 +65,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/cars",
+							"raw": "http://localhost:8165/cars",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars"
 							]
@@ -87,10 +93,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/cars/1",
+							"raw": "http://localhost:8165/cars/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars",
 								"1"
@@ -105,10 +113,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/cars/1",
+							"raw": "http://localhost:8165/cars/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars",
 								"1"
@@ -128,10 +138,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/cars/11",
+							"raw": "http://localhost:8165/cars/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars",
 								"11"
@@ -155,10 +167,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/cars",
+							"raw": "http://localhost:8165/cars",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars"
 							]
@@ -181,10 +195,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/cars/1",
+							"raw": "http://localhost:8165/cars/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars",
 								"1"
@@ -199,10 +215,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/cars/11",
+							"raw": "http://localhost:8165/cars/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"cars",
 								"11"
@@ -222,10 +240,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/users/1",
+							"raw": "http://localhost:8165/offers/users/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"users",
@@ -241,10 +261,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/1",
+							"raw": "http://localhost:8165/offers/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"1"
@@ -268,10 +290,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/offers",
+							"raw": "http://localhost:8165/offers",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers"
 							]
@@ -285,10 +309,12 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/1",
+							"raw": "http://localhost:8165/offers/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"1"
@@ -303,10 +329,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/1",
+							"raw": "http://localhost:8165/offers/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"1"
@@ -326,10 +354,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/users/11",
+							"raw": "http://localhost:8165/offers/users/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"users",
@@ -345,10 +375,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/11",
+							"raw": "http://localhost:8165/offers/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"11"
@@ -372,10 +404,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/offers",
+							"raw": "http://localhost:8165/offers",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers"
 							]
@@ -389,10 +423,12 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/11",
+							"raw": "http://localhost:8165/offers/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"11"
@@ -407,10 +443,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/offers/11",
+							"raw": "http://localhost:8165/offers/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"offers",
 								"11"
@@ -430,10 +468,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/users",
+							"raw": "http://localhost:8165/users",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users"
 							]
@@ -447,10 +487,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/users/1",
+							"raw": "http://localhost:8165/users/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users",
 								"1"
@@ -474,10 +516,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/users",
+							"raw": "http://localhost:8165/users",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users"
 							]
@@ -500,10 +544,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/users/1",
+							"raw": "http://localhost:8165/users/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users",
 								"1"
@@ -518,10 +564,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/users/1",
+							"raw": "http://localhost:8165/users/1",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users",
 								"1"
@@ -541,10 +589,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/users/11",
+							"raw": "http://localhost:8165/users/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users",
 								"11"
@@ -568,10 +618,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/users",
+							"raw": "http://localhost:8165/users",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users"
 							]
@@ -594,10 +646,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/users/11",
+							"raw": "http://localhost:8165/users/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users",
 								"11"
@@ -612,10 +666,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{hostname}}/users/11",
+							"raw": "http://localhost:8165/users/11",
+							"protocol": "http",
 							"host": [
-								"{{hostname}}"
+								"localhost"
 							],
+							"port": "8165",
 							"path": [
 								"users",
 								"11"
