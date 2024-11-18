@@ -1,5 +1,6 @@
 package com.fmi.master.solarparks.controller;
 
+import com.fmi.master.solarparks.dto.CustomerDTO;
 import com.fmi.master.solarparks.http.AppResponse;
 import com.fmi.master.solarparks.model.Customer;
 import com.fmi.master.solarparks.service.CustomerService;
@@ -42,7 +43,7 @@ public class CustomerController {
 
     @PostMapping
     @ResponseBody
-    private ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
+    private ResponseEntity<?> createCustomer(@RequestBody CustomerDTO customer) {
         Customer newCustomer = customerService.createCustomer(customer);
 
         return AppResponse.created()
@@ -52,10 +53,11 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
+    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customer) {
         Customer customerResponseEntity = customerService.updateCustomer(id, customer);
 
         return AppResponse.success()
+                .withMessage("Customer updated successfully")
                 .withData(dtoMapper.convertCustomer(customerResponseEntity))
                 .build();
     }

@@ -1,5 +1,6 @@
 export type Customer = {
-  id: number;
-  name: string;
-  numberOfProjects: number;
+  id?: number;
+  name?: string;
+  numberOfProjects?: number;
+  active?: number;
 }

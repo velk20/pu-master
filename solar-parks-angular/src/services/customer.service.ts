@@ -23,7 +23,7 @@ export class CustomerService {
     return this.httpClient.post<Customer>(`${this.customerUrl}`, customer);
   }
 
-  update(id:number, customer:Customer): Observable<any> {
+  update(id?:number, customer?:Customer): Observable<any> {
     return this.httpClient.put<Customer>(`${this.customerUrl}/${id}`, customer);
   }
 

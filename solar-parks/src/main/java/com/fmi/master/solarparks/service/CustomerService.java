@@ -1,5 +1,6 @@
 package com.fmi.master.solarparks.service;
 
+import com.fmi.master.solarparks.dto.CustomerDTO;
 import com.fmi.master.solarparks.exception.CustomerNotFoundException;
 import com.fmi.master.solarparks.model.Customer;
 import com.fmi.master.solarparks.model.Project;
@@ -32,14 +33,19 @@ public class CustomerService {
         return findCustomerOrThrow(id);
     }
 
-    public Customer createCustomer(Customer customer) {
-        return customerRepository.save(customer);
+    public Customer createCustomer(CustomerDTO customer) {
+        Customer newCustomer = new Customer()
+                .setActive(customer.isActive()?1:0)
+                .setName(customer.getName())
+                .setNumberOfProjects(customer.getNumberOfProjects());
+
+        return customerRepository.save(newCustomer);
     }
 
-    public Customer updateCustomer(Long id, Customer newCustomer) {
+    public Customer updateCustomer(Long id, CustomerDTO newCustomer) {
         Customer customer = findCustomerOrThrow(id);
         customer.setName(newCustomer.getName())
-                .setActive(newCustomer.isActive())
+                .setActive(newCustomer.isActive() ? 1 : 0)
                 .setNumberOfProjects(newCustomer.getNumberOfProjects());
 
         return customerRepository.save(customer);
