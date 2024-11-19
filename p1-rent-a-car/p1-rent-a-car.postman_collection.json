@@ -11,11 +11,63 @@
 			"item": [
 				{
 					"name": "Get car by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify the response schema for the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('object');\r",
+									"\r",
+									"    pm.expect(responseData.data.id).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(responseData.data.brand).to.exist.and.to.be.a('string');\r",
+									"    pm.expect(responseData.data.model).to.exist.and.to.be.a('string');\r",
+									"    pm.expect(responseData.data.city).to.exist.and.to.be.a('string');\r",
+									"    pm.expect(responseData.data.year).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(responseData.data.pricePerDay).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(responseData.status).to.exist.and.to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Id is a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('object');\r",
+									"    pm.expect(responseData.data.id).to.be.a('number').and.to.be.at.least(0, \"Id should be a non-negative integer\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Brand, model, and city are non-empty strings\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('object');\r",
+									"    pm.expect(responseData.data.brand).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Brand should not be empty\");\r",
+									"    pm.expect(responseData.data.model).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Model should not be empty\");\r",
+									"    pm.expect(responseData.data.city).to.be.a('string').and.to.have.lengthOf.at.least(1, \"City should not be empty\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8165/cars/1",
+							"raw": "http://localhost:8165/cars/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -23,7 +75,7 @@
 							"port": "8165",
 							"path": [
 								"cars",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -31,11 +83,69 @@
 				},
 				{
 					"name": "Get all cars by user's city by his id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - id, brand, model, city, year, and pricePerDay\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    responseData.data.forEach(function(car) {",
+									"        pm.expect(car.id).to.exist;",
+									"        pm.expect(car.brand).to.exist;",
+									"        pm.expect(car.model).to.exist;",
+									"        pm.expect(car.city).to.exist;",
+									"        pm.expect(car.year).to.exist;",
+									"        pm.expect(car.pricePerDay).to.exist;",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"Data array is present and contains the expected number of elements\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('array');",
+									"    pm.expect(responseData.data).to.have.lengthOf.at.least(1, \"Data array should contain at least one element\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Year is a positive integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.data).to.be.an('array');",
+									"    responseData.data.forEach(function(car) {",
+									"        pm.expect(car.year).to.be.a('number').and.to.be.above(0, \"Year should be a positive integer\");",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"PricePerDay is a positive number\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    responseData.data.forEach(function(car) {",
+									"        pm.expect(car.pricePerDay).to.be.above(0);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8165/cars/user/1",
+							"raw": "http://localhost:8165/cars/user/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -44,7 +154,7 @@
 							"path": [
 								"cars",
 								"user",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -52,6 +162,53 @@
 				},
 				{
 					"name": "Create car",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"  pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData).to.have.property('code');",
+									"  pm.expect(responseData).to.have.property('message');",
+									"  pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"  const responseData = pm.response.json();",
+									"",
+									"  pm.expect(responseData.code).to.exist;",
+									"  pm.expect(responseData.code).to.be.a('number');",
+									"  pm.expect(responseData.code).to.satisfy(code => code >= 0, \"Code must be a non-negative integer\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -80,6 +237,53 @@
 				},
 				{
 					"name": "Update Car",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate the 'data' object\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('object');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Id is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.id).to.be.a('number').and.to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Data properties are valid\", function () {",
+									"    const responseData = pm.response.json().data;",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.brand).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Brand should be a non-empty string\");",
+									"    pm.expect(responseData.model).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Model should be a non-empty string\");",
+									"    pm.expect(responseData.city).to.be.a('string').and.to.have.lengthOf.at.least(1, \"City should be a non-empty string\");",
+									"    pm.expect(responseData.year).to.be.a('number').and.to.be.at.least(0, \"Year should be a non-negative integer\");",
+									"    pm.expect(responseData.pricePerDay).to.be.a('number').and.to.be.at.least(0, \"PricePerDay should be a non-negative integer\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -93,7 +297,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8165/cars/1",
+							"raw": "http://localhost:8165/cars/3",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -101,7 +305,7 @@
 							"port": "8165",
 							"path": [
 								"cars",
-								"1"
+								"3"
 							]
 						}
 					},
@@ -109,6 +313,50 @@
 				},
 				{
 					"name": "Delete Car",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.code).to.exist.and.to.be.a('number');",
+									"    pm.expect(responseData.code).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message and status are non-empty strings\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"    pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -134,6 +382,50 @@
 			"item": [
 				{
 					"name": "Get car by non existing id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"  pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code, message, and status fields exist in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.exist;",
+									"    pm.expect(responseData.message).to.exist;",
+									"    pm.expect(responseData.status).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is set to application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.be.a('number').and.to.satisfy((code) => code >= 0, \"Code must be a non-negative integer\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -154,6 +446,48 @@
 				},
 				{
 					"name": "Create car with no data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {",
+									"    pm.expect(pm.response.code).to.equal(400);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code field should exist and be a number\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.exist.and.to.be.a('number');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Errors field must exist and be an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.errors).to.exist;",
+									"    pm.expect(responseData.errors).to.be.an('array');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status field should exist in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.status).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -182,6 +516,47 @@
 				},
 				{
 					"name": "Update Car with no data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {",
+									"    pm.expect(pm.response.code).to.equal(400);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has a valid Content-Type header\", function () {",
+									"    pm.response.to.have.header('Content-Type', 'application/json');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response contains a 'code' field\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('code');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Errors field is a non-empty array\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.errors).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Errors array should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status field is present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.status).to.exist;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -195,7 +570,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8165/cars/1",
+							"raw": "http://localhost:8165/cars/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -203,7 +578,7 @@
 							"port": "8165",
 							"path": [
 								"cars",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -211,6 +586,49 @@
 				},
 				{
 					"name": "Delete Car with wrong id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"  pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.exist;",
+									"    pm.expect(responseData.message).to.exist;",
+									"    pm.expect(responseData.status).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"  const responseData = pm.response.json();",
+									"  pm.expect(responseData.code).to.be.a('number').and.to.satisfy((code) => code >= 0, \"Code should be a non-negative integer\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status is a valid status code\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.status).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -228,6 +646,71 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get cars with wrong use city",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"    pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.code).to.exist;",
+									"    pm.expect(responseData.code).to.be.a('number');",
+									"    pm.expect(responseData.code).to.satisfy((code) => code >= 0, \"Code must be a non-negative integer\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8165/cars/user/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8165",
+							"path": [
+								"cars",
+								"user",
+								"5"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -236,11 +719,62 @@
 			"item": [
 				{
 					"name": "Get offers by user id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    ",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('array');",
+									"    pm.expect(responseData.data).to.have.lengthOf.at.least(1, \"Data array should contain at least one element\");",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Data array is present and contains expected number of elements\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data).to.be.an('array');",
+									"    pm.expect(responseData.data.length).to.equal(1);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Start date is in a valid date format\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.data).to.be.an('array');",
+									"    responseData.data.forEach(function(offer) {",
+									"        pm.expect(offer.startDate).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status field should be a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"",
+									"  pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8165/offers/users/1",
+							"raw": "http://localhost:8165/offers/users/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -249,7 +783,7 @@
 							"path": [
 								"offers",
 								"users",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -257,6 +791,63 @@
 				},
 				{
 					"name": "Get offer by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.id).to.exist;",
+									"    pm.expect(responseData.data.carId).to.exist;",
+									"    pm.expect(responseData.data.userId).to.exist;",
+									"    pm.expect(responseData.data.price).to.exist;",
+									"    pm.expect(responseData.data.additionalPrice).to.exist;",
+									"    pm.expect(responseData.data.totalPrice).to.exist;",
+									"    pm.expect(responseData.data.startDate).to.exist;",
+									"    pm.expect(responseData.data.endDate).to.exist;",
+									"    pm.expect(responseData.data.accepted).to.exist;",
+									"    pm.expect(responseData.status).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Start date and end date are in valid date format\", function () {",
+									"  const responseData = pm.response.json().data;",
+									"  ",
+									"  pm.expect(responseData.startDate).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+									"  pm.expect(responseData.endDate).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Price, additionalPrice, and totalPrice are non-negative numbers\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('data');",
+									"    pm.expect(responseData.data.price).to.be.a('number').and.to.be.at.least(0);",
+									"    pm.expect(responseData.data.additionalPrice).to.be.a('number').and.to.be.at.least(0);",
+									"    pm.expect(responseData.data.totalPrice).to.be.a('number').and.to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Accepted status is a boolean value\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.data.accepted).to.be.a('boolean');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -277,6 +868,51 @@
 				},
 				{
 					"name": "Create offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"  pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content type is application/json\", function () {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.code).to.be.a('number');",
+									"    pm.expect(responseData.code).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message and status are non-empty strings\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"  pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -305,6 +941,58 @@
 				},
 				{
 					"name": "Accept offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate the data object\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data).to.exist.and.to.be.an('object');",
+									"    pm.expect(responseData.data.id).to.exist.and.to.be.a('number');",
+									"    pm.expect(responseData.data.carId).to.exist.and.to.be.a('number');",
+									"    pm.expect(responseData.data.userId).to.exist.and.to.be.a('number');",
+									"    pm.expect(responseData.data.price).to.exist.and.to.be.a('number');",
+									"    pm.expect(responseData.data.additionalPrice).to.exist.and.to.be.a('number');",
+									"    pm.expect(responseData.data.totalPrice).to.exist.and.to.be.a('number');",
+									"    pm.expect(responseData.data.startDate).to.exist.and.to.be.a('string');",
+									"    pm.expect(responseData.data.endDate).to.exist.and.to.be.a('string');",
+									"    pm.expect(responseData.data.accepted).to.exist.and.to.be.a('boolean');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Start date and end date are in valid date format\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.data.startDate).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+									"  pm.expect(responseData.data.endDate).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Accepted is a boolean value\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.accepted).to.be.a('boolean');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -325,6 +1013,47 @@
 				},
 				{
 					"name": "Delete offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a number\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.code).to.be.a('number');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -350,6 +1079,49 @@
 			"item": [
 				{
 					"name": "Get offers by wrong user id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"    pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.exist;",
+									"    pm.expect(responseData.message).to.exist;",
+									"    pm.expect(responseData.status).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should be a non-empty string\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -371,6 +1143,49 @@
 				},
 				{
 					"name": "Get offer by wrong id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"    pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.be.a('number').and.to.be.at.least(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -391,6 +1206,49 @@
 				},
 				{
 					"name": "Create offer with error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {",
+									"  pm.expect(pm.response.code).to.equal(400);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response contains required fields - code, errors, and status\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData).to.have.property('code');",
+									"  pm.expect(responseData).to.have.property('errors');",
+									"  pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Errors array should not be empty\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.errors).to.be.an('array').that.is.not.empty;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.be.a('number').and.to.satisfy(code => code >= 0, \"Code must be a non-negative integer\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -419,6 +1277,50 @@
 				},
 				{
 					"name": "Accept offer with wrong id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"  pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -439,6 +1341,50 @@
 				},
 				{
 					"name": "Delete offer with wrong id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"  pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code, message, and status fields are present in the response\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.include.all.keys('code', 'message', 'status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code field is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.be.a('number').and.to.satisfy((code) => code >= 0, \"Code field should be a non-negative integer\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message field is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status field is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status field should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -464,6 +1410,54 @@
 			"item": [
 				{
 					"name": "Get all users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate the data array\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.data).to.be.an('array').that.is.not.empty;",
+									"  responseData.data.forEach(function(item) {",
+									"    pm.expect(item).to.be.an('object');",
+									"    pm.expect(item.id).to.be.a('number');",
+									"    pm.expect(item.firstName).to.be.a('string');",
+									"    pm.expect(item.lastName).to.be.a('string');",
+									"    pm.expect(item.city).to.be.a('string');",
+									"    pm.expect(item.phone).to.be.a('string');",
+									"    pm.expect(item.years).to.be.a('number');",
+									"    pm.expect(item.previousAccidents).to.be.a('boolean');",
+									"  });",
+									"});",
+									"",
+									"",
+									"pm.test(\"All data objects have required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.data).to.be.an('array').that.is.not.empty;",
+									"    ",
+									"    responseData.data.forEach(function (item) {",
+									"        pm.expect(item).to.include.all.keys('id', 'firstName', 'lastName', 'city', 'years', 'previousAccidents');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -483,6 +1477,51 @@
 				},
 				{
 					"name": "Get user by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data).to.have.property('id');",
+									"    pm.expect(responseData.data).to.have.property('firstName');",
+									"    pm.expect(responseData.data).to.have.property('lastName');",
+									"    pm.expect(responseData.data).to.have.property('city');",
+									"    pm.expect(responseData.data).to.have.property('phone');",
+									"    pm.expect(responseData.data).to.have.property('years');",
+									"    pm.expect(responseData.data).to.have.property('previousAccidents');",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test(\"Years is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.data.years).to.be.a('number');",
+									"    pm.expect(responseData.data.years).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status field should NOT be empty\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.have.property('status').that.is.not.empty;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -503,6 +1542,50 @@
 				},
 				{
 					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {",
+									"  pm.expect(pm.response.code).to.equal(201);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.be.a('number').and.to.satisfy((code) => code >= 0, \"Code must be a non-negative integer\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Status should not be empty\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -531,6 +1614,48 @@
 				},
 				{
 					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate the data object\", function () {",
+									"  const responseData = pm.response.json();",
+									"",
+									"  pm.expect(responseData.data).to.exist.and.to.be.an('object');",
+									"  pm.expect(responseData.data.id).to.exist.and.to.be.a('number');",
+									"  pm.expect(responseData.data.firstName).to.exist.and.to.be.a('string');",
+									"  pm.expect(responseData.data.lastName).to.exist.and.to.be.a('string');",
+									"  pm.expect(responseData.data.city).to.exist.and.to.be.a('string');",
+									"  pm.expect(responseData.data.phone).to.exist.and.to.be.a('string');",
+									"  pm.expect(responseData.data.years).to.exist.and.to.be.a('number');",
+									"  pm.expect(responseData.data.previousAccidents).to.exist.and.to.be.a('boolean');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Years and previousAccidents should be present and have valid data types\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.data.years).to.exist.and.to.be.a('number');",
+									"  pm.expect(responseData.data.previousAccidents).to.exist.and.to.be.a('boolean');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -560,6 +1685,50 @@
 				},
 				{
 					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"  pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Verify the response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.exist;",
+									"    pm.expect(responseData.message).to.exist;",
+									"    pm.expect(responseData.status).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.code).to.be.a('number');",
+									"  pm.expect(responseData.code).to.be.at.least(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -585,6 +1754,49 @@
 			"item": [
 				{
 					"name": "Get user by non existing id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"    pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.status).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -605,6 +1817,49 @@
 				},
 				{
 					"name": "Create user with wrong data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {",
+									"  pm.expect(pm.response.code).to.equal(400);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData).to.be.an('object');",
+									"  pm.expect(responseData.code).to.exist;",
+									"  pm.expect(responseData.errors).to.exist;",
+									"  pm.expect(responseData.status).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Errors array should not be empty\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.errors).to.be.an('array').that.is.not.empty;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.code).to.be.a('number').and.to.satisfy((code) => code >= 0, \"Code must be a non-negative integer\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -633,6 +1888,46 @@
 				},
 				{
 					"name": "Update user with wrong data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"  pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields - code, message, and status\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('code');",
+									"    pm.expect(responseData).to.have.property('message');",
+									"    pm.expect(responseData).to.have.property('status');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message is a non-empty string\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Verify Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -662,6 +1957,45 @@
 				},
 				{
 					"name": "Delete non existing user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {",
+									"    pm.expect(pm.response.code).to.equal(404);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Code field is present and has a non-null value\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('code').that.is.not.null;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Message field is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status field is present and has a non-null value\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.have.property('status').that.is.not.null;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
