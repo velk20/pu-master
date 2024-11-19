@@ -1,9 +1,10 @@
 package com.fmi.master.p1_rent_a_car.services;
 
+import com.fmi.master.p1_rent_a_car.exceptions.InvalidCityException;
 import com.fmi.master.p1_rent_a_car.models.Car;
 import com.fmi.master.p1_rent_a_car.models.CityEnum;
 import com.fmi.master.p1_rent_a_car.models.User;
-import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
+import com.fmi.master.p1_rent_a_car.exceptions.EntityNotFoundException;
 import com.fmi.master.p1_rent_a_car.repositories.CarRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class CarService {
     public Car getCarById(int id) {
         return this.carRepository
                 .getCarById(id)
-                .orElseThrow(() -> new CarNotFoundException("Car with id:" + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Car with id:" + id + " not found"));
     }
 
     public List<Car> getAllCarsByCity(int userId) {
@@ -30,7 +31,7 @@ public class CarService {
 
         String city = user.getCity();
         if (!CityEnum.exists(city)) {
-            return null;
+            throw new InvalidCityException("Cars are not available in the user's city");
         }
 
         return carRepository.getAllCarsByCity(city);

@@ -1,7 +1,7 @@
 package com.fmi.master.p1_rent_a_car.services;
 
+import com.fmi.master.p1_rent_a_car.exceptions.EntityNotFoundException;
 import com.fmi.master.p1_rent_a_car.models.User;
-import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class UserService {
     public User getUserById(int id) {
         return this.userRepository
                 .getUserById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with id:" + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User with id:" + id + " not found"));
     }
 
     public List<User> getAllUsers() {

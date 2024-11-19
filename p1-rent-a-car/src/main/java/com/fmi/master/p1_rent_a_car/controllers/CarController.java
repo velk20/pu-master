@@ -25,12 +25,7 @@ public class CarController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getAllCarsByCity(@PathVariable int userId) {
         List<Car> carsByCity = carService.getAllCarsByCity(userId);
-        if (carsByCity == null)
-        {
-            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
-                    .withMessage("Cars are not available in the user's city")
-                    .build();
-        }
+
         return AppResponseUtil.success()
                 .withData(carsByCity)
                 .build();

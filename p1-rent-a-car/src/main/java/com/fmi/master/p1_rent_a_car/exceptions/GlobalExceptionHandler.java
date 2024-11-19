@@ -14,25 +14,17 @@ import java.util.Arrays;
 public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(CarNotFoundException.class)
-    public ResponseEntity<?> handleCarNotFoundException(CarNotFoundException ex){
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleCarNotFoundException(EntityNotFoundException ex){
         return AppResponseUtil.error(HttpStatus.NOT_FOUND)
                 .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage(ex.getMessage())
                 .build();
     }
 
-    @ExceptionHandler(OfferNotFoundException.class)
-    public ResponseEntity<?> handleOfferNotFoundException(OfferNotFoundException ex){
-        return AppResponseUtil.error(HttpStatus.NOT_FOUND)
-                .logStackTrace(Arrays.toString(ex.getStackTrace()))
-                .withMessage(ex.getMessage())
-                .build();
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex){
-        return AppResponseUtil.error(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(InvalidCityException.class)
+    public ResponseEntity<?> handleCarNotFoundException(InvalidCityException ex){
+        return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                 .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage(ex.getMessage())
                 .build();

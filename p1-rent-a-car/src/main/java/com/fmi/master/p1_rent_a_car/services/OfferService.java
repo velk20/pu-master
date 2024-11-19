@@ -1,10 +1,10 @@
 package com.fmi.master.p1_rent_a_car.services;
 
 import com.fmi.master.p1_rent_a_car.dtos.CreateOfferDTO;
+import com.fmi.master.p1_rent_a_car.exceptions.EntityNotFoundException;
 import com.fmi.master.p1_rent_a_car.models.Car;
 import com.fmi.master.p1_rent_a_car.models.Offer;
 import com.fmi.master.p1_rent_a_car.models.User;
-import com.fmi.master.p1_rent_a_car.exceptions.OfferNotFoundException;
 import com.fmi.master.p1_rent_a_car.repositories.OfferRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class OfferService {
     public Offer getOfferById(int id) {
         return this.offerRepository
                 .getOfferById(id)
-                .orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Offer with id:" + id + " not found"));
     }
 
     public List<Offer> getAllOffersByUserId(int userId) {
