@@ -39,8 +39,7 @@ public class CarController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCarById(@PathVariable int id){
-        Car car = carService.getCarById(id)
-                .orElseThrow(()->new CarNotFoundException("Car with id:" + id + " not found"));
+        Car car = carService.getCarById(id);
 
         return AppResponseUtil.success()
                 .withData(car)
@@ -91,19 +90,20 @@ public class CarController {
 
         return AppResponseUtil.success()
                 .withMessage("Car successfully updated")
+                .withData(this.carService.getCarById(id))
                 .build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCar(@PathVariable int id) {
-        if (carService.deleteCar(id)) {
-            return AppResponseUtil.success()
-                    .withMessage("Car successfully deleted")
+        if (!carService.deleteCar(id)) {
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withMessage("Car was not successfully deleted")
                     .build();
         }
 
-        return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
-                .withMessage("Car was not successfully deleted")
+        return AppResponseUtil.success()
+                .withMessage("Car successfully deleted")
                 .build();
     }
 }

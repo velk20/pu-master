@@ -10,7 +10,6 @@ import com.fmi.master.p1_rent_a_car.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CarService {
@@ -23,8 +22,10 @@ public class CarService {
         this.userRepository = userRepository;
     }
 
-    public Optional<Car> getCarById(int id) {
-        return this.carRepository.getCarById(id);
+    public Car getCarById(int id) {
+        return this.carRepository
+                .getCarById(id)
+                .orElseThrow(() -> new CarNotFoundException("Car with id:" + id + " not found"));
     }
 
     public List<Car> getAllCarsByCity(int userId) {
@@ -45,17 +46,13 @@ public class CarService {
     }
 
     public boolean updateCar(int id, Car car) {
-        this.carRepository
-                .getCarById(id)
-                .orElseThrow(() -> new CarNotFoundException("Car with id:" + id + " not found"));
+        getCarById(id);
 
         return this.carRepository.updateCar(id, car);
     }
 
     public boolean deleteCar(int carId) {
-        this.carRepository
-                .getCarById(carId)
-                .orElseThrow(() -> new CarNotFoundException("Car with id:" + carId + " not found"));
+        getCarById(carId);
 
         return this.carRepository.deleteCar(carId);
     }

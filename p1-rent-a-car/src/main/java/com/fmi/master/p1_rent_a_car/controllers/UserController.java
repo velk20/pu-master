@@ -25,8 +25,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
-        User user = userService.getUserById(id)
-                .orElseThrow(()-> new UserNotFoundException("User with id:" + id + " not found"));
+        User user = userService.getUserById(id);
+
         return AppResponseUtil.success()
                 .withData(user)
                 .build();
@@ -35,6 +35,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         List<User> allUsers = userService.getAllUsers();
+
         return AppResponseUtil.success()
                 .withData(allUsers)
                 .build();
@@ -85,6 +86,7 @@ public class UserController {
 
         return AppResponseUtil.success()
                 .withMessage("User updated successfully")
+                .withData(this.userService.getUserById(id))
                 .build();
     }
 

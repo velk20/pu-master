@@ -6,7 +6,6 @@ import com.fmi.master.p1_rent_a_car.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -16,8 +15,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Optional<User> getUserById(int id) {
-        return this.userRepository.getUserById(id);
+    public User getUserById(int id) {
+        return this.userRepository
+                .getUserById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with id:" + id + " not found"));
     }
 
     public List<User> getAllUsers() {
@@ -29,17 +30,13 @@ public class UserService {
     }
 
     public boolean updateUser(int id, User user) {
-        this.userRepository
-                .getUserById(id)
-                .orElseThrow(()->new UserNotFoundException("User with id:" + id + " not found"));
+        getUserById(id);
 
        return this.userRepository.updateUser(id, user);
     }
 
     public boolean deleteUser(int id) {
-        this.userRepository
-                .getUserById(id)
-                .orElseThrow(()->new UserNotFoundException("User with id:" + id + " not found"));
+        getUserById(id);
 
        return this.userRepository.deleteUser(id);
     }

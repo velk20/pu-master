@@ -28,6 +28,7 @@ public class OfferController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getAllOffersByUserId(@PathVariable int userId) {
         List<Offer> allOffersByUserId = offerService.getAllOffersByUserId(userId);
+
         return AppResponseUtil.success()
                 .withData(allOffersByUserId)
                 .build();
@@ -35,8 +36,7 @@ public class OfferController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOfferById(@PathVariable int id) {
-        Offer offer = offerService.getOfferById(id)
-                .orElseThrow(()->new OfferNotFoundException("Offer with id:" + id + " not found"));
+        Offer offer = offerService.getOfferById(id);
 
         return AppResponseUtil.success()
                 .withData(offer)
@@ -76,6 +76,7 @@ public class OfferController {
 
         return AppResponseUtil.success()
                 .withMessage("Offer successfully accepted")
+                .withData(offerService.getOfferById(offerId))
                 .build();
     }
 

@@ -59,13 +59,7 @@ public class AppResponseUtil {
     }
 
     public AppResponseUtil withData(Object data) {
-        List<Object> list = new ArrayList<>();
-        if (!(data instanceof List<?>)) {
-            list.add(data);
-        } else {
-            list = (List<Object>) data;
-        }
-        response.put("data", list);
+        response.put("data", data);
         return this;
     }
 

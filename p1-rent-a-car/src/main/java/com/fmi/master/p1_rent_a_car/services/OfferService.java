@@ -30,8 +30,10 @@ public class OfferService {
         this.offerRepository = offerRepository;
     }
 
-    public Optional<Offer> getOfferById(int id) {
-        return this.offerRepository.getOfferById(id);
+    public Offer getOfferById(int id) {
+        return this.offerRepository
+                .getOfferById(id)
+                .orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
     }
 
     public List<Offer> getAllOffersByUserId(int userId) {
@@ -65,17 +67,13 @@ public class OfferService {
     }
 
     public boolean acceptOffer(int id) {
-        this.offerRepository
-                .getOfferById(id)
-                .orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
+        getOfferById(id);
 
         return this.offerRepository.acceptOffer(id);
     }
 
     public boolean deleteOffer(int id) {
-        this.offerRepository
-                .getOfferById(id)
-                .orElseThrow(() -> new OfferNotFoundException("Offer with id:" + id + " not found"));
+        getOfferById(id);
 
         return this.offerRepository.deleteOffer(id);
     }
