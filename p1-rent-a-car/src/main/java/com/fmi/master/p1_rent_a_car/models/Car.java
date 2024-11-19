@@ -1,6 +1,6 @@
-package com.fmi.master.p1_rent_a_car.entity;
+package com.fmi.master.p1_rent_a_car.models;
 
-import com.fmi.master.p1_rent_a_car.util.validation.EnumValue;
+import com.fmi.master.p1_rent_a_car.validators.EnumValue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;

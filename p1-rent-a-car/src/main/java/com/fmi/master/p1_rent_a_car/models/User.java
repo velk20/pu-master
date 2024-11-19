@@ -1,4 +1,4 @@
-package com.fmi.master.p1_rent_a_car.entity;
+package com.fmi.master.p1_rent_a_car.models;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

@@ -1,19 +1,17 @@
-package com.fmi.master.p1_rent_a_car.controller;
+package com.fmi.master.p1_rent_a_car.controllers;
 
-import com.fmi.master.p1_rent_a_car.dto.CreateOfferDTO;
-import com.fmi.master.p1_rent_a_car.entity.Offer;
+import com.fmi.master.p1_rent_a_car.dtos.CreateOfferDTO;
+import com.fmi.master.p1_rent_a_car.models.Offer;
 import com.fmi.master.p1_rent_a_car.exceptions.OfferNotFoundException;
-import com.fmi.master.p1_rent_a_car.service.OfferService;
-import com.fmi.master.p1_rent_a_car.util.AppResponse;
+import com.fmi.master.p1_rent_a_car.services.OfferService;
+import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +28,7 @@ public class OfferController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getAllOffersByUserId(@PathVariable int userId) {
         List<Offer> allOffersByUserId = offerService.getAllOffersByUserId(userId);
-        return AppResponse.success()
+        return AppResponseUtil.success()
                 .withData(allOffersByUserId)
                 .build();
     }
@@ -40,7 +38,7 @@ public class OfferController {
         Offer offer = offerService.getOfferById(id)
                 .orElseThrow(()->new OfferNotFoundException("Offer with id:" + id + " not found"));
 
-        return AppResponse.success()
+        return AppResponseUtil.success()
                 .withData(offer)
                 .build();
     }
@@ -53,17 +51,17 @@ public class OfferController {
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
 
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withErrors(errorMessage)
                     .build();
         }
         if (!offerService.createOffer(createOfferDTO)) {
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Offer was not successfully created")
                     .build();
         }
 
-        return AppResponse.created()
+        return AppResponseUtil.created()
                 .withMessage("Offer successfully created")
                 .build();
     }
@@ -71,12 +69,12 @@ public class OfferController {
     @PutMapping("/{offerId}")
     public ResponseEntity<?> acceptOffer(@PathVariable int offerId) {
         if (!offerService.acceptOffer(offerId)) {
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Offer was not successfully accepted")
                     .build();
         }
 
-        return AppResponse.success()
+        return AppResponseUtil.success()
                 .withMessage("Offer successfully accepted")
                 .build();
     }
@@ -84,12 +82,12 @@ public class OfferController {
     @DeleteMapping("/{offerId}")
     public ResponseEntity<?> deleteOffer(@PathVariable int offerId) {
         if (!offerService.deleteOffer(offerId)) {
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Offer was not deleted")
                     .build();
         }
 
-        return AppResponse.success()
+        return AppResponseUtil.success()
                 .withMessage("Offer successfully deleted")
                 .build();
     }

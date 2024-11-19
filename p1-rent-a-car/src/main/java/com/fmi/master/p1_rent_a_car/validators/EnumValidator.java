@@ -1,4 +1,4 @@
-package com.fmi.master.p1_rent_a_car.util.validation;
+package com.fmi.master.p1_rent_a_car.validators;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

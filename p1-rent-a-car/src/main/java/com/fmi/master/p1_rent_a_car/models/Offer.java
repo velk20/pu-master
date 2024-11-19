@@ -1,4 +1,4 @@
-package com.fmi.master.p1_rent_a_car.entity;
+package com.fmi.master.p1_rent_a_car.models;
 
 import lombok.*;
 

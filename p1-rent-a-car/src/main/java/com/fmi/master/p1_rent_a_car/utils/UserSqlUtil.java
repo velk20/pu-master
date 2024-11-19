@@ -1,4 +1,4 @@
-package com.fmi.master.p1_rent_a_car.util;
+package com.fmi.master.p1_rent_a_car.utils;
 
 public class UserSqlUtil {
     public static final String GET_USER_BY_ID = "SELECT * FROM tb_users WHERE is_active = 1 AND id = %s";

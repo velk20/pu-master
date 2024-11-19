@@ -1,9 +1,9 @@
-package com.fmi.master.p1_rent_a_car.controller;
+package com.fmi.master.p1_rent_a_car.controllers;
 
-import com.fmi.master.p1_rent_a_car.entity.User;
+import com.fmi.master.p1_rent_a_car.models.User;
 import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
-import com.fmi.master.p1_rent_a_car.service.UserService;
-import com.fmi.master.p1_rent_a_car.util.AppResponse;
+import com.fmi.master.p1_rent_a_car.services.UserService;
+import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class UserController {
     public ResponseEntity<?> getById(@PathVariable int id) {
         User user = userService.getUserById(id)
                 .orElseThrow(()-> new UserNotFoundException("User with id:" + id + " not found"));
-        return AppResponse.success()
+        return AppResponseUtil.success()
                 .withData(user)
                 .build();
     }
@@ -35,7 +35,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         List<User> allUsers = userService.getAllUsers();
-        return AppResponse.success()
+        return AppResponseUtil.success()
                 .withData(allUsers)
                 .build();
     }
@@ -48,18 +48,18 @@ public class UserController {
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
 
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withErrors(errorMessage)
                     .build();
         }
 
         if (!userService.createUser(user)) {
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Creating user was not successful")
                     .build();
         }
 
-        return AppResponse.created()
+        return AppResponseUtil.created()
                 .withMessage("User created successfully")
                 .build();
     }
@@ -72,18 +72,18 @@ public class UserController {
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
 
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withErrors(errorMessage)
                     .build();
         }
 
         if (!userService.updateUser(id, user)) {
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Updating user was not successful")
                     .build();
         }
 
-        return AppResponse.success()
+        return AppResponseUtil.success()
                 .withMessage("User updated successfully")
                 .build();
     }
@@ -91,12 +91,12 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
         if (!userService.deleteUser(id)) {
-            return AppResponse.error(HttpStatus.BAD_REQUEST)
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Deleting user was not successful")
                     .build();
         }
 
-        return AppResponse.deleted()
+        return AppResponseUtil.success()
                 .withMessage("User deleted successfully")
                 .build();
     }

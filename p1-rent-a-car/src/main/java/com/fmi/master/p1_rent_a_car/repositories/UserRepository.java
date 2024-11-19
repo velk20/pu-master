@@ -1,23 +1,19 @@
-package com.fmi.master.p1_rent_a_car.service;
+package com.fmi.master.p1_rent_a_car.repositories;
 
-import com.fmi.master.p1_rent_a_car.entity.User;
-import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
+import com.fmi.master.p1_rent_a_car.models.User;
 import com.fmi.master.p1_rent_a_car.mappers.UserRowMapper;
-import com.fmi.master.p1_rent_a_car.util.UserSqlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fmi.master.p1_rent_a_car.utils.UserSqlUtil;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class UserService {
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+@Repository
+public class UserRepository {
     private final JdbcTemplate db;
 
-    public UserService(JdbcTemplate db) {
+    public UserRepository(JdbcTemplate db) {
         this.db = db;
     }
 
@@ -42,19 +38,12 @@ public class UserService {
                 user.getPhone(),
                 user.getYears(),
                 user.getPreviousAccidents());
-        try {
-            db.execute(sql);
-        }catch (Exception e){
-            logger.error(e.getMessage(), e);
-            return false;
-        }
 
+        db.execute(sql);
         return true;
     }
 
     public boolean updateUser(int id, User user) {
-        getUserById(id).orElseThrow(()->new UserNotFoundException("User with id:" + id + " not found"));
-
         String sql = String.format(UserSqlUtil.UPDATE_USER,
                 user.getFirstName(),
                 user.getLastName(),
@@ -64,26 +53,15 @@ public class UserService {
                 user.getPreviousAccidents(),
                 id);
 
-        try {
-            db.execute(sql);
-        }catch (Exception e){
-            logger.error(e.getMessage(), e);
-            return false;
-        }
+        db.execute(sql);
         return true;
     }
 
     public boolean deleteUser(int id) {
-        getUserById(id).orElseThrow(()->new UserNotFoundException("User with id:" + id + " not found"));
+       String sql = String.format(UserSqlUtil.DELETE_USER, 0, id);
+       db.execute(sql);
 
-        String sql = String.format(UserSqlUtil.DELETE_USER, 0, id);
-        try {
-            db.execute(sql);
-        }catch (Exception e){
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
+
+       return true;
     }
-
 }

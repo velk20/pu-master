@@ -1,6 +1,6 @@
-package com.fmi.master.p1_rent_a_car.dto;
+package com.fmi.master.p1_rent_a_car.dtos;
 
-import com.fmi.master.p1_rent_a_car.util.validation.ValidDateRange;
+import com.fmi.master.p1_rent_a_car.validators.ValidDateRange;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;

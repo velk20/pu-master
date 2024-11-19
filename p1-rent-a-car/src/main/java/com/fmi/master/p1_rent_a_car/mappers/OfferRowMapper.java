@@ -1,6 +1,6 @@
 package com.fmi.master.p1_rent_a_car.mappers;
 
-import com.fmi.master.p1_rent_a_car.entity.Offer;
+import com.fmi.master.p1_rent_a_car.models.Offer;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

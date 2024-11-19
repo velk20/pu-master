@@ -1,6 +1,6 @@
-package com.fmi.master.p1_rent_a_car.util.validation;
+package com.fmi.master.p1_rent_a_car.validators;
 
-import com.fmi.master.p1_rent_a_car.dto.CreateOfferDTO;
+import com.fmi.master.p1_rent_a_car.dtos.CreateOfferDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
