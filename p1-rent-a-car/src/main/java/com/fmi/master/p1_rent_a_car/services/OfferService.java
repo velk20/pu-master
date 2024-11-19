@@ -4,30 +4,25 @@ import com.fmi.master.p1_rent_a_car.dtos.CreateOfferDTO;
 import com.fmi.master.p1_rent_a_car.models.Car;
 import com.fmi.master.p1_rent_a_car.models.Offer;
 import com.fmi.master.p1_rent_a_car.models.User;
-import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
 import com.fmi.master.p1_rent_a_car.exceptions.OfferNotFoundException;
-import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
-import com.fmi.master.p1_rent_a_car.repositories.CarRepository;
 import com.fmi.master.p1_rent_a_car.repositories.OfferRepository;
-import com.fmi.master.p1_rent_a_car.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OfferService {
-    private final CarRepository carRepository;
-    private final UserRepository userRepository;
     private final OfferRepository offerRepository;
+    private final CarService carService;
+    private final UserService userService;
 
-    public OfferService(CarRepository carRepository, UserRepository userRepository, OfferRepository offerRepository) {
-        this.carRepository = carRepository;
-        this.userRepository = userRepository;
+    public OfferService(OfferRepository offerRepository, CarService carService, UserService userService) {
         this.offerRepository = offerRepository;
+        this.carService = carService;
+        this.userService = userService;
     }
 
     public Offer getOfferById(int id) {
@@ -37,9 +32,7 @@ public class OfferService {
     }
 
     public List<Offer> getAllOffersByUserId(int userId) {
-        this.userRepository
-                .getUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with id:" + userId + " not found"));
+        this.userService.getUserById(userId);
 
         return this.offerRepository.getAllOffersByUserId(userId);
     }
@@ -50,12 +43,8 @@ public class OfferService {
         LocalDate startDate = createOfferDTO.getStartDate();
         LocalDate endDate = createOfferDTO.getEndDate();
 
-        User user = this.userRepository
-                        .getUserById(userId)
-                        .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found"));
-        Car car = this.carRepository
-                      .getCarById(carId)
-                      .orElseThrow(() -> new CarNotFoundException("Car with id " + carId + " not found"));
+        User user = this.userService.getUserById(userId);
+        Car car = this.carService.getCarById(carId);
 
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 

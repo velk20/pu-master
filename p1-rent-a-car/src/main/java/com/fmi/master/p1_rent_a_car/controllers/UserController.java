@@ -1,7 +1,6 @@
 package com.fmi.master.p1_rent_a_car.controllers;
 
 import com.fmi.master.p1_rent_a_car.models.User;
-import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.services.UserService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
 import jakarta.validation.Valid;

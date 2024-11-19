@@ -2,7 +2,6 @@ package com.fmi.master.p1_rent_a_car.controllers;
 
 import com.fmi.master.p1_rent_a_car.dtos.CreateOfferDTO;
 import com.fmi.master.p1_rent_a_car.models.Offer;
-import com.fmi.master.p1_rent_a_car.exceptions.OfferNotFoundException;
 import com.fmi.master.p1_rent_a_car.services.OfferService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
 import jakarta.validation.Valid;

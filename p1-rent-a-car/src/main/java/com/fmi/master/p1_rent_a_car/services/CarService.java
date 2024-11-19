@@ -4,9 +4,7 @@ import com.fmi.master.p1_rent_a_car.models.Car;
 import com.fmi.master.p1_rent_a_car.models.CityEnum;
 import com.fmi.master.p1_rent_a_car.models.User;
 import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
-import com.fmi.master.p1_rent_a_car.exceptions.UserNotFoundException;
 import com.fmi.master.p1_rent_a_car.repositories.CarRepository;
-import com.fmi.master.p1_rent_a_car.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,12 +12,11 @@ import java.util.List;
 @Service
 public class CarService {
     private final CarRepository carRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-
-    public CarService(CarRepository carRepository, UserRepository userRepository) {
+    public CarService(CarRepository carRepository, UserService userService) {
         this.carRepository = carRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public Car getCarById(int id) {
@@ -29,9 +26,7 @@ public class CarService {
     }
 
     public List<Car> getAllCarsByCity(int userId) {
-        User user = userRepository
-                    .getUserById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found"));
+        User user = userService.getUserById(userId);
 
         String city = user.getCity();
         if (!CityEnum.exists(city)) {

@@ -1,7 +1,6 @@
 package com.fmi.master.p1_rent_a_car.controllers;
 
 import com.fmi.master.p1_rent_a_car.models.Car;
-import com.fmi.master.p1_rent_a_car.exceptions.CarNotFoundException;
 import com.fmi.master.p1_rent_a_car.services.CarService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
 import jakarta.validation.Valid;
