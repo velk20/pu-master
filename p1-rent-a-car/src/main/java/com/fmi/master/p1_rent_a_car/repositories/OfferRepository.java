@@ -11,11 +11,23 @@ import java.util.Optional;
 
 @Repository
 public class OfferRepository {
-    private final String GET_OFFER_BY_ID = "SELECT * FROM tb_offers WHERE is_active = 1 AND id = %s";
-    private final String GET_ALL_OFFERS_BY_USER_ID = "SELECT * FROM tb_offers WHERE is_active = 1 AND user_id = %s";
-    private final String CREATE_OFFER = "INSERT INTO tb_offers (car_id, user_id, price, additional_price, total_price, start_date, end_date, is_accepted) VALUES (%s, %s, %s, %s, %s, '%s', '%s', %s)";
-    private final String ACCEPT_OFFER = "UPDATE tb_offers SET is_accepted = TRUE WHERE is_active = 1 AND id = %s";
-    private final String DELETE_OFFER = "UPDATE tb_offers SET is_active = %s WHERE id = %s";
+
+    private final String GET_OFFER_BY_ID = "SELECT * FROM tb_offers WHERE is_active = 1 AND id = ?";
+    private final String GET_ALL_OFFERS_BY_USER_ID = "SELECT * FROM tb_offers WHERE is_active = 1 AND user_id = ?";
+    private final String CREATE_OFFER = """
+                                        INSERT INTO tb_offers (
+                                        car_id, 
+                                        user_id, 
+                                        price, 
+                                        additional_price, 
+                                        total_price, 
+                                        start_date, 
+                                        end_date, 
+                                        is_accepted) 
+                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                                        """;
+    private final String ACCEPT_OFFER = "UPDATE tb_offers SET is_accepted = TRUE WHERE is_active = 1 AND id = ?";
+    private final String DELETE_OFFER = "UPDATE tb_offers SET is_active = ? WHERE id = ?";
 
     private final JdbcTemplate db;
 
@@ -24,19 +36,16 @@ public class OfferRepository {
     }
 
     public Optional<Offer> getOfferById(int id) {
-        String sql = String.format(this.GET_OFFER_BY_ID, id);
-        List<Offer> offers = db.query(sql, new OfferRowMapper());
-
+        List<Offer> offers = db.query(GET_OFFER_BY_ID, ps -> ps.setInt(1, id), new OfferRowMapper());
         return offers.stream().findFirst();
     }
 
     public List<Offer> getAllOffersByUserId(int userId) {
-        String sql = String.format(this.GET_ALL_OFFERS_BY_USER_ID, userId);
-        return db.query(sql, new OfferRowMapper());
+        return db.query(GET_ALL_OFFERS_BY_USER_ID, ps -> ps.setInt(1, userId), new OfferRowMapper());
     }
 
     public boolean createOffer(CreateOfferDTO createOfferDTO, double price, double additionalPrices, double total) {
-        String sql = String.format(this.CREATE_OFFER,
+        int rows = db.update(CREATE_OFFER,
                 createOfferDTO.getCarId(),
                 createOfferDTO.getUserId(),
                 price,
@@ -44,24 +53,18 @@ public class OfferRepository {
                 total,
                 createOfferDTO.getStartDate(),
                 createOfferDTO.getEndDate(),
-                "FALSE"
+                false //initially the offer is NOT accepted
         );
-
-        db.execute(sql);
-        return true;
+        return rows > 0;
     }
 
     public boolean acceptOffer(int id) {
-        String sql = String.format(this.ACCEPT_OFFER, id);
-        db.execute(sql);
-
-        return true;
+        int rows = db.update(ACCEPT_OFFER, id);
+        return rows > 0;
     }
 
     public boolean deleteOffer(int id) {
-        String sql = String.format(this.DELETE_OFFER, 0, id);
-        db.execute(sql);
-
-        return true;
+        int rows = db.update(DELETE_OFFER, 0, id);
+        return rows > 0;
     }
 }

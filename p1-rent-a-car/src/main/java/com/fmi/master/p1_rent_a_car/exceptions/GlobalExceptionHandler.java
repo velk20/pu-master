@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CarNotFoundException.class)
     public ResponseEntity<?> handleCarNotFoundException(CarNotFoundException ex){
         return AppResponseUtil.error(HttpStatus.NOT_FOUND)
-                .withStackTrace(Arrays.toString(ex.getStackTrace()))
+                .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage(ex.getMessage())
                 .build();
     }
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OfferNotFoundException.class)
     public ResponseEntity<?> handleOfferNotFoundException(OfferNotFoundException ex){
         return AppResponseUtil.error(HttpStatus.NOT_FOUND)
-                .withStackTrace(Arrays.toString(ex.getStackTrace()))
+                .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage(ex.getMessage())
                 .build();
     }
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex){
         return AppResponseUtil.error(HttpStatus.NOT_FOUND)
-                .withStackTrace(Arrays.toString(ex.getStackTrace()))
+                .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage(ex.getMessage())
                 .build();
     }
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
         return AppResponseUtil.error(HttpStatus.INTERNAL_SERVER_ERROR)
                 .withDetailedMessage(ex.getMessage())
-                .withStackTrace(Arrays.toString(ex.getStackTrace()))
+                .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage("An unexpected error occurred")
                 .build();
     }

@@ -1,5 +1,7 @@
 package com.fmi.master.p1_rent_a_car.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AppResponseUtil {
-
+    private static final Logger logger = LoggerFactory.getLogger(AppResponseUtil.class);
     private static HashMap<String, Object> response;
 
     public static AppResponseUtil created() {
@@ -51,8 +53,8 @@ public class AppResponseUtil {
         return this;
     }
 
-    public AppResponseUtil withStackTrace(String stackTrace) {
-        response.put("stack-trace", stackTrace);
+    public AppResponseUtil logStackTrace(String stackTrace) {
+        logger.error(stackTrace);
         return this;
     }
 
