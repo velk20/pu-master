@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public class UserRepository {
-
     private final String GET_USER_BY_ID = "SELECT * FROM tb_users WHERE is_active = 1 AND id = ?";
     private final String GET_ALL_USERS = "SELECT * FROM tb_users WHERE is_active = 1";
     private final String CREATE_USER = """

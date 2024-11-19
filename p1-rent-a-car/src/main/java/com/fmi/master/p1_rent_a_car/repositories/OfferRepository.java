@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository
 public class OfferRepository {
-
     private final String GET_OFFER_BY_ID = "SELECT * FROM tb_offers WHERE is_active = 1 AND id = ?";
     private final String GET_ALL_OFFERS_BY_USER_ID = "SELECT * FROM tb_offers WHERE is_active = 1 AND user_id = ?";
     private final String CREATE_OFFER = """

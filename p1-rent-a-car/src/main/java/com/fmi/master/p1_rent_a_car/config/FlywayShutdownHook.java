@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FlywayShutdownHook implements DisposableBean {
-    private static final Logger logger = LoggerFactory.getLogger(FlywayShutdownHook.class);
+    private final Logger logger = LoggerFactory.getLogger(FlywayShutdownHook.class);
     private final Flyway flyway;
 
     public FlywayShutdownHook(Flyway flyway) {

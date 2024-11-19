@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public class CarRepository {
-
     private final String GET_CAR_BY_ID = "SELECT * FROM tb_cars WHERE is_active = 1 AND id = ?";
     private final String GET_CARS_BY_CITY = "SELECT * FROM tb_cars WHERE is_active = 1 AND city = ?";
     private final String CREATE_CAR = "INSERT INTO tb_cars (brand, model, create_year, price_per_day, city) VALUES (?, ?, ?, ?, ?)";
