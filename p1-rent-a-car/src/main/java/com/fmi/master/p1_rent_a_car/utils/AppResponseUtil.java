@@ -12,14 +12,6 @@ public class AppResponseUtil {
 
     private static HashMap<String, Object> response;
 
-    public static AppResponseUtil deleted() {
-
-        response = new HashMap<>();
-        response.put("status", "deleted");
-        response.put("code", HttpStatus.NO_CONTENT.value());
-        return new AppResponseUtil();
-    }
-
     public static AppResponseUtil created() {
 
         response = new HashMap<>();
@@ -44,14 +36,6 @@ public class AppResponseUtil {
         return new AppResponseUtil();
     }
 
-
-    // метод за статус код
-    public AppResponseUtil withCode(HttpStatus code) {
-        response.put("code", code.value());
-        return this;
-    }
-
-    // метод за съобщения
     public AppResponseUtil withMessage(String message) {
         response.put("message", message);
         return this;
@@ -86,6 +70,6 @@ public class AppResponseUtil {
     public ResponseEntity<Object> build() {
 
         int code = (int) response.get("code");
-        return new ResponseEntity<Object>(response, HttpStatusCode.valueOf(code));
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(code));
     }
 }
