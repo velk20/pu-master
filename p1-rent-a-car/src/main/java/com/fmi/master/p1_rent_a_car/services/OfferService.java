@@ -2,6 +2,7 @@ package com.fmi.master.p1_rent_a_car.services;
 
 import com.fmi.master.p1_rent_a_car.dtos.CreateOfferDTO;
 import com.fmi.master.p1_rent_a_car.exceptions.EntityNotFoundException;
+import com.fmi.master.p1_rent_a_car.exceptions.InvalidCityException;
 import com.fmi.master.p1_rent_a_car.models.Car;
 import com.fmi.master.p1_rent_a_car.models.Offer;
 import com.fmi.master.p1_rent_a_car.models.User;
@@ -45,6 +46,10 @@ public class OfferService {
 
         User user = this.userService.getUserById(userId);
         Car car = this.carService.getCarById(carId);
+
+        if (!user.getCity().equalsIgnoreCase(car.getCity())) {
+            throw new InvalidCityException("User's city does not match car's city");
+        }
 
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 
