@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS tb_offers (
                            start_date DATE NOT NULL,
                            end_date DATE NOT NULL,
                            is_active INT DEFAULT 1,
-                            is_accepted BOOLEAN NOT NULL,
+                            is_accepted BOOLEAN DEFAULT FALSE,
                            FOREIGN KEY (car_id) REFERENCES tb_cars(id),
                            FOREIGN KEY (user_id) REFERENCES tb_users(id)
 );

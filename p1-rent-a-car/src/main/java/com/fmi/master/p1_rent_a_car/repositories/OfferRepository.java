@@ -22,9 +22,8 @@ public class OfferRepository {
                                         additional_price, 
                                         total_price, 
                                         start_date, 
-                                        end_date, 
-                                        is_accepted) 
-                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                                        end_date) 
+                                        VALUES (?, ?, ?, ?, ?, ?, ?)
                                         """;
     private final String ACCEPT_OFFER = "UPDATE tb_offers SET is_accepted = TRUE WHERE is_active = 1 AND id = ?";
     private final String DELETE_OFFER = "UPDATE tb_offers SET is_active = ? WHERE id = ?";
@@ -52,8 +51,7 @@ public class OfferRepository {
                 additionalPrices,
                 total,
                 createOfferDTO.getStartDate(),
-                createOfferDTO.getEndDate(),
-                false //initially the offer is NOT accepted
+                createOfferDTO.getEndDate()
         );
         return rows > 0;
     }
