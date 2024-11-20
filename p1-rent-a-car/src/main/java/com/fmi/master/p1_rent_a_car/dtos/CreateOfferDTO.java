@@ -1,5 +1,6 @@
 package com.fmi.master.p1_rent_a_car.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fmi.master.p1_rent_a_car.validators.ValidDateRange;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -21,8 +22,10 @@ public class CreateOfferDTO {
     private int carId;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "startDate is required.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "endDate is required.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 }

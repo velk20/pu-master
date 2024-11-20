@@ -2,22 +2,18 @@ package com.fmi.master.p1_rent_a_car;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fmi.master.p1_rent_a_car.controllers.UserController;
-import com.fmi.master.p1_rent_a_car.exceptions.EntityNotFoundException;
 import com.fmi.master.p1_rent_a_car.exceptions.GlobalExceptionHandler;
 import com.fmi.master.p1_rent_a_car.models.User;
 import com.fmi.master.p1_rent_a_car.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
@@ -27,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collections;
 import java.util.List;
 
-@ExtendWith(SpringExtension.class)
 public class UserControllerTest {
 
     @Mock
@@ -54,6 +49,7 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/{id}", 1))
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.firstName").value("John"))
                 .andExpect(jsonPath("$.data.lastName").value("Doe"));
@@ -69,6 +65,7 @@ public class UserControllerTest {
         when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users"))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].id").value(1))
                 .andExpect(jsonPath("$.data[0].firstName").value("John"));
@@ -88,7 +85,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
-                // Assert: Verify the response
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("User created successfully"));
     }
@@ -98,7 +95,8 @@ public class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"\", \"lastName\":\"\", \"email\":\"john.doe@example.com\"}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -120,6 +118,7 @@ public class UserControllerTest {
                         .content(userJson))
                 // Assert: Verify the response
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.message").value("User updated successfully"))
                 .andExpect(jsonPath("$.data.firstName").value("John"))
                 .andExpect(jsonPath("$.data.lastName").value("Doe"))
@@ -137,7 +136,8 @@ public class UserControllerTest {
         mockMvc.perform(put("/users/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"John\", \"lastName\":\"Doe\", \"email\":\"john.doe@example.com\"}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -146,6 +146,7 @@ public class UserControllerTest {
 
         mockMvc.perform(delete("/users/{id}", 1))
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.message").value("User deleted successfully"));
     }
 
@@ -154,6 +155,7 @@ public class UserControllerTest {
         when(userService.deleteUser(1)).thenReturn(false);
 
         mockMvc.perform(delete("/users/{id}", 1))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
     }
 }
