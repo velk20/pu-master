@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleCarNotFoundException(EntityNotFoundException ex){
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex){
         return AppResponseUtil.error(HttpStatus.NOT_FOUND)
                 .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage(ex.getMessage())
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidCityException.class)
-    public ResponseEntity<?> handleCarNotFoundException(InvalidCityException ex){
+    public ResponseEntity<?> handleInvalidCityException(InvalidCityException ex){
         return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                 .logStackTrace(Arrays.toString(ex.getStackTrace()))
                 .withMessage(ex.getMessage())
