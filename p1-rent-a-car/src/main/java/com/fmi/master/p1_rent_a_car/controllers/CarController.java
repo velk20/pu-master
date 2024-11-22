@@ -4,9 +4,15 @@ import com.fmi.master.p1_rent_a_car.models.Car;
 import com.fmi.master.p1_rent_a_car.services.CarService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "Car Controller", description = "Operations related to car management")
 @RestController
 @RequestMapping("/cars")
 public class CarController {
@@ -26,7 +33,13 @@ public class CarController {
     @GetMapping("/user/{userId}")
     @Operation( summary = "Get all available cars by userId",
                 description =  "Retrieves all available cars that are in the same city as the user's city")
-    public ResponseEntity<?> getAllCarsByCity(@PathVariable int userId) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieved available cars",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "Cars are not available in the user's city",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> getAllCarsByCity(@Parameter(description = "ID of the user")@PathVariable int userId) {
         List<Car> carsByCity = carService.getAllCarsByCity(userId);
 
         return AppResponseUtil.success()
@@ -36,7 +49,13 @@ public class CarController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get car by ID")
-    public ResponseEntity<?> getCarById(@PathVariable int id){
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieved car by existing ID",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Car not found with requested ID",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+    })
+    public ResponseEntity<?> getCarById(@Parameter(description = "ID of the car")@PathVariable int id){
         Car car = carService.getCarById(id);
 
         return AppResponseUtil.success()
@@ -46,6 +65,12 @@ public class CarController {
 
     @PostMapping
     @Operation(summary = "Create a new car")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Car created successfully",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Car was not successfully created",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+    })
     public ResponseEntity<?> createCar(@Valid @RequestBody Car car, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             List<String> errorMessage = bindingResult.getAllErrors()
@@ -70,7 +95,15 @@ public class CarController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update existing car")
-    public ResponseEntity<?> updateCar(@PathVariable int id, @Valid @RequestBody Car car, BindingResult bindingResult) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Car successfully updated",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "Car is not valid",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Cars with requested ID not found",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+    })
+    public ResponseEntity<?> updateCar(@Parameter(description = "ID of the car")@PathVariable int id, @Valid @RequestBody Car car, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             List<String> errorMessage = bindingResult.getAllErrors()
                     .stream()
@@ -96,7 +129,13 @@ public class CarController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete existing car by ID")
-    public ResponseEntity<?> deleteCar(@PathVariable int id) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Car successfully deleted",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Car with requested ID not found",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+    })
+    public ResponseEntity<?> deleteCar(@Parameter(description = "ID of the car")@PathVariable int id) {
         if (!carService.deleteCar(id)) {
             return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Car was not successfully deleted")

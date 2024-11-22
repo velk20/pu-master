@@ -11,7 +11,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Schema(description = "User entity")
 public class User {
+    @Schema(description = "User's ID", example = "1")
     private int id;
     @NotEmpty(message = "firstName is required.")
     @Schema(description = "The first name of the user", example = "Angel")

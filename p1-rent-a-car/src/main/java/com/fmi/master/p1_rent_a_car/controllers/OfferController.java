@@ -5,9 +5,15 @@ import com.fmi.master.p1_rent_a_car.models.Offer;
 import com.fmi.master.p1_rent_a_car.services.OfferService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "Offer Controller", description = "Operations related to offer management")
 @RestController
 @RequestMapping("/offers")
 public class OfferController {
@@ -28,7 +35,13 @@ public class OfferController {
     @GetMapping("/users/{userId}")
     @Operation(summary = "Get all offers by userId",
                 description = "Retrieves all offers that have been proposed to a certain user")
-    public ResponseEntity<?> getAllOffersByUserId(@PathVariable int userId) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieved all offers by userId",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "User with this ID doesn't exist",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> getAllOffersByUserId(@Parameter(description = "ID of the user")@PathVariable int userId) {
         List<Offer> allOffersByUserId = offerService.getAllOffersByUserId(userId);
 
         return AppResponseUtil.success()
@@ -38,7 +51,13 @@ public class OfferController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get an offer by ID")
-    public ResponseEntity<?> getOfferById(@PathVariable int id) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requested offer by ID",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Offer with requested ID not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> getOfferById(@Parameter(description = "ID of the offer")@PathVariable int id) {
         Offer offer = offerService.getOfferById(id);
 
         return AppResponseUtil.success()
@@ -49,6 +68,14 @@ public class OfferController {
     @PostMapping
     @Operation(summary = "Create new offer",
                 description = "Creates a new offer by userId, carId, startDate and endDate")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Offer successfully created",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "Offer is not valid",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Car of User with requested ID was not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
     public ResponseEntity<?> createOffer(@Valid @RequestBody CreateOfferDTO createOfferDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = bindingResult.getAllErrors()
@@ -73,7 +100,13 @@ public class OfferController {
 
     @PutMapping("/{offerId}")
     @Operation(summary = "Accept already proposed offer")
-    public ResponseEntity<?> acceptOffer(@PathVariable int offerId) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Offer successfully accepted",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Offer with requested ID not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> acceptOffer(@Parameter(description = "ID of the offer")@PathVariable int offerId) {
         if (!offerService.acceptOffer(offerId)) {
             return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Offer was not successfully accepted")
@@ -88,7 +121,13 @@ public class OfferController {
 
     @DeleteMapping("/{offerId}")
     @Operation(summary = "Delete existing offer by ID")
-    public ResponseEntity<?> deleteOffer(@PathVariable int offerId) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Offer successfully deleted",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "Offer with request ID not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> deleteOffer(@Parameter(description = "ID of the offer")@PathVariable int offerId) {
         if (!offerService.deleteOffer(offerId)) {
             return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Offer was not deleted")
