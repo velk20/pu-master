@@ -23,6 +23,7 @@ A Spring Boot application for managing car rentals.The system supports creating 
     - Flyway for database migrations (on every startUp and shutDown migrations will be executed and also clean after closing the application) [here](src/main/java/com/fmi/master/p1_rent_a_car/config/FlywayShutdownHook.java)
 - **H2 Database** (file-based runtime database) 
   - Username: **sa**  &&     Password: **password**
+  - JDBC URL: **jdbc:h2:file:./database_rent_a_car_with_migration**
   - http://localhost:8165/h2-console
 - **Swagger UI** (springdoc-openapi)
   - http://localhost:8165/swagger-ui/index.html
