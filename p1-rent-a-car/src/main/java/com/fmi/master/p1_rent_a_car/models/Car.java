@@ -13,7 +13,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Schema(description = "Car entity")
 public class Car {
+    @Schema(description = "Car's ID", example = "1")
     private int id;
     @NotEmpty(message = "brand is required.")
     @Schema(description = "The brand of the car", example = "Toyota")

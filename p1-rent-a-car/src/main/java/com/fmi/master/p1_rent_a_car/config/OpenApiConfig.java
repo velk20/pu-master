@@ -11,7 +11,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("My Rent a Car REST API")
+                        .title("Rent a Car REST API")
                         .version("1.0")
                         .description("Project #1 (Rent a car) of a pu-fmi-master class"));
 

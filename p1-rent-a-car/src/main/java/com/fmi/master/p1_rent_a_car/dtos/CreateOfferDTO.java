@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @Setter
 @Builder
 @ValidDateRange
+@Schema(description = "Offer entity")
 public class CreateOfferDTO {
     @Positive(message = "userId is not valid.")
     @Schema(description = "Unique user identifier that will be the offer proposed to the user", example = "1")
