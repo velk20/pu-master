@@ -3,6 +3,7 @@ package com.fmi.master.p1_rent_a_car.controllers;
 import com.fmi.master.p1_rent_a_car.models.User;
 import com.fmi.master.p1_rent_a_car.services.UserService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID")
     public ResponseEntity<?> getById(@PathVariable int id) {
         User user = userService.getUserById(id);
 
@@ -32,6 +34,7 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all users")
     public ResponseEntity<?> getAll() {
         List<User> allUsers = userService.getAllUsers();
 
@@ -41,6 +44,7 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Create new user")
     public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = bindingResult.getAllErrors()
@@ -65,6 +69,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update existing user")
     public ResponseEntity<?> update(@PathVariable int id, @Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = bindingResult.getAllErrors()
@@ -90,6 +95,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete existing user by ID")
     public ResponseEntity<?> delete(@PathVariable int id) {
         if (!userService.deleteUser(id)) {
             return AppResponseUtil.error(HttpStatus.BAD_REQUEST)

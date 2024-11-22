@@ -4,6 +4,7 @@ import com.fmi.master.p1_rent_a_car.dtos.CreateOfferDTO;
 import com.fmi.master.p1_rent_a_car.models.Offer;
 import com.fmi.master.p1_rent_a_car.services.OfferService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class OfferController {
     }
 
     @GetMapping("/users/{userId}")
+    @Operation(summary = "Get all offers by userId",
+                description = "Retrieves all offers that have been proposed to a certain user")
     public ResponseEntity<?> getAllOffersByUserId(@PathVariable int userId) {
         List<Offer> allOffersByUserId = offerService.getAllOffersByUserId(userId);
 
@@ -34,6 +37,7 @@ public class OfferController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get an offer by ID")
     public ResponseEntity<?> getOfferById(@PathVariable int id) {
         Offer offer = offerService.getOfferById(id);
 
@@ -43,6 +47,8 @@ public class OfferController {
     }
 
     @PostMapping
+    @Operation(summary = "Create new offer",
+                description = "Creates a new offer by userId, carId, startDate and endDate")
     public ResponseEntity<?> createOffer(@Valid @RequestBody CreateOfferDTO createOfferDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = bindingResult.getAllErrors()
@@ -66,6 +72,7 @@ public class OfferController {
     }
 
     @PutMapping("/{offerId}")
+    @Operation(summary = "Accept already proposed offer")
     public ResponseEntity<?> acceptOffer(@PathVariable int offerId) {
         if (!offerService.acceptOffer(offerId)) {
             return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
@@ -80,6 +87,7 @@ public class OfferController {
     }
 
     @DeleteMapping("/{offerId}")
+    @Operation(summary = "Delete existing offer by ID")
     public ResponseEntity<?> deleteOffer(@PathVariable int offerId) {
         if (!offerService.deleteOffer(offerId)) {
             return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
