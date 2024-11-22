@@ -45,7 +45,7 @@ A Spring Boot application for managing car rentals.The system supports creating 
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/velk20/pu-master.git
    cd p1-rent-a-car
 
 2. Install dependencies:
