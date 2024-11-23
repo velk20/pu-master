@@ -37,6 +37,8 @@ public class CarController {
             @ApiResponse(responseCode = "200", description = "Retrieved available cars",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "400", description = "Cars are not available in the user's city",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "User with requested userId not found",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
     })
     public ResponseEntity<?> getAllCarsByCity(@Parameter(description = "ID of the user")@PathVariable int userId) {
@@ -68,7 +70,7 @@ public class CarController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Car created successfully",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "404", description = "Car was not successfully created",
+            @ApiResponse(responseCode = "400", description = "Car was not successfully created",
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
     })
     public ResponseEntity<?> createCar(@Valid @RequestBody Car car, BindingResult bindingResult) {
