@@ -1,9 +1,13 @@
 package main.java.com.fmi.master.controllers;
 
 import com.fmi.master.steriotypes.*;
+import main.java.com.fmi.master.services.CustomerService;
 
 @Controller(method = "GET", endpoint = "/customer")
 public class CustomerController {
+
+    @Autowired
+    private CustomerService customerService;
 
     @GetMapping("/customer")
     public String fetchAllCustomers() {

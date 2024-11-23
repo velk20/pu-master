@@ -19,7 +19,7 @@ public class ApplicationLoader {
 
     private ClassLoader classLoader = ClassLoader.getSystemClassLoader();
     private Map<RequestInfo, ControllerMeta> controllerLookupTable = new HashMap<>();
-
+    private Map<Class<?>, Object> injectableLookupTable = new HashMap<>();
 
     private ApplicationLoader() {
     }
@@ -29,6 +29,37 @@ public class ApplicationLoader {
             instance = new ApplicationLoader();
         }
         return instance;
+    }
+
+    public Object getInjectable(Class<?> clazz) {
+        Object resultInstance = this.injectableLookupTable.get(clazz);
+        if (resultInstance == null) {
+            try {
+                resultInstance = clazz.getDeclaredConstructor().newInstance();
+                this.injectableLookupTable.put(clazz, resultInstance);
+
+                return resultInstance;
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return resultInstance;
+    }
+
+    public Map<Class<?>, Object> getInjectableLookupTable() {
+        return injectableLookupTable;
+    }
+
+    public ApplicationLoader setInjectableLookupTable(Map<Class<?>, Object> injectableLookupTable) {
+        this.injectableLookupTable = injectableLookupTable;
+        return this;
     }
 
     public Map<RequestInfo, ControllerMeta> getControllerLookupTable() {
@@ -68,6 +99,14 @@ public class ApplicationLoader {
         if (clazz.isAnnotationPresent(Controller.class)) {
             parseController(clazz);
         }
+
+        if (clazz.isAnnotationPresent(Injectable.class)) {
+            parseInjectable(clazz);
+        }
+    }
+
+    private void parseInjectable(Class<?> clazz) {
+        this.injectableLookupTable.put(clazz, null);
     }
 
     private void parseController(Class<?> clazz) {

@@ -2,7 +2,9 @@ package com.fmi.master.system;
 
 import com.fmi.master.entities.ControllerMeta;
 import com.fmi.master.entities.RequestInfo;
+import com.fmi.master.steriotypes.Autowired;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
@@ -33,6 +35,18 @@ public class HttpProcessor {
         String methodName = controllerMethodReference.getMethodName();
         Class<?>[] methodSignature = this.buildMethodParameterTypes(controllerMethodReference);
         Object[] arguments = this.buildMethodArguments(controllerMethodReference, httpRequest);
+
+        //DI Impl
+        Field[] fieldCollection = clazz.getFields();
+        for (Field field : fieldCollection) {
+            if (field.isAnnotationPresent(Autowired.class)) {
+                field.setAccessible(true);
+                Class<?> injectableMaterial = field.getType();
+
+
+
+            }
+        }
 
         var controllerInstance = clazz.getDeclaredConstructor().newInstance();
         return (String) clazz
