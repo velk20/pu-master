@@ -3,9 +3,16 @@ package com.fmi.master.p1_rent_a_car.controllers;
 import com.fmi.master.p1_rent_a_car.models.User;
 import com.fmi.master.p1_rent_a_car.services.UserService;
 import com.fmi.master.p1_rent_a_car.utils.AppResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "User Controller", description = "Operations related to user management")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -23,7 +31,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable int id) {
+    @Operation(summary = "Get user by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requested user by ID",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "User with requested ID not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> getById(@Parameter(description = "ID of the user")@PathVariable int id) {
         User user = userService.getUserById(id);
 
         return AppResponseUtil.success()
@@ -32,6 +47,11 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieved all users",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
     public ResponseEntity<?> getAll() {
         List<User> allUsers = userService.getAllUsers();
 
@@ -41,6 +61,13 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Create new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User created successfully",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "User is not valid",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
     public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = bindingResult.getAllErrors()
@@ -65,7 +92,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, @Valid @RequestBody User user, BindingResult bindingResult) {
+    @Operation(summary = "Update existing user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "User with requested ID was not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> update(@Parameter(description = "ID of the user")@PathVariable int id, @Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessage = bindingResult.getAllErrors()
                     .stream()
@@ -90,7 +124,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable int id) {
+    @Operation(summary = "Delete existing user by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User deleted successfully",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "User with requested ID was not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> delete(@Parameter(description = "ID of the user")@PathVariable int id) {
         if (!userService.deleteUser(id)) {
             return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
                     .withMessage("Deleting user was not successful")
