@@ -36,19 +36,25 @@ public class HttpProcessor {
         Class<?>[] methodSignature = this.buildMethodParameterTypes(controllerMethodReference);
         Object[] arguments = this.buildMethodArguments(controllerMethodReference, httpRequest);
 
+        var controllerInstance = clazz.getDeclaredConstructor().newInstance();
+
         //DI Impl
-        Field[] fieldCollection = clazz.getFields();
+        Field[] fieldCollection = clazz.getDeclaredFields();
         for (Field field : fieldCollection) {
             if (field.isAnnotationPresent(Autowired.class)) {
+                Autowired autowiredAnnotation = field.getAnnotation(Autowired.class);
+                boolean isSingleton = autowiredAnnotation.isSingleton();
+
+
                 field.setAccessible(true);
                 Class<?> injectableMaterial = field.getType();
+                Object injectableInstance = this.appLoader.getInjectable(injectableMaterial, isSingleton);
 
-
-
+                field.set(controllerInstance, injectableInstance);
             }
         }
 
-        var controllerInstance = clazz.getDeclaredConstructor().newInstance();
+
         return (String) clazz
                 .getMethod(methodName, methodSignature)
                 .invoke(controllerInstance, arguments);

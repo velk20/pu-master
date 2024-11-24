@@ -11,7 +11,7 @@ public class CustomerController {
 
     @GetMapping("/customer")
     public String fetchAllCustomers() {
-        return "Customer info - GET Request";
+        return customerService.hello();
     }
 
     @GetMapping("/customer/{id}")

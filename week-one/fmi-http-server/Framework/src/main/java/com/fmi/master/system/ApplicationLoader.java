@@ -31,26 +31,44 @@ public class ApplicationLoader {
         return instance;
     }
 
-    public Object getInjectable(Class<?> clazz) {
-        Object resultInstance = this.injectableLookupTable.get(clazz);
-        if (resultInstance == null) {
-            try {
-                resultInstance = clazz.getDeclaredConstructor().newInstance();
-                this.injectableLookupTable.put(clazz, resultInstance);
+    public Object getInjectable(Class<?> clazz, boolean isSingleton) {
+        if (isSingleton) {
+            return getInjectable(clazz);
+        }
 
-                return resultInstance;
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
+        if (this.injectableLookupTable.containsKey(clazz)) {
+            return this.getInjectableInstance(clazz);
+        }
+
+        return null;
+    }
+
+    public Object getInjectable(Class<?> clazz) {
+
+        Object resultInstance = this.injectableLookupTable.get(clazz);
+
+        if (resultInstance == null) {
+            resultInstance = getInjectableInstance(clazz);
+            injectableLookupTable.put(clazz, resultInstance);
         }
 
         return resultInstance;
+    }
+
+    private Object getInjectableInstance(Class<?> clazz) {
+        Object resultInstance;
+        try {
+            resultInstance = clazz.getDeclaredConstructor().newInstance();
+            return resultInstance;
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Map<Class<?>, Object> getInjectableLookupTable() {
@@ -121,18 +139,20 @@ public class ApplicationLoader {
                 String methodEndpoint = annotation.value();
                 String methodName = method.getName();
 
-                Parameter[] methodParameters = method.getParameters();
-                for (Parameter methodParameter : methodParameters) {
-                    if (methodParameter.isAnnotationPresent(PathVariable.class)) {
-                        Class<?> type = methodParameter.getType();
+                Parameter[] parameters = method.getParameters();
+                for (int i = 0; i < parameters.length; i++) {
+                    var parameter = parameters[i];
+                    // get type here
 
-                        PathVariable pathVariable = methodParameter.getAnnotation(PathVariable.class);
-                        pathVariableIndex.put(counter++, pathVariable.value());
+                    if (parameter.isAnnotationPresent(PathVariable.class)) {
+                        var pathVariable = parameter.getAnnotation(PathVariable.class);
+                        // object here value, type
+                        pathVariableIndex.put(i, pathVariable.value());
                     }
                 }
                 this.controllerLookupTable.put(
                         new RequestInfo("GET", methodEndpoint),
-                        new ControllerMeta(clazz, methodName));
+                        new ControllerMeta(clazz, methodName, pathVariableIndex));
             }
 
             parsePostController(clazz, method);
