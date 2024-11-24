@@ -38,8 +38,17 @@ public class HttpProcessor {
 
         var controllerInstance = clazz.getDeclaredConstructor().newInstance();
 
+        processAutowiredServices(controllerInstance);
+
+
+        return (String) clazz
+                .getMethod(methodName, methodSignature)
+                .invoke(controllerInstance, arguments);
+    }
+
+    private void processAutowiredServices(Object rootInstance) throws IllegalAccessException {
         //DI Impl
-        Field[] fieldCollection = clazz.getDeclaredFields();
+        Field[] fieldCollection = rootInstance.getClass().getDeclaredFields();
         for (Field field : fieldCollection) {
             if (field.isAnnotationPresent(Autowired.class)) {
                 Autowired autowiredAnnotation = field.getAnnotation(Autowired.class);
@@ -50,14 +59,11 @@ public class HttpProcessor {
                 Class<?> injectableMaterial = field.getType();
                 Object injectableInstance = this.appLoader.getInjectable(injectableMaterial, isSingleton);
 
-                field.set(controllerInstance, injectableInstance);
+                field.set(rootInstance, injectableInstance);
+
+                processAutowiredServices(injectableInstance);
             }
         }
-
-
-        return (String) clazz
-                .getMethod(methodName, methodSignature)
-                .invoke(controllerInstance, arguments);
     }
 
     private Class<?>[] buildMethodParameterTypes(ControllerMeta controllerMeta){

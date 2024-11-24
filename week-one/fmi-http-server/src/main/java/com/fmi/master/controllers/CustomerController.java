@@ -9,6 +9,11 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @GetMapping("/nested")
+    public String fetchNested() {
+        return customerService.nested();
+    }
+
     @GetMapping("/customer")
     public String fetchAllCustomers() {
         return customerService.hello();
