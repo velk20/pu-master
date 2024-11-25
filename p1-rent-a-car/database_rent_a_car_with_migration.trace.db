@@ -88,3 +88,6 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:114)
 	at java.base/java.lang.Thread.run(Thread.java:833)
+2024-11-25 10:06:41.489529+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "insert into tb_cars(city,[*]year,model,price_per_day,brand)VALUES(?,?,?,?,?)"; expected "identifier"; SQL statement:
+insert into tb_cars(city,year,model,price_per_day,brand)VALUES(?,?,?,?,?) [42001-224]
