@@ -96,6 +96,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated successfully",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "User is not valid",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "404", description = "User with requested ID was not found",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
     })
