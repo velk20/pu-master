@@ -1,0 +1,24 @@
+<h1>{{getTitle()}}</h1>
+
+<div (click)="processOnCreate()" class="btn" >Create customer</div>
+
+@for (customer of customers; track customer){
+  <div class="element">
+    <div>
+      {{customer.name}}
+    </div>
+    <div (click)="processOnEdit(customer)" class="btn">Edit</div>
+    <div (click)="processOnDelete(customer)" class="btn">Remove</div>
+  </div>
+}
+
+@if (isEditFormVisible && selectedCustomer){
+  <input [(ngModel)]="selectedCustomer.name" type="text">
+  <button (click)="processOnSave()">Edit</button>
+}
+
+@if (isCreateFormVisible){
+  <input #saveInput type="text">
+  <button (click)="processOnCreateCustomer(saveInput.value)">Save</button>
+}
+
