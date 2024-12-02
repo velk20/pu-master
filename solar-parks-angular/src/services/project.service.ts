@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Constants} from "../util/constants";
 import {Observable} from "rxjs";
-import {Project} from "../models/project";
+import {CreateProject, Project} from "../models/project";
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class ProjectService {
     return this.httpClient.get<Project>(`${this.projectUrl}/${id}`);
   }
 
-  create(project:Project): Observable<any> {
+  create(project:CreateProject): Observable<any> {
     return this.httpClient.post<Project>(`${this.projectUrl}`, project);
   }
 

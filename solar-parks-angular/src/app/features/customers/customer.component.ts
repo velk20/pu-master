@@ -2,17 +2,26 @@ import {Component, inject} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {CustomerService} from "../../../services/customer.service";
 import {Customer} from "../../../models/customer";
+import {DataGridComponent, DataGridHeader} from "../../components/data-grid/data-grid.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'page-customer',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, DataGridComponent],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.css'
 })
 export class CustomerPage {
+  public dataGridMapping: DataGridHeader[] =[
+    {column: 'Customer name', value: 'name'},
+    {column: '# projects', value: 'numberOfProjects'},
+  ]
+
+
   private title = 'Solar Park';
   private customerService = inject(CustomerService);
+  private router = inject(Router);
   public customers: Customer[] = [];
   public isCreateFormVisible: boolean = false;
   public isEditFormVisible: boolean = false;
@@ -71,5 +80,9 @@ export class CustomerPage {
       console.log(res);
       this.fetchAllCustomers()
     })
+  }
+
+  processOnNavigate($customer: Customer) {
+    this.router.navigateByUrl(`/customers/${$customer.id}/projects`);
   }
 }

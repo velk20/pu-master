@@ -8,3 +8,7 @@ export type Contact = {
   phone: string;
   projects: Project[]
 }
+
+export type ProjectContact = {
+  id: number;
+}

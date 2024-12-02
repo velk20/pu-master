@@ -13,7 +13,7 @@ export const routes: Routes = [
     component: CustomerPage
   },
   {
-    path: 'projects',
+    path: 'customers/:id/projects',
     component: ProjectPage
   }
 ];

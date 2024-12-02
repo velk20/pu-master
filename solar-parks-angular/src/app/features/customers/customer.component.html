@@ -1,16 +1,17 @@
 <h1>{{getTitle()}}</h1>
 
 <div (click)="processOnCreate()" class="btn" >Create customer</div>
+<cc-data-grid
+[inputHeaderConfig]="dataGridMapping"
+[inputDataSource]="customers"
+[isNavigatable] = "true"
+(onEdit) = "processOnEdit($event)"
+(onRemove) = "processOnDelete($event)"
+(onNavigate)="processOnNavigate($event)"
+>
 
-@for (customer of customers; track customer){
-  <div class="element">
-    <div>
-      {{customer.name}}
-    </div>
-    <div (click)="processOnEdit(customer)" class="btn">Edit</div>
-    <div (click)="processOnDelete(customer)" class="btn">Remove</div>
-  </div>
-}
+
+</cc-data-grid>
 
 @if (isEditFormVisible && selectedCustomer){
   <input [(ngModel)]="selectedCustomer.name" type="text">

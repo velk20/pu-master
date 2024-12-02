@@ -1,0 +1,42 @@
+<table class="data-grid">
+  <tr class="data-grid-header">
+    @for (headerElement of inputHeaderConfig; track headerElement){
+      <td>{{headerElement.column}}</td>
+
+    }
+    @if (isNavigatable) {
+      <td>Navigate</td>
+    }
+    @if (isEditable){
+      <td>Edit</td>
+    }
+    @if (isRemovable) {
+      <td>Remove</td>
+    }
+  </tr>
+  @if (!(inputDataSource?.length))
+  {
+    <div>No data found</div>
+  }
+  @for (dataElement of inputDataSource; track dataElement)
+  {
+    <tr class="data-grid-content">
+      @for (contentElement of inputHeaderConfig; track contentElement)
+      {
+        <td>
+        {{ dataElement[contentElement.value]}}
+        </td>
+      }
+      @if (isNavigatable) {
+        <td (click)="onNavigate.emit(dataElement)">Navigate</td>
+      }
+      @if (isEditable){
+        <td (click)="onEdit.emit(dataElement)">Edit</td>
+      }
+      @if (isRemovable) {
+        <td (click)="onRemove.emit(dataElement)">Remove</td>
+      }
+
+    </tr>
+  }
+</table>
