@@ -9,5 +9,6 @@ CREATE TABLE IF NOT EXISTS tb_users (
     phone VARCHAR(20) NOT NULL,
     years INT NOT NULL,
     previous_accidents BOOLEAN NOT NULL,
-    is_active INT DEFAULT 1
+    is_active INT DEFAULT 1,
+    role VARCHAR(20) NOT NULL
 );

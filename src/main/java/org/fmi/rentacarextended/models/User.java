@@ -1,10 +1,7 @@
 package org.fmi.rentacarextended.models;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @NoArgsConstructor
@@ -42,5 +39,7 @@ public class User {
     @NotNull(message = "previousAccidents must be true or false")
     @Schema(description = "If the user has previous accidents", example = "true/false")
     private Boolean previousAccidents;
-
+    @NotEmpty(message = "Role is required.")
+    @Pattern(regexp = "^(User|Admin)$", message = "The role must be 'User' or 'Admin'")
+    private String role;
 }
