@@ -1,6 +1,8 @@
 -- users table
 CREATE TABLE IF NOT EXISTS tb_users (
     id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     city VARCHAR(50) NOT NULL,

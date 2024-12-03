@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @NoArgsConstructor
@@ -15,6 +16,14 @@ import lombok.*;
 public class User {
     @Schema(description = "User's ID", example = "1")
     private int id;
+    @Schema(description = "username of the user", example = "a4katababy")
+    @NotEmpty(message = "username is required.")
+    @Size(min = 3, max = 25, message = "Username must be between 3 and 25 characters")
+    private String username;
+    @Schema(description = "password of the user", example = "******")
+    @NotEmpty(message = "password is required.")
+    @Size(min = 3, max = 50, message = "Password must be between 3 and 50 characters")
+    private String password;
     @NotEmpty(message = "firstName is required.")
     @Schema(description = "The first name of the user", example = "Angel")
     private String firstName;
