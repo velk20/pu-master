@@ -9,6 +9,7 @@ import org.fmi.rentacarextended.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -36,7 +37,12 @@ public class UserService {
     }
 
     public boolean createUser(User user) {
-       return this.userRepository.createUser(user);
+        Optional<User> optionalUser = this.userRepository.getUserByUsername(user.getUsername());
+        if (optionalUser.isPresent()) {
+            throw new AuthenticationException("Username already exists");
+        }
+
+        return this.userRepository.createUser(user);
     }
 
     public boolean updateUser(int id, User user) {
