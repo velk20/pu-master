@@ -42,4 +42,6 @@ public class User {
     @NotEmpty(message = "Role is required.")
     @Pattern(regexp = "^(User|Admin)$", message = "The role must be 'User' or 'Admin'")
     private String role;
+
+
 }
