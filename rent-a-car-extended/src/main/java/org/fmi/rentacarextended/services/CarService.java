@@ -21,6 +21,10 @@ public class CarService {
         this.userService = userService;
     }
 
+    public List<Car> getAllCars() {
+        return carRepository.getAllCars();
+    }
+
     public Car getCarById(int id) {
         return this.carRepository
                 .getCarById(id)

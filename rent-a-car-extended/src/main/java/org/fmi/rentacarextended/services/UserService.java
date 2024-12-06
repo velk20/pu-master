@@ -1,5 +1,8 @@
 package org.fmi.rentacarextended.services;
 
+import jakarta.validation.Valid;
+import org.fmi.rentacarextended.dtos.LoginUserDTO;
+import org.fmi.rentacarextended.exceptions.AuthenticationException;
 import org.fmi.rentacarextended.exceptions.EntityNotFoundException;
 import org.fmi.rentacarextended.models.User;
 import org.fmi.rentacarextended.repositories.UserRepository;
@@ -21,6 +24,13 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id:" + id + " not found"));
     }
 
+    public User getUserByUsername(String username) {
+        return this.userRepository
+                .getUserByUsername(username)
+                .orElse(null);
+    }
+
+
     public List<User> getAllUsers() {
         return this.userRepository.getAllUsers();
     }
@@ -41,4 +51,19 @@ public class UserService {
        return this.userRepository.deleteUser(id);
     }
 
+    public User getLatestUser() {
+        return this.userRepository.getLatest().orElse(null);
+    }
+
+    public User login(LoginUserDTO user) {
+        User userByUsername = this.getUserByUsername(user.getUsername());
+        if (userByUsername == null || !userByUsername.getPassword().equals(user.getPassword())) {
+            throw new AuthenticationException("Incorrect username or password");
+        }
+        else {
+            return userByUsername;
+
+        }
+
+    }
 }

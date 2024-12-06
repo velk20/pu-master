@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.fmi.rentacarextended.dtos.LoginUserDTO;
 import org.fmi.rentacarextended.models.User;
 import org.fmi.rentacarextended.services.UserService;
 import org.fmi.rentacarextended.utils.AppResponseUtil;
@@ -60,6 +61,34 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/login")
+    @Operation(summary = "Login user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User is logged",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "403", description = "Incorrect username or password",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "User with username and password didn't exist",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> login(@Valid @RequestBody LoginUserDTO user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessage = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessage)
+                    .build();
+        }
+
+        return AppResponseUtil.success()
+                .withData(userService.login(user))
+                .withMessage("User logged successfully")
+                .build();
+    }
+
     @PostMapping
     @Operation(summary = "Create new user")
     @ApiResponses(value = {
@@ -87,6 +116,7 @@ public class UserController {
         }
 
         return AppResponseUtil.created()
+                .withData(userService.getLatestUser())
                 .withMessage("User created successfully")
                 .build();
     }

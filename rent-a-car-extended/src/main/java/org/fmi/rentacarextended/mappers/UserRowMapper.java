@@ -11,12 +11,15 @@ public class UserRowMapper implements RowMapper<User> {
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         return User.builder()
                 .id(rs.getInt("id"))
+                .username(rs.getString("username"))
+                .password(rs.getString("password"))
                 .firstName(rs.getString("first_name"))
                 .lastName(rs.getString("last_name"))
                 .city(rs.getString("city"))
                 .phone(rs.getString("phone"))
                 .years(rs.getInt("years"))
                 .previousAccidents(rs.getBoolean("previous_accidents"))
+                .role(rs.getString("role"))
                 .build();
     }
 }

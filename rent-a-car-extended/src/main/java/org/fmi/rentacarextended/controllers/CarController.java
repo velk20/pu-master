@@ -30,6 +30,25 @@ public class CarController {
         this.carService = carService;
     }
 
+    @GetMapping
+    @Operation( summary = "Get all available cars",
+            description =  "Retrieves all available cars")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieved available cars",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404", description = "User with requested userId not found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> getAllCars() {
+        List<Car> carsByCity = carService.getAllCars();
+
+        return AppResponseUtil.success()
+                .withData(carsByCity)
+                .build();
+    }
+
     @GetMapping("/user/{userId}")
     @Operation( summary = "Get all available cars by userId",
                 description =  "Retrieves all available cars that are in the same city as the user's city")

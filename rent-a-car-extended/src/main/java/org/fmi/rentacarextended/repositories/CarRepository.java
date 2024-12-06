@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public class CarRepository {
+    private final String GET_ALL_CARS = "SELECT * FROM tb_cars WHERE is_active = 1";
     private final String GET_CAR_BY_ID = "SELECT * FROM tb_cars WHERE is_active = 1 AND id = ?";
     private final String GET_CARS_BY_CITY = "SELECT * FROM tb_cars WHERE is_active = 1 AND city = ?";
     private final String CREATE_CAR = "INSERT INTO tb_cars (brand, model, create_year, price_per_day, city) VALUES (?, ?, ?, ?, ?)";
@@ -25,6 +26,10 @@ public class CarRepository {
     public Optional<Car> getCarById(int id) {
         List<Car> cars = db.query(GET_CAR_BY_ID, ps -> ps.setInt(1, id), new CarRowMapper());
         return cars.stream().findFirst();
+    }
+
+    public List<Car> getAllCars() {
+        return db.query(GET_ALL_CARS, new CarRowMapper());
     }
 
     public List<Car> getAllCarsByCity(String city) {

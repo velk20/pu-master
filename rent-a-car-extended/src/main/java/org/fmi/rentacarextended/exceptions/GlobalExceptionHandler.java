@@ -14,6 +14,14 @@ import java.util.Arrays;
 public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> handelAuthenticationException(final AuthenticationException e) {
+        return AppResponseUtil.error(HttpStatus.FORBIDDEN)
+                .logStackTrace(Arrays.toString(e.getStackTrace()))
+                .withMessage(e.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex){
         return AppResponseUtil.error(HttpStatus.NOT_FOUND)
