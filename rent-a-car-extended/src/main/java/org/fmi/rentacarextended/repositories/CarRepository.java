@@ -13,8 +13,14 @@ public class CarRepository {
     private final String GET_ALL_CARS = "SELECT * FROM tb_cars WHERE is_active = 1";
     private final String GET_CAR_BY_ID = "SELECT * FROM tb_cars WHERE is_active = 1 AND id = ?";
     private final String GET_CARS_BY_CITY = "SELECT * FROM tb_cars WHERE is_active = 1 AND city = ?";
-    private final String CREATE_CAR = "INSERT INTO tb_cars (brand, model, create_year, price_per_day, city) VALUES (?, ?, ?, ?, ?)";
-    private final String UPDATE_CAR = "UPDATE tb_cars SET brand = ?, model = ?, create_year = ?, price_per_day = ?, city = ? WHERE id = ?";
+    private final String CREATE_CAR = "INSERT INTO tb_cars (brand, model, create_year, price_per_day, city, image_url) VALUES (?, ?, ?, ?, ?, ?)";
+    private final String UPDATE_CAR = "UPDATE tb_cars SET brand = ?, " +
+                                                        "model = ?, " +
+                                                        "create_year = ?, " +
+                                                        "price_per_day = ?, " +
+                                                        "city = ?, " +
+                                                        "image_url = ?" +
+                                                        " WHERE id = ?";
     private final String DELETE_CAR = "UPDATE tb_cars SET is_active = ? WHERE id = ?";
 
     private final JdbcTemplate db;

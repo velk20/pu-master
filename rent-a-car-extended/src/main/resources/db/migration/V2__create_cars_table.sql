@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS tb_cars (
     create_year INT NOT NULL,
     city VARCHAR(50) NOT NULL,
     price_per_day NUMBER NOT NULL,
+    image_url VARCHAR(250) NOT NULL,
     is_active INT DEFAULT 1
 );

@@ -16,6 +16,7 @@ public class CarRowMapper implements RowMapper<Car> {
                 .year(rs.getInt("create_year"))
                 .city(rs.getString("city"))
                 .pricePerDay(rs.getDouble("price_per_day"))
+                .imageUrl(rs.getString("image_url"))
                 .build();
     }
 }

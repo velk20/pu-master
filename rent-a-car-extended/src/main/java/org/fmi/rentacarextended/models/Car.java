@@ -31,11 +31,14 @@ public class Car {
     @EnumValue(enumClass = CityEnum.class, message = "city must be between: Sofia, Plovdiv, Varna, Burgas")
     @Schema(description = "The city that the car is located", example = "Sofia/Plovdiv/Varna/Burgas")
     private String city;
-    @Min(value = 1980,message = "Minimum year is 1980.")
-    @Max(value = 2100,message = "Maximum year is 2100.")
+    @Min(value = 1980, message = "Minimum year is 1980.")
+    @Max(value = 2100, message = "Maximum year is 2100.")
     @Schema(description = "The year car was made", example = "2006")
     private int year;
     @Positive(message = "pricePerDay must be positive.")
     @Schema(description = "The price per day for renting the car", example = "70")
     private double pricePerDay;
+    @NotEmpty(message = "Image URL is required.")
+    @Schema(description = "The image URL of the car")
+    private String imageUrl;
 }
