@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.fmi.stream_line.dtos.ChannelDTO;
 import org.fmi.stream_line.entities.ChannelEntity;
 import org.fmi.stream_line.services.ChannelService;
 import org.fmi.stream_line.util.AppResponseUtil;
@@ -29,7 +30,7 @@ public class ChannelController {
     @GetMapping("/{userId}")
     @Operation(summary = "Get channels")
     public ResponseEntity<?> getChannelsByUserMember(@Parameter(description = "ID of the user")@PathVariable String userId) {
-        List<ChannelEntity> allChannelsByMember = channelService.getAllChannelsByMember(userId);
+        List<ChannelDTO> allChannelsByMember = channelService.getAllChannelsByMember(userId);
 
         return AppResponseUtil.success()
                 .withData(allChannelsByMember)
