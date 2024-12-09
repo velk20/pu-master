@@ -1,10 +1,10 @@
-package org.fmi.stream_line.auth.util.validation;
+package org.fmi.stream_line.util.validation;
 
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.fmi.stream_line.auth.entity.UserEntity;
-import org.fmi.stream_line.auth.repository.UserRepository;
+import org.fmi.stream_line.entities.UserEntity;
+import org.fmi.stream_line.repositories.UserRepository;
 
 import java.util.Optional;
 

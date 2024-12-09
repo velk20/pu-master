@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 @SecurityRequirement(name = "bearerAuth")
-
 public class UserController {
 
     @GetMapping("/welcome")

@@ -1,4 +1,4 @@
-package org.fmi.stream_line.auth.entity;
+package org.fmi.stream_line.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

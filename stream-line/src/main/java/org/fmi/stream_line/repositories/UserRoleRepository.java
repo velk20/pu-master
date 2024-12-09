@@ -1,7 +1,7 @@
-package org.fmi.stream_line.auth.repository;
+package org.fmi.stream_line.repositories;
 
 
-import org.fmi.stream_line.auth.entity.UserRoleEntity;
+import org.fmi.stream_line.entities.UserRoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,10 +1,10 @@
 package org.fmi.stream_line.auth.authentication;
 
 
-import org.fmi.stream_line.auth.entity.UserEntity;
-import org.fmi.stream_line.auth.entity.UserRoleEntity;
-import org.fmi.stream_line.auth.repository.UserRepository;
-import org.fmi.stream_line.auth.repository.UserRoleRepository;
+import org.fmi.stream_line.entities.UserEntity;
+import org.fmi.stream_line.entities.UserRoleEntity;
+import org.fmi.stream_line.repositories.UserRepository;
+import org.fmi.stream_line.repositories.UserRoleRepository;
 import org.fmi.stream_line.auth.util.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

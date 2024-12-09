@@ -1,8 +1,8 @@
-package org.fmi.stream_line.auth.util.validation;
+package org.fmi.stream_line.util.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.fmi.stream_line.auth.repository.UserRoleRepository;
+import org.fmi.stream_line.repositories.UserRoleRepository;
 
 public class ValidateUserRoleValidator implements ConstraintValidator<ValidateUserRole, String> {
     private final UserRoleRepository userRoleRepository;

@@ -1,4 +1,4 @@
-package org.fmi.stream_line.auth.util.validation;
+package org.fmi.stream_line.util.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -9,10 +9,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-@Constraint(validatedBy = DateNowLimitValidator.class)
-public @interface DateNowLimit {
-    String message() default "Invalid Year";
+@Target(ElementType.TYPE)
+@Constraint(validatedBy = FieldMatchValidator.class)
+public @interface FieldMatch  {
+    String first();
+
+    String second();
+    String message() default "Invalid Field";
 
     Class<?>[] groups() default {};
 

@@ -1,4 +1,4 @@
-package org.fmi.stream_line.auth.util.validation;
+package org.fmi.stream_line.util.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@Constraint(validatedBy = UniqueUserEmailValidator.class)
-public @interface UniqueUserEmail {
-    String message() default "Duplicate Email";
+@Constraint(validatedBy = UniqueUsernameValidator.class)
+public @interface UniqueUsername {
+    String message() default "Duplicate Username";
 
     Class<?>[] groups() default {};
 

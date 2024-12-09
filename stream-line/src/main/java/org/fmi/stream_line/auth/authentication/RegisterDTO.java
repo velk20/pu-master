@@ -3,14 +3,11 @@ package org.fmi.stream_line.auth.authentication;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.fmi.stream_line.auth.util.validation.UniquePhoneNumber;
-import org.fmi.stream_line.auth.util.validation.UniqueUserEmail;
-import org.fmi.stream_line.auth.util.validation.UniqueUsername;
-import org.fmi.stream_line.auth.util.validation.ValidateUserRole;
+import org.fmi.stream_line.util.validation.UniquePhoneNumber;
+import org.fmi.stream_line.util.validation.UniqueUserEmail;
+import org.fmi.stream_line.util.validation.UniqueUsername;
+import org.fmi.stream_line.util.validation.ValidateUserRole;
 
 @AllArgsConstructor
 @NoArgsConstructor

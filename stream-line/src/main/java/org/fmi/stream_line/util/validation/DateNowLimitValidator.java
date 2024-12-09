@@ -1,4 +1,4 @@
-package org.fmi.stream_line.auth.util.validation;
+package org.fmi.stream_line.util.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,8 +1,8 @@
 package org.fmi.stream_line.auth.service;
 
 
-import org.fmi.stream_line.auth.entity.UserEntity;
-import org.fmi.stream_line.auth.repository.UserRepository;
+import org.fmi.stream_line.entities.UserEntity;
+import org.fmi.stream_line.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,9 +1,13 @@
-package org.fmi.stream_line.auth.entity;
+package org.fmi.stream_line.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -26,6 +30,22 @@ public class UserEntity extends BaseEntity {
     private LocalDateTime lastModified;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private UserRoleEntity userRole;
+    @ManyToMany
+    @JoinTable(
+            name = "friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private Set<UserEntity> friends = new HashSet<>();
+
+    public Set<UserEntity> getFriends() {
+        return friends;
+    }
+
+    public UserEntity setFriends(Set<UserEntity> friends) {
+        this.friends = friends;
+        return this;
+    }
 
     public Integer getAge() {
         return age;
