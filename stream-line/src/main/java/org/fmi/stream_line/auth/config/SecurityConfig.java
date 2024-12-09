@@ -40,9 +40,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/v1/auth/authenticate",
                                 "/api/v1/auth/register",
-                                "/**",
-                                "/v3/api-docs/",
-                                "/swagger-ui.html").permitAll())
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui.html/**").permitAll())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/**").authenticated())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/user/**").authenticated())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/admin/**").authenticated())
