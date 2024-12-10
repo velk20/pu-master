@@ -43,10 +43,6 @@ public class AuthService {
                 .findUserRoleByUserRole(dto.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("No role like " + dto.getRole() + " was found!"));
 
-        Optional<UserEntity> byUsername = userRepository.findByUsername(dto.getUsername());
-        Optional<UserEntity> byEmail = userRepository.findByEmail(dto.getEmail());
-        userRepository.findByPhone(dto.getPhone());
-
         UserEntity user = UserEntity.builder()
                 .username(dto.getUsername())
                 .firstName(dto.getFirstName())
@@ -61,8 +57,8 @@ public class AuthService {
                 .isActive(true)
                 .build();
 
-        userRepository.save(user);
-        var jwtToken = jwtUtil.generateToken(user);
+        UserEntity saved = userRepository.save(user);
+        var jwtToken = jwtUtil.generateToken(saved);
         return AuthResponse.builder()
                 .token(jwtToken)
                 .build();

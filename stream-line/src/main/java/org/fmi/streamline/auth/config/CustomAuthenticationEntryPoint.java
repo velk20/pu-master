@@ -20,6 +20,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        if (request.getRequestURI().startsWith("/v3") || request.getRequestURI().startsWith("/swagger-ui")) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+            return;
+        }
+
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

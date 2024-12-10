@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.channel.ChannelDTO;
+import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.ChannelService;
 import org.fmi.streamline.util.AppResponseUtil;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,14 @@ public class ChannelController {
         return AppResponseUtil.created()
                 .withData(newChannel)
                 .withMessage("Channel created successfully")
+                .build();
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex) {
+        return AppResponseUtil.error(HttpStatus.NOT_FOUND)
+                .logStackTrace(Arrays.toString(ex.getStackTrace()))
+                .withMessage(ex.getMessage())
                 .build();
     }
 }

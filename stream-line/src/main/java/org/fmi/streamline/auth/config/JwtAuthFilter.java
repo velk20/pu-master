@@ -38,6 +38,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String token;
         String username;
 
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/swag") || path.startsWith("/v3")) {
+            filterChain.doFilter(request, response); // Skip JWT processing
+            return;
+        }
+
         // If there is no Authorization Header
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
@@ -62,5 +69,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        // Exclude Swagger and API docs paths from filtering
+        return path.startsWith("/v3") || path.startsWith("/swag");
     }
 }
