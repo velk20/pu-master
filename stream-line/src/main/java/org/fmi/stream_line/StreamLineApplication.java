@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				contact = @Contact(name = "Angel Mladenov", email = "angelmladenov3@gmail.com")
 		),
 		security = @SecurityRequirement(name = "bearerAuth")
-
 )
 @SecurityScheme(
 		name = "bearerAuth", // Reference name for the security requirement

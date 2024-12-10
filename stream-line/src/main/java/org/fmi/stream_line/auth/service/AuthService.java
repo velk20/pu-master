@@ -72,7 +72,7 @@ public class AuthService {
                 )
         );
         var user = userRepository
-                .getUserByUsername(request.getUsername())
+                .findByUsername(request.getUsername())
                 .orElseThrow(()-> new EntityNotFoundException("User with username " + request.getUsername() + " not found!"));
         var jwtToken = jwtUtil.generateToken(user);
         return AuthResponse.builder()

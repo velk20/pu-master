@@ -19,13 +19,17 @@ import java.util.stream.Collectors;
 public class ChannelService {
     private final ModelMapper modelMapper;
     private final ChannelRepository channelRepository;
+    private final UserService userService;
 
-    public ChannelService(ModelMapper modelMapper, ChannelRepository channelRepository) {
+    public ChannelService(ModelMapper modelMapper, ChannelRepository channelRepository, UserService userService) {
         this.modelMapper = modelMapper;
         this.channelRepository = channelRepository;
+        this.userService = userService;
     }
 
     public List<ChannelDTO> getAllChannelsByMember(String userId) {
+        this.userService.getById(userId);
+
         List<ChannelEntity> allByUserIdAndDeletedFalse = this.channelRepository.findAllByUserIdAndDeletedFalse(userId);
 
         List<ChannelDTO> channelsList = new ArrayList<>();
