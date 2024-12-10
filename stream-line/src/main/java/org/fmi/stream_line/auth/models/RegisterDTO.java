@@ -1,4 +1,4 @@
-package org.fmi.stream_line.auth.authentication;
+package org.fmi.stream_line.auth.models;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.validation.constraints.*;
@@ -11,7 +11,6 @@ import org.fmi.stream_line.util.validation.ValidateUserRole;
 
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class RegisterDTO {
     @NotEmpty(message = "First Name is required.")
     @Size(min = 3, max = 20, message = "First Name must be between 2 nad 20 symbols.")

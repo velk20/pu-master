@@ -1,4 +1,4 @@
-package org.fmi.stream_line.auth.authentication;
+package org.fmi.stream_line.auth.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

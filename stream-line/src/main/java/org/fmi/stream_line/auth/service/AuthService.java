@@ -1,6 +1,9 @@
-package org.fmi.stream_line.auth.authentication;
+package org.fmi.stream_line.auth.service;
 
 
+import org.fmi.stream_line.auth.models.AuthRequest;
+import org.fmi.stream_line.auth.models.AuthResponse;
+import org.fmi.stream_line.auth.models.RegisterDTO;
 import org.fmi.stream_line.entities.UserEntity;
 import org.fmi.stream_line.entities.UserRoleEntity;
 import org.fmi.stream_line.repositories.UserRepository;
