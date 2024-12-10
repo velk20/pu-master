@@ -6,6 +6,7 @@ import org.fmi.stream_line.auth.models.AuthResponse;
 import org.fmi.stream_line.auth.models.RegisterDTO;
 import org.fmi.stream_line.entities.UserEntity;
 import org.fmi.stream_line.entities.UserRoleEntity;
+import org.fmi.stream_line.exception.EntityNotFoundException;
 import org.fmi.stream_line.repositories.UserRepository;
 import org.fmi.stream_line.repositories.UserRoleRepository;
 import org.fmi.stream_line.auth.util.JwtUtil;
@@ -37,7 +38,9 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterDTO dto) {
-        UserRoleEntity userRoleEntity = userRoleRepository.findUserRoleByUserRole(dto.getRole()).orElseThrow(() -> new RuntimeException("No User Role found!"));
+        UserRoleEntity userRoleEntity = userRoleRepository
+                .findUserRoleByUserRole(dto.getRole())
+                .orElseThrow(() -> new EntityNotFoundException("No role like " + dto.getRole() + " was found!"));
 
 
         UserEntity user = UserEntity.builder()
@@ -55,7 +58,7 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
-        var jwtToken = jwtUtil.generateToken(user.getUsername());
+        var jwtToken = jwtUtil.generateToken(user);
         return AuthResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -68,8 +71,10 @@ public class AuthService {
                         request.getPassword()
                 )
         );
-        var user = userRepository.getUserByUsername(request.getUsername()).orElseThrow();
-        var jwtToken = jwtUtil.generateToken(user.getUsername());
+        var user = userRepository
+                .getUserByUsername(request.getUsername())
+                .orElseThrow(()-> new EntityNotFoundException("User with username " + request.getUsername() + " not found!"));
+        var jwtToken = jwtUtil.generateToken(user);
         return AuthResponse.builder()
                 .token(jwtToken)
                 .build();
