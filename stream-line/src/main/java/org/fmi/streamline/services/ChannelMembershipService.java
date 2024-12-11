@@ -16,4 +16,8 @@ public class ChannelMembershipService {
     public ChannelMembershipEntity create(ChannelMembershipEntity channelMembershipEntity) {
         return this.channelMembershipRepository.save(channelMembershipEntity);
     }
+
+    public ChannelMembershipEntity save(ChannelMembershipEntity entity) {
+        return this.channelMembershipRepository.save(entity);
+    }
 }

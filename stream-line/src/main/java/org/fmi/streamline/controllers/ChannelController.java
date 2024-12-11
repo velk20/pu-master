@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.channel.AddUserToChannelDTO;
 import org.fmi.streamline.dtos.channel.ChannelDTO;
+import org.fmi.streamline.dtos.channel.UpdateUserRoleToChannelDTO;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.ChannelService;
 import org.fmi.streamline.util.AppResponseUtil;
@@ -69,6 +70,28 @@ public class ChannelController {
         return AppResponseUtil.success()
                 .withData(channelDTO)
                 .withMessage("Successfully added new user to the channel")
+                .build();
+    }
+
+    @PostMapping("/userRole")
+    @Operation(summary = "Update user role in channel")
+    public ResponseEntity<?> updateUserRoleToChannel(@Valid @RequestBody UpdateUserRoleToChannelDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        ChannelDTO channelDTO = this.channelService.updateUserRoleInChannel(dto);
+
+        return AppResponseUtil.success()
+                .withMessage("Successfully updated user role in channel")
+                .withData(channelDTO)
                 .build();
     }
 

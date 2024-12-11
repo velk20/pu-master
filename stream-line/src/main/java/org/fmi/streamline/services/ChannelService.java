@@ -1,8 +1,10 @@
 package org.fmi.streamline.services;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.channel.AddUserToChannelDTO;
 import org.fmi.streamline.dtos.channel.ChannelDTO;
+import org.fmi.streamline.dtos.channel.UpdateUserRoleToChannelDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.user.UserDTO;
 import org.fmi.streamline.entities.ChannelEntity;
@@ -80,6 +82,7 @@ public class ChannelService {
         return modelMapper.map(messageEntity, MessageDTO.class);
     }
 
+    @Transactional
     public ChannelDTO createChannel(ChannelDTO channelDTO) {
         UserEntity userEntity = userService.getById(channelDTO.getOwnerId());
 
@@ -128,6 +131,7 @@ public class ChannelService {
         this.channelRepository.save(channelEntity);
     }
 
+    @Transactional
     public ChannelDTO addNewUser(AddUserToChannelDTO dto) {
         UserEntity userEntity = this.userService.getByUsername(dto.getUsername());
         ChannelEntity channelEntity = this.getById(dto.getChannelId());
@@ -144,5 +148,25 @@ public class ChannelService {
 
         ChannelEntity save = this.channelRepository.save(channelEntity);
         return this.convertToChannelDTO(save);
+    }
+
+    @Transactional
+    public ChannelDTO updateUserRoleInChannel(UpdateUserRoleToChannelDTO dto) {
+        UserEntity user = this.userService.getByUsername(dto.getUsername());
+        ChannelEntity channelEntity = this.getById(dto.getChannelId());
+
+        ChannelMembershipEntity entity = channelEntity.getMemberships()
+                .stream()
+                .filter(m -> m.getUser().getUsername().equals(dto.getUsername()))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("User with that username is not part of this channel"));
+
+        entity.setRole(ChannelMembershipEntity.Role.valueOf(dto.getRole()));
+
+        ChannelMembershipEntity save = this.channelMembershipService.save(entity);
+
+        ChannelEntity updated = this.channelRepository.save(channelEntity);
+
+        return this.convertToChannelDTO(updated);
     }
 }
