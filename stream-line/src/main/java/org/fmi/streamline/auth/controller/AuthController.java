@@ -65,6 +65,7 @@ public class AuthController {
         }
         AuthResponse authenticated = authService.authenticate(authRequest);
         return AppResponseUtil.success()
+                .withMessage("User successfully logged in")
                 .withData(authenticated)
                 .build();
     }
