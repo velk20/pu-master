@@ -20,7 +20,7 @@ public class UniqueUserEmailValidator implements ConstraintValidator<UniqueUserE
     //! FIX THE EMAIL CHECKER IF THE USER IS CURRENT LOGGED USER
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(value);
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmailAndIsActiveTrue(value);
 
         return userEntityOptional.isEmpty();
     }

@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -72,7 +71,7 @@ public class AuthService {
                 )
         );
         var user = userRepository
-                .findByUsername(request.getUsername())
+                .findByUsernameAndIsActiveTrue(request.getUsername())
                 .orElseThrow(()-> new EntityNotFoundException("User with username " + request.getUsername() + " not found!"));
         var jwtToken = jwtUtil.generateToken(user);
         return AuthResponse.builder()

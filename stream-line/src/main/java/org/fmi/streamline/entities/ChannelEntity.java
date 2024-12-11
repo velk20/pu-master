@@ -33,4 +33,9 @@ public class ChannelEntity extends BaseEntity {
 
     @Column(nullable = false)
     private boolean deleted = false;
+
+    public ChannelEntity addMembership(ChannelMembershipEntity membership) {
+        memberships.add(membership);
+        return this;
+    }
 }

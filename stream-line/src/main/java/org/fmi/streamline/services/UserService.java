@@ -14,12 +14,12 @@ public class UserService {
     }
 
     public UserEntity getByUsername(String username) {
-        return this.userRepository.findByUsername(username)
+        return this.userRepository.findByUsernameAndIsActiveTrue(username)
                 .orElseThrow(()-> new EntityNotFoundException("User with username " + username + " not found"));
     }
 
     public UserEntity getById(String id) {
-        return this.userRepository.findById(id)
+        return this.userRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(()-> new EntityNotFoundException("User with id " + id + " not found"));
     }
 }

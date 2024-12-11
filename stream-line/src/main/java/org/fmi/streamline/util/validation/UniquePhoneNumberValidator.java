@@ -19,7 +19,7 @@ public class UniquePhoneNumberValidator implements ConstraintValidator<UniquePho
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        Optional<UserEntity> byPhone = userRepository.findByPhone(value);
+        Optional<UserEntity> byPhone = userRepository.findByPhoneAndIsActiveTrue(value);
         return byPhone.isEmpty();
     }
 

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.fmi.streamline.dtos.channel.AddUserToChannelDTO;
 import org.fmi.streamline.dtos.channel.ChannelDTO;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.ChannelService;
@@ -40,6 +41,37 @@ public class ChannelController {
                 .build();
     }
 
+    @GetMapping
+    @Operation(summary = "Get all channels")
+    public ResponseEntity<?> getAllChannels() {
+        List<ChannelDTO> all = channelService.getAll();
+
+        return AppResponseUtil.success()
+                .withData(all)
+                .build();
+    }
+
+    @PostMapping("/addUser")
+    @Operation(summary = "Add new user to the channel")
+    public ResponseEntity<?> addUserToChannel(@Valid @RequestBody AddUserToChannelDTO dto,BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+        ChannelDTO channelDTO = channelService.addNewUser(dto);
+
+        return AppResponseUtil.success()
+                .withData(channelDTO)
+                .withMessage("Successfully added new user to the channel")
+                .build();
+    }
+
     @PostMapping
     @Operation(summary = "Create channel")
     public ResponseEntity<?> createChannel(@Valid @RequestBody ChannelDTO channelDTO, BindingResult bindingResult) {
@@ -60,6 +92,17 @@ public class ChannelController {
                 .withMessage("Channel created successfully")
                 .build();
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete channel by id")
+    public ResponseEntity<?> deleteChannelById(@Parameter(description = "ID of the channel")@PathVariable String id) {
+        channelService.deleteChannel(id);
+
+        return AppResponseUtil.success()
+                .withMessage("Channel was deleted.")
+                .build();
+    }
+
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex) {
