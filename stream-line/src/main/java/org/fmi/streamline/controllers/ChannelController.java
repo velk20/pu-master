@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.fmi.streamline.dtos.channel.AddMessageToChannelDTO;
 import org.fmi.streamline.dtos.channel.AddUserToChannelDTO;
 import org.fmi.streamline.dtos.channel.ChannelDTO;
 import org.fmi.streamline.dtos.channel.UpdateUserRoleToChannelDTO;
@@ -52,7 +53,7 @@ public class ChannelController {
                 .build();
     }
 
-    @PostMapping("/addUser")
+    @PutMapping("/addUser")
     @Operation(summary = "Add new user to the channel")
     public ResponseEntity<?> addUserToChannel(@Valid @RequestBody AddUserToChannelDTO dto,BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -73,7 +74,29 @@ public class ChannelController {
                 .build();
     }
 
-    @PostMapping("/userRole")
+    @PostMapping("/addMessage")
+    @Operation(summary = "Add new message to channel")
+    public ResponseEntity<?> addMessageToChannel(@Valid @RequestBody AddMessageToChannelDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        ChannelDTO channelDTO = this.channelService.addMessageToChannel(dto);
+
+        return AppResponseUtil.success()
+                .withMessage("Successfully created message in channel: " + channelDTO.getName())
+                .withData(channelDTO)
+                .build();
+    }
+
+    @PutMapping("/userRole")
     @Operation(summary = "Update user role in channel")
     public ResponseEntity<?> updateUserRoleToChannel(@Valid @RequestBody UpdateUserRoleToChannelDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -123,6 +146,14 @@ public class ChannelController {
 
         return AppResponseUtil.success()
                 .withMessage("Channel was deleted.")
+                .build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                .logStackTrace(Arrays.toString(ex.getStackTrace()))
+                .withMessage(ex.getMessage())
                 .build();
     }
 

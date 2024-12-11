@@ -1,12 +1,12 @@
 package org.fmi.streamline.services;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+import org.fmi.streamline.dtos.channel.AddMessageToChannelDTO;
 import org.fmi.streamline.dtos.channel.AddUserToChannelDTO;
 import org.fmi.streamline.dtos.channel.ChannelDTO;
 import org.fmi.streamline.dtos.channel.UpdateUserRoleToChannelDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
-import org.fmi.streamline.dtos.user.UserDTO;
+import org.fmi.streamline.dtos.user.UserMembershipDTO;
 import org.fmi.streamline.entities.ChannelEntity;
 import org.fmi.streamline.entities.ChannelMembershipEntity;
 import org.fmi.streamline.entities.MessageEntity;
@@ -20,18 +20,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChannelService {
     private final ModelMapper modelMapper;
     private final ChannelRepository channelRepository;
     private final UserService userService;
+    private final MessageService messageService;
     private final ChannelMembershipService channelMembershipService;
 
-    public ChannelService(ModelMapper modelMapper, ChannelRepository channelRepository, UserService userService, ChannelMembershipService channelMembershipService) {
+    public ChannelService(ModelMapper modelMapper, ChannelRepository channelRepository, UserService userService, MessageService messageService, ChannelMembershipService channelMembershipService) {
         this.modelMapper = modelMapper;
         this.channelRepository = channelRepository;
         this.userService = userService;
+        this.messageService = messageService;
         this.channelMembershipService = channelMembershipService;
     }
 
@@ -56,15 +59,15 @@ public class ChannelService {
 
     private ChannelDTO convertToChannelDTO(ChannelEntity channelEntity) {
         List<MessageDTO> list = channelEntity.getMessages().stream().map(this::convertToDTO).toList();
-        List<UserDTO> userDTOS = channelEntity.getMemberships().stream().map(this::convertToDTO).toList();
+        List<UserMembershipDTO> userMembershipDTOS = channelEntity.getMemberships().stream().map(this::convertToDTO).toList();
         ChannelDTO channelDTO = this.convertToDTO(channelEntity);
         channelDTO.setMessages(list);
-        channelDTO.setMemberships(userDTOS);
+        channelDTO.setMemberships(userMembershipDTOS);
         return channelDTO;
     }
 
-    private UserDTO convertToDTO(ChannelMembershipEntity channelMembershipEntity) {
-        return  new UserDTO()
+    private UserMembershipDTO convertToDTO(ChannelMembershipEntity channelMembershipEntity) {
+        return  new UserMembershipDTO()
                 .builder()
                 .id(channelMembershipEntity.getUser().getId())
                 .username(channelMembershipEntity.getUser().getUsername())
@@ -136,6 +139,16 @@ public class ChannelService {
         UserEntity userEntity = this.userService.getByUsername(dto.getUsername());
         ChannelEntity channelEntity = this.getById(dto.getChannelId());
 
+        Optional<ChannelMembershipEntity> channelMembershipEntity = channelEntity
+                .getMemberships()
+                .stream()
+                .filter(m -> m.getUser().getUsername().equals(dto.getUsername()))
+                .findFirst();
+
+        if (channelMembershipEntity.isPresent()) {
+            throw new IllegalArgumentException("User already in the channel");
+        }
+
         ChannelMembershipEntity entity = ChannelMembershipEntity.builder()
                 .channel(channelEntity)
                 .user(userEntity)
@@ -163,10 +176,35 @@ public class ChannelService {
 
         entity.setRole(ChannelMembershipEntity.Role.valueOf(dto.getRole()));
 
-        ChannelMembershipEntity save = this.channelMembershipService.save(entity);
+        this.channelMembershipService.save(entity);
 
         ChannelEntity updated = this.channelRepository.save(channelEntity);
 
         return this.convertToChannelDTO(updated);
+    }
+
+    public ChannelDTO addMessageToChannel(AddMessageToChannelDTO dto) {
+        UserEntity user = this.userService.getByUsername(dto.getUsername());
+        ChannelEntity channel = this.getById(dto.getChannelId());
+
+        channel.getMemberships()
+                .stream()
+                .filter(m -> m.getUser().getUsername().equals(dto.getUsername()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User with username: " + user.getUsername() + " is not part of this channel"));
+
+        MessageEntity messageEntity = MessageEntity
+                .builder()
+                .author(user)
+                .channel(channel)
+                .content(dto.getMessage())
+                .timestamp(LocalDateTime.now())
+                .deleted(false)
+                .receiver(null)
+                .build();
+
+        this.messageService.save(messageEntity);
+
+        return this.convertToChannelDTO(this.getById(dto.getChannelId()));
     }
 }

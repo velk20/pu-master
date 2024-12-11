@@ -3,7 +3,7 @@ package org.fmi.streamline.dtos.channel;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.fmi.streamline.dtos.message.MessageDTO;
-import org.fmi.streamline.dtos.user.UserDTO;
+import org.fmi.streamline.dtos.user.UserMembershipDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +20,6 @@ public class ChannelDTO {
     @NotEmpty(message = "Owner id is required.")
     private String ownerId;
     private LocalDateTime createdAt;
-    private List<UserDTO> memberships;
+    private List<UserMembershipDTO> memberships;
     private List<MessageDTO> messages;
 }

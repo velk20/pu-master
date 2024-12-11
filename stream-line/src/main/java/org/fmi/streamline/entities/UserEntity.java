@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -35,6 +36,16 @@ public class UserEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private Set<UserEntity> friends = new HashSet<>();
+
+    public Set<UserEntity> addFriend(final UserEntity friend) {
+        this.friends.add(friend);
+        return this.friends;
+    }
+
+    public Set<UserEntity> removeFriend(final UserEntity friend) {
+        this.friends.remove(friend);
+        return this.friends;
+    }
 
     public Set<UserEntity> getFriends() {
         return friends;
@@ -149,4 +160,16 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return Objects.equals(username, that.username) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, email, phone);
+    }
 }
