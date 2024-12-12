@@ -1,0 +1,19 @@
+.sidebar {
+  background-color: #f8f9fa;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.chat {
+  background-color: #fff;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.channel-item {
+  cursor: pointer;
+}
+
+.channel-item:hover {
+  background-color: #e9ecef;
+}
