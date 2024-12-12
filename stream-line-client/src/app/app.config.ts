@@ -3,14 +3,16 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import {provideToastr} from "ngx-toastr";
-import {provideHttpClient} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, provideHttpClient} from "@angular/common/http";
 import {provideAnimations} from "@angular/platform-browser/animations";
+import {MyInterceptor} from "./auth/jwt-interceptor";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimations(),
     provideHttpClient(),
-    provideToastr()
+    provideToastr(),
+    {provide: HTTP_INTERCEPTORS, useClass: MyInterceptor, multi: true},
   ]
 };
