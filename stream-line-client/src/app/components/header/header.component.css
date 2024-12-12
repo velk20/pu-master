@@ -1,5 +1,5 @@
 header {
-  background-image: url('../../../assets/img/car-background.jpg'); /* Replace with the path to your image */
+  background-image: url('../../../assets/img/background.png'); /* Replace with the path to your image */
   background-size: cover; /* Ensures the image covers the entire area */
   background-position: center; /* Centers the image */
   background-repeat: no-repeat; /* Prevents the image from repeating */
