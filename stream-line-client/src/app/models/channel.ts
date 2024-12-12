@@ -17,3 +17,9 @@ export interface Message {
   receiverId: string;
   timestamp: string;
 }
+
+export interface NewMessage {
+  channelId: string;
+  username: string;
+  message: string;
+}

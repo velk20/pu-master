@@ -29,7 +29,8 @@
         <h4 class="border-bottom pb-2">{{ selectedChatName }}</h4>
         <div class="chat-messages" style="height: 80vh; overflow-y: auto; background-color: #f1f1f1; padding: 10px;">
           <div *ngFor="let message of messages" class="mb-3">
-            <strong>{{ message.authorUsername }}:</strong> {{ message.content }}
+            <strong>{{ message.authorUsername == currentLoggedUsername ? 'You' : message.authorUsername }}:</strong> {{ message.content }}
+            <span class="text-muted" style="font-size: 0.9em;">{{ message.timestamp | date:'medium' }}</span>
           </div>
         </div>
 
