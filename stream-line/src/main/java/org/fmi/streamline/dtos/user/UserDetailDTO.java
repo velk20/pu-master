@@ -26,10 +26,10 @@ public class UserDetailDTO {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime lastModified;
     private String role;
-    private List<String> friendsIds;
+    private List<FriendDTO> friends;
 
-    public UserDetailDTO setFriendsIds(List<String> friendsIds) {
-        this.friendsIds = friendsIds;
+    public UserDetailDTO setFriends(List<FriendDTO> friends) {
+        this.friends = friends;
         return this;
     }
 }

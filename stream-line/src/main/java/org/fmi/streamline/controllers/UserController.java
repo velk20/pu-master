@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.user.AddFriendDTO;
+import org.fmi.streamline.dtos.user.FriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.dtos.user.UserFriendsMembershipDTO;
 import org.fmi.streamline.entities.UserEntity;
@@ -39,10 +40,10 @@ public class UserController {
     @Operation(summary = "Get user by id")
     public ResponseEntity<?> getUserById(@PathVariable("id") String id) {
         UserEntity userEntity = this.userService.getById(id);
-        List<String> list = userEntity.getFriends().stream().map(UserEntity::getId).toList();
+        List<FriendDTO> list = userEntity.getFriends().stream().map(e->this.modelMapper.map(e, FriendDTO.class)).toList();
         return AppResponseUtil.success()
                 .withData(this.modelMapper.map(userEntity, UserDetailDTO.class)
-                        .setFriendsIds(list))
+                        .setFriends(list))
                 .build();
     }
 
