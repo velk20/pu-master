@@ -1,10 +1,10 @@
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
+import {catchError, Observable, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
 import {AuthService} from "../services/auth.service";
 
 @Injectable({ providedIn: "root" })
-export class MyInterceptor implements HttpInterceptor {
+export class JwtInterceptor implements HttpInterceptor {
   token: string | null = null;
 
   constructor(private authService: AuthService) {
@@ -24,6 +24,15 @@ export class MyInterceptor implements HttpInterceptor {
         },
       });
     }
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          // Handle 401 Unauthorized
+          console.error('Unauthorized request, logging out...');
+          localStorage.removeItem('jwtToken');
+        }
+        return throwError(() => error);
+      })
+    );
   }
 }
