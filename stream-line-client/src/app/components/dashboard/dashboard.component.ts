@@ -16,6 +16,15 @@ export class DashboardComponent {
   channels = [
     { name: 'Channel 1' },
     { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
+    { name: 'Channel 2' },
     { name: 'Channel 3' }
   ];
 

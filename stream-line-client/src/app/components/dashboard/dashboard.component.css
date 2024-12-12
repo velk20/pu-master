@@ -1,13 +1,6 @@
-.sidebar {
-  background-color: #f8f9fa;
-  height: 100vh;
-  overflow-y: auto;
-}
-
-.chat {
-  background-color: #fff;
-  height: 100vh;
-  overflow-y: auto;
+.sidebar ul {
+  padding: 0;
+  margin: 0;
 }
 
 .channel-item {
@@ -16,4 +9,8 @@
 
 .channel-item:hover {
   background-color: #e9ecef;
+}
+
+.chat-messages {
+  border-radius: 5px;
 }

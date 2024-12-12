@@ -3,13 +3,17 @@
     <!-- Sidebar -->
     <div class="col-md-3 sidebar border-end">
       <h5 class="p-3">Channels</h5>
-      <ul class="list-group list-group-flush">
+      <ul class="list-group list-group-flush" style="max-height: 40vh; overflow-y: auto;">
         <li
           class="list-group-item channel-item"
           *ngFor="let channel of channels"
           (click)="selectChannel(channel)">
           {{ channel.name }}
         </li>
+      </ul>
+
+      <h5 class="p-3">Friends</h5>
+      <ul class="list-group list-group-flush" style="max-height: 40vh; overflow-y: auto;">
         <li
           class="list-group-item channel-item"
           *ngFor="let friend of friends"
