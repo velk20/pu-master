@@ -11,3 +11,9 @@ export interface User{
   role?: string;
   friendsIds: string[];
 }
+
+export interface UserMembership{
+  id: string;
+  username: string;
+  role: string;
+}

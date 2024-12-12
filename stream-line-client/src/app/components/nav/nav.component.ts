@@ -21,7 +21,7 @@ export class NavComponent {
   }
 
   ngOnInit(): void {
-    this.authService.getJwtToken().subscribe((jwtToken) => {
+    this.authService.getJwtTokenAsObservable().subscribe((jwtToken) => {
       this.isLoggedIn = !!jwtToken;
     });
   }

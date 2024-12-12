@@ -3,16 +3,16 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import {provideToastr} from "ngx-toastr";
-import {HTTP_INTERCEPTORS, provideHttpClient} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi} from "@angular/common/http";
 import {provideAnimations} from "@angular/platform-browser/animations";
-import {JwtInterceptor} from "./auth/jwt-interceptor";
+import {AuthInterceptor} from "./auth/auth-interceptor.service";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     provideToastr(),
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ]
 };
