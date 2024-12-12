@@ -3,10 +3,13 @@ import {FormsModule} from "@angular/forms";
 import {DatePipe, NgForOf} from "@angular/common";
 import {ChannelService} from "../../services/channel.service";
 import {AuthService} from "../../services/auth.service";
-import {Channel, Message, NewMessage} from "../../models/channel";
+import {Channel, Message, NewChannel, NewMessage} from "../../models/channel";
 import {UserService} from "../../services/user.service";
 import {Friend} from "../../models/user";
 import {ToastrService} from "ngx-toastr";
+import { Modal } from 'bootstrap';
+
+declare var bootstrap: any; // Add this line to declare bootstrap globally
 
 @Component({
   selector: 'app-dashboard',
@@ -29,6 +32,7 @@ export class DashboardComponent implements OnInit {
   selectedChanelId: string = '';
   selectedChatName: string = 'Channel Name';
   newMessage: string = '';
+  newChannelName: string = '';
   currentLoggedUsername: string = '';
 
   constructor(private channelService: ChannelService,
@@ -99,6 +103,38 @@ export class DashboardComponent implements OnInit {
           this.toastr.error(error.message);
         }
       );
+    }
+  }
+
+  openCreateChannelModal() {
+    const modalElement = document.getElementById('createChannelModal');
+    if (modalElement) {
+      const modal = new Modal(modalElement)
+      modal.show();
+    }
+  }
+
+  createChannel() {
+    if (this.newChannelName) {
+      const newChannel:NewChannel={
+        name: this.newChannelName,
+        ownerUsername: this.currentLoggedUsername,
+      }
+      this.channelService.createChannel(newChannel).subscribe(res => {
+        const newChannel = res.data as Channel; // The updated channel returned by the API
+        this.channels.push(newChannel);
+      })
+
+      this.newChannelName = '';
+      const modalElement = document.getElementById('createChannelModal');
+      if (modalElement) {
+        const modal = Modal.getInstance(modalElement);
+        if (modal) {
+          modal.hide();
+        } else {
+          console.error('Modal instance not found. Ensure it is initialized.');
+        }
+      }
     }
   }
 }

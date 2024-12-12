@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Constant } from "../utils/constant";
 import { Observable } from "rxjs";
 import {AppResponse, AppResponseWithMessage} from "../utils/app.response";
-import {NewMessage} from "../models/channel";
+import {NewChannel, NewMessage} from "../models/channel";
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +19,9 @@ export class ChannelService {
 
   addMessage(newMessage: NewMessage): Observable<AppResponseWithMessage> {
     return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}/addMessage`, newMessage);
+  }
+
+  createChannel(newChannel: NewChannel):Observable<AppResponseWithMessage> {
+    return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}`, newChannel);
   }
 }

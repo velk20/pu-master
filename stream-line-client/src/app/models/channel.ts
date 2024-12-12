@@ -9,6 +9,11 @@ export interface Channel {
   messages: Message[];
 }
 
+export interface NewChannel {
+  name: string;
+  ownerUsername: string;
+}
+
 export interface Message {
   id: string;
   content: string;
