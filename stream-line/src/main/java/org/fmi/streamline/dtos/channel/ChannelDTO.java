@@ -18,7 +18,7 @@ public class ChannelDTO {
     @NotEmpty(message = "Channel name is required.")
     private String name;
     @NotEmpty(message = "Owner id is required.")
-    private String ownerId;
+    private String ownerUsername;
     private LocalDateTime createdAt;
     private List<UserMembershipDTO> memberships;
     private List<MessageDTO> messages;

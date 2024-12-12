@@ -3,7 +3,9 @@ import {FormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
 import {ChannelService} from "../../services/channel.service";
 import {AuthService} from "../../services/auth.service";
-import {Channel} from "../../models/channel";
+import {Channel, Message} from "../../models/channel";
+import {UserService} from "../../services/user.service";
+import {Friend} from "../../models/user";
 
 @Component({
   selector: 'app-dashboard',
@@ -18,45 +20,49 @@ import {Channel} from "../../models/channel";
 export class DashboardComponent implements OnInit {
   channels: Channel[] = [];
 
-  friends = [
-    { name: 'Friend 1' },
-    { name: 'Friend 2' }
-  ];
+  friends: Friend[] = [];
 
-  messages = [
-    { user: 'User1', text: 'Hello, everyone!' },
-    { user: 'User2', text: 'Hi! How are you?' }
-  ];
+  messages:Message[]  = [];
 
   selectedChatName = 'Channel Name';
   newMessage = '';
 
   constructor(private channelService: ChannelService,
-              private authService: AuthService,) {
+              private authService: AuthService,
+              private userService: UserService,) {
   }
 
   ngOnInit(): void {
     let user = this.authService.getUserFromJwt();
-    console.log(user)
     this.channelService.getChannelsForUser(user.id).subscribe(res => {
-      console.log(res)
       this.channels = res.data as Channel[];
-    })
+      this.selectChannel(this.channels[0])
+      console.log(this.channels)
+
+      this.userService.getUserById(user.id).subscribe(res => {
+//TODO add friends
+      })
+    });
+
+
+
     }
 
-  selectChannel(channel: { name: string }) {
+  selectChannel(channel: Channel) {
     this.selectedChatName = channel.name;
-    // Logic to fetch channel messages can be added here
+    this.messages = channel.messages
   }
 
-  selectFriend(friend: { name: string }) {
-    this.selectedChatName = friend.name;
+  selectFriend(friend: Friend) {
+    this.selectedChatName = friend.username;
+    //TODO
     // Logic to fetch private messages can be added here
   }
 
   sendMessage() {
     if (this.newMessage.trim()) {
-      this.messages.push({ user: 'You', text: this.newMessage });
+      //TODO create new message
+      // this.messages.push({ user: 'You', text: this.newMessage });
       this.newMessage = '';
     }
   }

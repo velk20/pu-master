@@ -18,7 +18,7 @@
           class="list-group-item channel-item"
           *ngFor="let friend of friends"
           (click)="selectFriend(friend)">
-          {{ friend.name }}
+          {{ friend.username }}
         </li>
       </ul>
     </div>
@@ -29,7 +29,7 @@
         <h4 class="border-bottom pb-2">{{ selectedChatName }}</h4>
         <div class="chat-messages" style="height: 80vh; overflow-y: auto; background-color: #f1f1f1; padding: 10px;">
           <div *ngFor="let message of messages" class="mb-3">
-            <strong>{{ message.user }}:</strong> {{ message.text }}
+            <strong>{{ message.authorUsername }}:</strong> {{ message.content }}
           </div>
         </div>
 

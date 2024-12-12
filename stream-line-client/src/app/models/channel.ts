@@ -3,7 +3,7 @@ import {UserMembership} from "./user";
 export interface Channel {
   id: string;
   name: string;
-  ownerId: string;
+  ownerUsername: string;
   createdAt: string;
   memberships: UserMembership[];
   messages: Message[];
@@ -12,7 +12,7 @@ export interface Channel {
 export interface Message {
   id: string;
   content: string;
-  authorId: string;
+  authorUsername: string;
   channelId: string;
   receiverId: string;
   timestamp: string;

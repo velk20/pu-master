@@ -87,7 +87,7 @@ public class ChannelService {
 
     @Transactional
     public ChannelDTO createChannel(ChannelDTO channelDTO) {
-        UserEntity userEntity = userService.getById(channelDTO.getOwnerId());
+        UserEntity userEntity = userService.getByUsername(channelDTO.getOwnerUsername());
 
         ChannelEntity channelEntity = ChannelEntity.builder()
                 .createdAt(LocalDateTime.now())
