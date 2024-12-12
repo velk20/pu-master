@@ -13,8 +13,8 @@ export class AuthService {
   private jwtSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(private http: HttpClient) {
-    const user = localStorage.getItem('user');
-    this.jwtSubject.next(user ? JSON.parse(user) : null);
+    const token = localStorage.getItem('token');
+    this.jwtSubject.next(token ? token : null);
   }
 
   registerUser(user: RegisterUser): Observable<AppResponseWithMessage> {
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   login(token: JwtTokenResponse): void {
-    localStorage.setItem('token', JSON.stringify(token));
+    localStorage.setItem('token', token.token);
     this.jwtSubject.next(token);
   }
 
@@ -35,7 +35,7 @@ export class AuthService {
     this.jwtSubject.next(null);
   }
 
-  getUser(): Observable<User> {
+  getJwtToken(): Observable<string> {
     return this.jwtSubject.asObservable();
   }
 

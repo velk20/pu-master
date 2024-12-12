@@ -1,0 +1,18 @@
+.about-header {
+  background: url('https://via.placeholder.com/1920x400') no-repeat center center/cover; /* Replace with your image */
+  color: white;
+  text-align: center;
+  padding: 100px 20px;
+}
+.icon-box {
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.icon-box i {
+  font-size: 50px;
+  color: #007bff;
+  margin-bottom: 15px;
+}
