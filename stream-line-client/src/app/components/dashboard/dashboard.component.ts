@@ -167,13 +167,6 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  openCreateChannelModal() {
-    const modalElement = document.getElementById('createChannelModal');
-    if (modalElement) {
-      const modal = new Modal(modalElement)
-      modal.show();
-    }
-  }
 
   openAddFriendModal() {
     const modalElement = document.getElementById('addFriendModal');
