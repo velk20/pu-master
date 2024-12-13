@@ -5,10 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.fmi.streamline.dtos.channel.AddMessageToChannelDTO;
-import org.fmi.streamline.dtos.channel.AddUserToChannelDTO;
-import org.fmi.streamline.dtos.channel.ChannelDTO;
-import org.fmi.streamline.dtos.channel.UpdateUserRoleToChannelDTO;
+import org.fmi.streamline.dtos.channel.*;
+import org.fmi.streamline.dtos.message.FriendMessageDTO;
+import org.fmi.streamline.dtos.message.MessageDTO;
+import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
+import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.ChannelService;
 import org.fmi.streamline.util.AppResponseUtil;
@@ -53,6 +54,17 @@ public class ChannelController {
                 .build();
     }
 
+    @GetMapping("/{userId}/friendMessages/{friendId}")
+    @Operation(summary = "Get all messages for friend")
+    public ResponseEntity<?> getFriendMessages(@Parameter(description = "ID of the user")@PathVariable String userId,
+                                               @Parameter(description = "Id of the friend")@PathVariable String friendId) {
+        FriendMessageDTO dto = new FriendMessageDTO(userId, friendId);
+        List<MessageDTO> messages = channelService.getFriendMessages(dto);
+        return AppResponseUtil.success()
+                .withData(messages)
+                .build();
+    }
+
     @PutMapping("/addUser")
     @Operation(summary = "Add new user to the channel")
     public ResponseEntity<?> addUserToChannel(@Valid @RequestBody AddUserToChannelDTO dto,BindingResult bindingResult) {
@@ -93,6 +105,27 @@ public class ChannelController {
         return AppResponseUtil.success()
                 .withMessage("Successfully created message in channel: " + channelDTO.getName())
                 .withData(channelDTO)
+                .build();
+    }
+
+    @PostMapping("/sendMessage")
+    @Operation(summary = "Add new message to channel")
+    public ResponseEntity<?> addMessageToChannel(@Valid @RequestBody SendMessageToFriendDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        MessageDTO messageDTO = this.channelService.sendMessageToFriend(dto);
+
+        return AppResponseUtil.success()
+                .withData(messageDTO)
                 .build();
     }
 

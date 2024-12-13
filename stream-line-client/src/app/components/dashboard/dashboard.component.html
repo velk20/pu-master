@@ -20,7 +20,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelMenuButton">
               <li><a class="dropdown-item" >Rename</a></li>
-              <li><a class="dropdown-item text-danger" >Delete</a></li>
+              <li><a class="dropdown-item text-danger" (click)="onDeleteChannel(channel.id)" >Delete</a></li>
             </ul>
           </div>
         </li>

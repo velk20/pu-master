@@ -23,6 +23,17 @@ export interface Message {
   timestamp: string;
 }
 
+export interface UserFriendMessage{
+  userId: string;
+  friendId: string;
+}
+
+export interface FriendMessage{
+  senderId: string;
+  friendId: string;
+  message: string;
+}
+
 export interface NewMessage {
   channelId: string;
   username: string;

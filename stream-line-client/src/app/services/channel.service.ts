@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Constant } from "../utils/constant";
 import { Observable } from "rxjs";
-import {AppResponse, AppResponseWithMessage} from "../utils/app.response";
-import {NewChannel, NewMessage} from "../models/channel";
+import {AppResponse, AppResponseWithMessage, AppResponseWithNoData} from "../utils/app.response";
+import {FriendMessage, NewChannel, NewMessage, UserFriendMessage} from "../models/channel";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,19 @@ export class ChannelService {
     return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}/addMessage`, newMessage);
   }
 
+  sendMessage(friendMessage: FriendMessage): Observable<AppResponseWithMessage> {
+    return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}/sendMessage`, friendMessage)
+  }
+
   createChannel(newChannel: NewChannel):Observable<AppResponseWithMessage> {
     return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}`, newChannel);
+  }
+
+  deleteChannel(id: string):Observable<AppResponseWithNoData> {
+    return this.http.delete<AppResponseWithNoData>(`${Constant.CHANNELS_URL}/${id}`);
+  }
+
+  getFriendMessages(getMessages: UserFriendMessage):Observable<AppResponse> {
+    return this.http.get<AppResponse>(`${Constant.CHANNELS_URL}/${getMessages.userId}/friendMessages/${getMessages.friendId}`);
   }
 }

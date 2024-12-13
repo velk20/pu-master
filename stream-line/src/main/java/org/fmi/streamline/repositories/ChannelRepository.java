@@ -17,7 +17,7 @@ public interface ChannelRepository extends JpaRepository<ChannelEntity, String> 
 
     @Query("SELECT c FROM ChannelEntity c " +
             "JOIN c.memberships cm " +
-            "WHERE cm.user.id = :userId")
+            "WHERE cm.user.id = :userId AND c.deleted = false")
     List<ChannelEntity> findAllByUserIdAndDeletedFalse(String userId);
 
 }

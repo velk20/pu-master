@@ -1,11 +1,11 @@
 package org.fmi.streamline.services;
 
 import jakarta.transaction.Transactional;
-import org.fmi.streamline.dtos.channel.AddMessageToChannelDTO;
-import org.fmi.streamline.dtos.channel.AddUserToChannelDTO;
-import org.fmi.streamline.dtos.channel.ChannelDTO;
-import org.fmi.streamline.dtos.channel.UpdateUserRoleToChannelDTO;
+import jakarta.validation.Valid;
+import org.fmi.streamline.dtos.channel.*;
+import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
+import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.UserMembershipDTO;
 import org.fmi.streamline.entities.ChannelEntity;
 import org.fmi.streamline.entities.ChannelMembershipEntity;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChannelService {
@@ -206,5 +207,26 @@ public class ChannelService {
         this.messageService.save(messageEntity);
 
         return this.convertToChannelDTO(this.getById(dto.getChannelId()));
+    }
+
+    public MessageDTO sendMessageToFriend(SendMessageToFriendDTO dto) {
+        UserEntity receiverUser = userService.getById(dto.getFriendId());
+        UserEntity senderUser = userService.getById(dto.getSenderId());
+
+        MessageEntity newMessage = MessageEntity.builder()
+                .receiver(receiverUser)
+                .channel(null)
+                .content(dto.getMessage())
+                .timestamp(LocalDateTime.now())
+                .deleted(false)
+                .author(senderUser)
+                .build();
+
+        MessageEntity saved = this.messageService.save(newMessage);
+        return this.convertToDTO(saved);
+    }
+
+    public List<MessageDTO> getFriendMessages(FriendMessageDTO dto) {
+        return this.messageService.getAllMessagesForFriend(dto).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 }
