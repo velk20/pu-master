@@ -94,15 +94,6 @@ export class DashboardComponent implements OnInit {
 
     this.channelService.getFriendMessages(getMessages).subscribe(res => {
       this.messages = res.data as Message[];
-    })
-
-    getMessages = {
-      friendId: this.currentLoggedUserId,
-      userId: this.selectedFriendId,
-    }
-
-    this.channelService.getFriendMessages(getMessages).subscribe(res => {
-      this.messages.push(...(res.data as Message[]));
       this.messages = this.messages.sort((a, b) =>
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
       );

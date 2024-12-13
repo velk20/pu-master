@@ -20,6 +20,6 @@ public class MessageService {
     }
 
     public List<MessageEntity> getAllMessagesForFriend(FriendMessageDTO dto) {
-        return this.messageRepository.findAllByChannelIsNullAndReceiverIdAndAuthorId(dto.getFriendId(), dto.getUserId());
+        return this.messageRepository.findMessagesByChannelNullAndReceiverAuthorSwapped(dto.getFriendId(), dto.getUserId());
     }
 }
