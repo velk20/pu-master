@@ -105,38 +105,38 @@
 
             </span>
           </div>
-          <!--City input-->
+          <!--Email input-->
           <div class="form-floating mb-3">
             <input class="form-control"
-                   id="city"
-                   name="city"
-                   formControlName="city"
-                   type="text"
-                   placeholder="Enter your city..."
+                   id="email"
+                   name="email"
+                   formControlName="email"
+                   type="email"
+                   placeholder="Enter your email..."
                    required
                    data-sb-validations="required"/>
-            <label for="city">City</label>
-            <span *ngIf="registerForm.get('city')?.touched">
-            <div *ngIf="registerForm.get('city')?.errors?.['required']"
-                 style="color: #de2d2d">City is required.</div>
+            <label for="email">Email</label>
+            <span *ngIf="registerForm.get('email')?.touched">
+            <div *ngIf="registerForm.get('email')?.errors?.['required']"
+                 style="color: #de2d2d">Email is required.</div>
             </span>
           </div>
           <!--Years input-->
           <div class="form-floating mb-3">
             <input class="form-control"
-                   id="years"
-                   name="years"
-                   formControlName="years"
+                   id="age"
+                   name="age"
+                   formControlName="age"
                    type="number"
-                   placeholder="Enter your years..."
+                   placeholder="Enter your age..."
                    required
                    data-sb-validations="required"/>
-            <label for="years">Years</label>
-            <span *ngIf="registerForm.get('years')?.touched">
-            <div *ngIf="registerForm.get('years')?.errors?.['required']"
-                 style="color: #de2d2d">Years is required.</div>
-              <div *ngIf="registerForm.get('years')?.errors?.['minimumAge']"
-                   style="color: #de2d2d">Years must be more or equal to 18.</div>
+            <label for="age">Age</label>
+            <span *ngIf="registerForm.get('age')?.touched">
+            <div *ngIf="registerForm.get('age')?.errors?.['required']"
+                 style="color: #de2d2d">Age is required.</div>
+              <div *ngIf="registerForm.get('age')?.errors?.['minimumAge']"
+                   style="color: #de2d2d">Age must be more or equal to 10.</div>
             </span>
           </div>
           <!-- Email address input-->
@@ -163,44 +163,6 @@
             >A phone number is required.</div>
             </span>
           </div>
-          <!-- Previous Accidents dropdown -->
-          <div class="mb-3">
-            <label class="form-label d-block" for="previous-accidents">Previous Accidents</label>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="previousAccidents"
-                id="previousAccidentsYes"
-                [value]="true"
-                formControlName="previousAccidents"
-              />
-              <label class="form-check-label" for="previousAccidentsYes">Yes</label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="previousAccidents"
-                id="previousAccidentsNo"
-                [value]="false"
-                formControlName="previousAccidents"
-              />
-              <label class="form-check-label" for="previousAccidentsNo">No</label>
-            </div>
-            <span *ngIf="registerForm.get('previousAccidents')?.touched">
-    <div *ngIf="registerForm.get('previousAccidents')?.errors?.['required']" style="color: #de2d2d">
-      Please select an option.
-    </div>
-  </span>
-          </div>
-
-          <!-- Message input-->
-          <!--          <div class="form-floating mb-3">-->
-          <!--            <textarea class="form-control" id="message" type="text" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"></textarea>-->
-          <!--            <label for="message">Message</label>-->
-          <!--            <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>-->
-          <!--          </div>-->
 
           <!-- Submit Button-->
           <div class="d-grid">

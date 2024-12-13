@@ -31,7 +31,7 @@ export class RegisterComponent {
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     phone: ['', Validators.required],
-    age: [0, [Validators.required, YearsValidator.minimumAge(17)]],
+    age: [0, [Validators.required, YearsValidator.minimumAge(10)]],
     email: ['', Validators.required],
     username: ['', Validators.required],
     password: ['', Validators.required],
