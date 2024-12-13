@@ -5,20 +5,48 @@
       <h5 class="p-3">Channels</h5>
       <ul class="list-group list-group-flush" style="max-height: 40vh; overflow-y: auto;">
         <li
-          class="list-group-item channel-item"
+          class="list-group-item d-flex justify-content-between align-items-center channel-item"
           *ngFor="let channel of channels"
           (click)="selectChannel(channel)">
-          {{ channel.name }}
+          <span >{{ channel.name }}</span>
+          <div class="dropdown">
+            <button
+              class="btn btn-sm btn-light"
+              type="button"
+              id="channelMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-three-dots"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelMenuButton">
+              <li><a class="dropdown-item" >Rename</a></li>
+              <li><a class="dropdown-item text-danger" >Delete</a></li>
+            </ul>
+          </div>
         </li>
       </ul>
 
       <h5 class="p-3">Friends</h5>
       <ul class="list-group list-group-flush" style="max-height: 40vh; overflow-y: auto;">
         <li
-          class="list-group-item channel-item"
+          class="list-group-item d-flex justify-content-between align-items-center channel-item"
           *ngFor="let friend of friends"
           (click)="selectFriend(friend)">
-          {{ friend.username }}
+          <span >{{ friend.username }}</span>
+          <div class="dropdown">
+            <button
+              class="btn btn-sm btn-light"
+              type="button"
+              id="friendMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-three-dots"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="friendMenuButton">
+              <li><a class="dropdown-item" >Message</a></li>
+              <li><a class="dropdown-item text-danger" >Remove</a></li>
+            </ul>
+          </div>
         </li>
       </ul>
 
