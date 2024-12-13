@@ -47,8 +47,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   currentLoggedUserId: string = '';
 
   availableFriends: Friend[] = [];
-  searchFriendQuery = '';
-  searchResults:Friend[] = [];
   selectedFriend: Friend | null = null;
 
   constructor(private channelService: ChannelService,
