@@ -63,7 +63,7 @@ export class RegisterComponent {
 
     this.authService.registerUser(user).subscribe(
       (res) => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/login']);
         this.toastrService.success('Register successfully!');
       },
       (err) => {

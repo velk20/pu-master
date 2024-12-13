@@ -42,7 +42,7 @@ export class LoginComponent {
     this.authService.loginUser(loginUser).subscribe(
       res => {
         this.authService.login(res.data as JwtTokenResponse);
-        this.router.navigate(['/']);
+        this.router.navigate(['/dashboard']);
         this.toastrService.success('Login successfully!');
       },
       (err) => {
