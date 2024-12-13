@@ -3,6 +3,11 @@ export interface Friend {
   username: string;
 }
 
+export interface AddFriend{
+  requesterUsername: string;
+  friendUsername: string;
+}
+
 export interface User{
   username: string;
   email: string;
@@ -13,7 +18,7 @@ export interface User{
   createdAt: string;
   lastModified: string;
   role?: string;
-  friendsIds: string[];
+  friends: Friend[];
 }
 
 export interface UserMembership{

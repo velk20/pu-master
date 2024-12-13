@@ -24,8 +24,11 @@
 
       <!-- Create Channel Button -->
       <div class="p-3">
-        <button class="btn btn-success w-100" (click)="openCreateChannelModal()">
+        <button class="btn btn-success w-100 mb-2" (click)="openCreateChannelModal()">
           Create Channel
+        </button>
+        <button class="btn btn-primary w-100" (click)="openAddFriendModal()">
+          Add Friend
         </button>
       </div>
     </div>
@@ -51,6 +54,56 @@
               [(ngModel)]="newMessage"
               name="messageInput">
             <button type="submit" class="btn btn-primary">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Adding a Friend -->
+  <div
+    class="modal fade"
+    id="addFriendModal"
+    tabindex="-1"
+    aria-labelledby="addFriendModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addFriendModalLabel">Add a Friend</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="addFriend()">
+            <div class="mb-3">
+              <label for="friendSearchInput" class="form-label">Search for Friends</label>
+              <input
+                type="text"
+                class="form-control"
+                id="friendSearchInput"
+                [(ngModel)]="searchFriendQuery"
+                (input)="searchFriends()"
+                name="friendSearch"
+                placeholder="Enter username"
+                autocomplete="off">
+            </div>
+            <div class="dropdown" *ngIf="searchResults.length > 0">
+              <ul class="dropdown-menu show">
+                <li
+                  *ngFor="let result of searchResults"
+                  class="dropdown-item"
+                  (click)="selectFriendFromSearch(result)">
+                  {{ result.username }}
+                </li>
+              </ul>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2" [disabled]="!selectedFriend">
+              Add Friend
+            </button>
           </form>
         </div>
       </div>

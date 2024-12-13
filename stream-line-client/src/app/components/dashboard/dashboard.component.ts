@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
-import {DatePipe, NgForOf} from "@angular/common";
+import {DatePipe, NgForOf, NgIf} from "@angular/common";
 import {ChannelService} from "../../services/channel.service";
 import {AuthService} from "../../services/auth.service";
 import {Channel, Message, NewChannel, NewMessage} from "../../models/channel";
 import {UserService} from "../../services/user.service";
-import {Friend} from "../../models/user";
+import {AddFriend, Friend, User} from "../../models/user";
 import {ToastrService} from "ngx-toastr";
 import { Modal } from 'bootstrap';
 
@@ -18,7 +18,8 @@ declare var bootstrap: any; // Add this line to declare bootstrap globally
   imports: [
     FormsModule,
     NgForOf,
-    DatePipe
+    DatePipe,
+    NgIf
   ],
   styleUrls: ['./dashboard.component.css']
 })
@@ -35,6 +36,11 @@ export class DashboardComponent implements OnInit {
   newChannelName: string = '';
   currentLoggedUsername: string = '';
 
+  availableFriends: Friend[] = [];
+  searchFriendQuery = '';
+  searchResults:Friend[] = [];
+  selectedFriend: Friend | null = null;
+
   constructor(private channelService: ChannelService,
               private authService: AuthService,
               private userService: UserService,
@@ -48,12 +54,16 @@ export class DashboardComponent implements OnInit {
     this.channelService.getChannelsForUser(user.id).subscribe(res => {
       this.channels = res.data as Channel[];
       this.selectChannel(this.channels[0])
-      console.log(this.channels)
-
-      this.userService.getUserById(user.id).subscribe(res => {
-//TODO add friends
-      })
     });
+    this.userService.getUserById(user.id).subscribe(res => {
+      const user = res.data as User;
+      this.friends = user.friends
+    });
+    this.userService.getAllAvailableUserFriends(user.id).subscribe(res => {
+      console.log(res)
+      const friends = res.data as Friend[];
+      this.availableFriends = friends
+    })
 
 
 
@@ -111,6 +121,51 @@ export class DashboardComponent implements OnInit {
     if (modalElement) {
       const modal = new Modal(modalElement)
       modal.show();
+    }
+  }
+
+  openAddFriendModal() {
+    const modalElement = document.getElementById('addFriendModal');
+    if (modalElement) {
+      const modal = new Modal(modalElement)
+      modal.show();
+    }
+  }
+
+  searchFriends() {
+    this.searchResults = this.availableFriends.filter((friend) =>
+      friend.username.toLowerCase().includes(this.searchFriendQuery.toLowerCase())
+    );
+  }
+
+  selectFriendFromSearch(friend: Friend) {
+    this.selectedFriend = friend;
+    this.searchFriendQuery = friend.username;
+    this.searchResults = [];
+  }
+
+  addFriend() {
+    if (this.selectedFriend) {
+      const newFriend:AddFriend={
+        requesterUsername: this.currentLoggedUsername,
+        friendUsername: this.selectedFriend.username
+      }
+      this.userService.addFriend(newFriend).subscribe(res => {
+        const currentUser = res.data as User;
+        this.friends = currentUser.friends;
+      })
+      this.selectedFriend = null;
+      this.searchFriendQuery = '';
+
+      const modalElement = document.getElementById('addFriendModal');
+      if (modalElement) {
+        const modal = Modal.getInstance(modalElement);
+        if (modal) {
+          modal.hide();
+        } else {
+          console.error('Modal instance not found. Ensure it is initialized.');
+        }
+      }
     }
   }
 
