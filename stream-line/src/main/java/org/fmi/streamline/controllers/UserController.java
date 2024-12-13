@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.user.AddFriendDTO;
 import org.fmi.streamline.dtos.user.FriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
-import org.fmi.streamline.dtos.user.UserFriendsMembershipDTO;
 import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.UserService;
@@ -36,6 +35,15 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/{userId}/available-friends")
+    @Operation(summary = "Get all users")
+    public ResponseEntity<?> getAllUsersAvailableForFriend(@PathVariable("userId") String userId) {
+        List<UserDetailDTO> all = this.userService.getAllAvailableFriends(userId);
+        return AppResponseUtil.success()
+                .withData(all)
+                .build();
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get user by id")
     public ResponseEntity<?> getUserById(@PathVariable("id") String id) {
@@ -60,7 +68,7 @@ public class UserController {
                     .withErrors(errorMessages)
                     .build();
         }
-        UserFriendsMembershipDTO userDTO = this.userService.addFriend(dto);
+        UserDetailDTO userDTO = this.userService.addFriend(dto);
         return AppResponseUtil.success()
                 .withData(userDTO)
                 .withMessage("Friend successfully added")

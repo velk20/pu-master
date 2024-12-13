@@ -17,7 +17,7 @@ export class UserService {
   }
 
   getAllAvailableUserFriends(userId:string):Observable<AppResponse> {
-    return this.http.get<AppResponse>(Constant.USERS_URL+`/friends/${userId}`);
+    return this.http.get<AppResponse>(Constant.USERS_URL+`/${userId}/available-friends`);
   }
 
   addFriend(addFriend: AddFriend): Observable<AppResponseWithMessage> {

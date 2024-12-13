@@ -1,12 +1,14 @@
 package org.fmi.streamline.services;
 
 import org.fmi.streamline.dtos.user.AddFriendDTO;
-import org.fmi.streamline.dtos.user.UserFriendsMembershipDTO;
+import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -28,7 +30,7 @@ public class UserService {
                 .orElseThrow(()-> new EntityNotFoundException("User with id " + id + " not found"));
     }
 
-    public UserFriendsMembershipDTO addFriend(AddFriendDTO dto) {
+    public UserDetailDTO addFriend(AddFriendDTO dto) {
         if (dto.getFriendUsername().equals(dto.getRequesterUsername())) {
             throw new IllegalArgumentException("User can't add themselves as friend");
         }
@@ -47,6 +49,11 @@ public class UserService {
         this.userRepository.save(requesterFriend);
         this.userRepository.save(newFriend);
 
-        return this.modelMapper.map(requesterFriend, UserFriendsMembershipDTO.class);
+        return this.modelMapper.map(requesterFriend, UserDetailDTO.class);
     }
+
+    public List<UserDetailDTO> getAllAvailableFriends(String userId) {
+        return this.userRepository.findAvailableFriends(userId).stream().map(e -> modelMapper.map(e, UserDetailDTO.class)).toList();
+    }
+
 }
