@@ -167,50 +167,71 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-
-  openAddFriendModal() {
-    const modalElement = document.getElementById('addFriendModal');
-    if (modalElement) {
-      const modal = new Modal(modalElement)
-      modal.show();
-    }
-  }
-
-  searchFriends() {
-    this.searchResults = this.availableFriends.filter((friend) =>
-      friend.username.toLowerCase().includes(this.searchFriendQuery.toLowerCase())
-    );
-  }
-
-  selectFriendFromSearch(friend: Friend) {
-    this.selectedFriend = friend;
-    this.searchFriendQuery = friend.username;
-    this.searchResults = [];
-  }
-
   addFriend() {
-    if (this.selectedFriend) {
-      const newFriend:AddFriend={
-        requesterUsername: this.currentLoggedUsername,
-        friendUsername: this.selectedFriend.username
-      }
-      this.userService.addFriend(newFriend).subscribe(res => {
-        const currentUser = res.data as User;
-        this.friends = currentUser.friends;
-      })
-      this.selectedFriend = null;
-      this.searchFriendQuery = '';
+    Swal.fire({
+      title: 'Add Friend',
+      html: `
+    <input id="friend-username" class="swal2-input" placeholder="Enter friend's username">
+    <ul id="autocomplete-list" style="list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+  `,
+      showCancelButton: true,
+      confirmButtonText: 'Add',
+      cancelButtonText: 'Cancel',
+      didOpen: () => {
+        const input = document.getElementById('friend-username') as HTMLInputElement;
+        const list = document.getElementById('autocomplete-list') as HTMLUListElement;
 
-      const modalElement = document.getElementById('addFriendModal');
-      if (modalElement) {
-        const modal = Modal.getInstance(modalElement);
-        if (modal) {
-          modal.hide();
+        input.addEventListener('input', () => {
+          const query = input.value.toLowerCase();
+          list.innerHTML = ''; // Clear previous results
+
+          if (query) {
+            const matches = this.availableFriends.filter((user) => user.username.toLowerCase().includes(query));
+            matches.forEach((user) => {
+              const listItem = document.createElement('li');
+              listItem.textContent = user.username;
+              listItem.style.cursor = 'pointer';
+              listItem.style.padding = '5px 10px';
+              listItem.style.border = '1px solid #ddd';
+              listItem.style.marginBottom = '2px';
+
+              listItem.addEventListener('click', () => {
+                input.value = user.username;
+                list.innerHTML = ''; // Clear the list after selection
+              });
+
+              list.appendChild(listItem);
+            });
+          }
+        });
+      },
+      preConfirm: () => {
+        const input = document.getElementById('friend-username') as HTMLInputElement;
+        if (!input.value) {
+          Swal.showValidationMessage('Please enter a username.');
         } else {
-          console.error('Modal instance not found. Ensure it is initialized.');
+          return input.value;
         }
+
+        return ;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const username = result.value;
+        // Perform the action to add the friend with the provided username
+        const newFriend:AddFriend={
+          requesterUsername: this.currentLoggedUsername,
+          friendUsername: username
+        }
+        this.userService.addFriend(newFriend).subscribe(res => {
+          const currentUser = res.data as User;
+          this.friends = currentUser.friends;
+          Swal.fire('Success', `You have added "${username}" as a friend!`, 'success');
+        })
+        this.selectedFriend = null;
+
       }
-    }
+    });
   }
 
   createChannel() {
