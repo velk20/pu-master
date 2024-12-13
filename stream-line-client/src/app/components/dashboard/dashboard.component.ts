@@ -221,27 +221,34 @@ export class DashboardComponent implements OnInit {
   }
 
   createChannel() {
-    if (this.newChannelName) {
-      const newChannel:NewChannel={
-        name: this.newChannelName,
-        ownerUsername: this.currentLoggedUsername,
-      }
-      this.channelService.createChannel(newChannel).subscribe(res => {
-        const newChannel = res.data as Channel; // The updated channel returned by the API
-        this.channels.push(newChannel);
-      })
-
-      this.newChannelName = '';
-      const modalElement = document.getElementById('createChannelModal');
-      if (modalElement) {
-        const modal = Modal.getInstance(modalElement);
-        if (modal) {
-          modal.hide();
-        } else {
-          console.error('Modal instance not found. Ensure it is initialized.');
+    Swal.fire({
+      title: 'Create New Channel',
+      input: 'text',
+      inputLabel: 'Channel Name',
+      inputPlaceholder: 'Enter the channel name',
+      showCancelButton: true,
+      confirmButtonText: 'Create',
+      cancelButtonText: 'Cancel',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to write a channel name!';
         }
+        return null;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const channelName = result.value;
+        const newChannel:NewChannel={
+          name: channelName,
+          ownerUsername: this.currentLoggedUsername,
+        }
+        this.channelService.createChannel(newChannel).subscribe(res => {
+          const newChannel = res.data as Channel; // The updated channel returned by the API
+          this.channels.push(newChannel);
+        })
+        Swal.fire('Success', `Channel "${channelName}" has been created!`, 'success');
       }
-    }
+    });
   }
 
   onDeleteChannel(id: string) {

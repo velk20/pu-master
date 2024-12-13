@@ -52,7 +52,7 @@
 
       <!-- Create Channel Button -->
       <div class="p-3">
-        <button class="btn btn-success w-100 mb-2" (click)="openCreateChannelModal()">
+        <button class="btn btn-success w-100 mb-2" (click)="createChannel()">
           Create Channel
         </button>
         <button class="btn btn-primary w-100" (click)="openAddFriendModal()">
@@ -138,40 +138,4 @@
     </div>
   </div>
 
-  <!-- Modal for Creating a Channel -->
-  <div
-    class="modal fade"
-    id="createChannelModal"
-    tabindex="-1"
-    aria-labelledby="createChannelModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="createChannelModalLabel">Create a New Channel</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form (ngSubmit)="createChannel()">
-            <div class="mb-3">
-              <label for="channelNameInput" class="form-label">Channel Name</label>
-              <input
-                type="text"
-                class="form-control"
-                id="channelNameInput"
-                [(ngModel)]="newChannelName"
-                name="channelName"
-                placeholder="Enter channel name"
-                required>
-            </div>
-            <button type="submit" class="btn btn-primary">Create</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
