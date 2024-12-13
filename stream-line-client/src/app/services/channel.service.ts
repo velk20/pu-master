@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Constant } from "../utils/constant";
 import { Observable } from "rxjs";
 import {AppResponse, AppResponseWithMessage, AppResponseWithNoData} from "../utils/app.response";
-import {FriendMessage, NewChannel, NewMessage, UserFriendMessage} from "../models/channel";
+import {FriendMessage, NewChannel, NewChannelName, NewMessage, UserFriendMessage} from "../models/channel";
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +35,9 @@ export class ChannelService {
 
   getFriendMessages(getMessages: UserFriendMessage):Observable<AppResponse> {
     return this.http.get<AppResponse>(`${Constant.CHANNELS_URL}/${getMessages.userId}/friendMessages/${getMessages.friendId}`);
+  }
+
+  renameChannel(updateChannel: NewChannelName):Observable<AppResponseWithMessage> {
+    return this.http.put<AppResponseWithMessage>(`${Constant.CHANNELS_URL}`, updateChannel);
   }
 }

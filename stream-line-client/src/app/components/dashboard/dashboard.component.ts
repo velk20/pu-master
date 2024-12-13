@@ -3,7 +3,15 @@ import {FormsModule} from "@angular/forms";
 import {DatePipe, NgForOf, NgIf} from "@angular/common";
 import {ChannelService} from "../../services/channel.service";
 import {AuthService} from "../../services/auth.service";
-import {Channel, FriendMessage, Message, NewChannel, NewMessage, UserFriendMessage} from "../../models/channel";
+import {
+  Channel,
+  FriendMessage,
+  Message,
+  NewChannel,
+  NewChannelName,
+  NewMessage,
+  UserFriendMessage
+} from "../../models/channel";
 import {UserService} from "../../services/user.service";
 import {AddFriend, Friend, User} from "../../models/user";
 import {ToastrService} from "ngx-toastr";
@@ -270,4 +278,41 @@ export class DashboardComponent implements OnInit {
         this.toastr.error('Failed to delete the channel. Please try again.', 'Error');
       })
   }
+
+  onRenameChannel(id: string) {
+    Swal.fire({
+      title: 'Enter new channel name',
+      input: 'text',
+      inputPlaceholder: 'New channel name',
+      showCancelButton: true,
+      confirmButtonText: 'Rename',
+      cancelButtonText: 'Cancel',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to enter a name!';
+        }
+
+        return;
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const newName = result.value;
+        const updateChannel:NewChannelName ={
+          id: id,
+          name: newName,
+        }
+        this.channelService.renameChannel(updateChannel).subscribe(res => {
+          const newChannel = res.data as Channel;
+          const channelIndex = this.channels.findIndex(channel => channel.id === newChannel.id);
+
+          if (channelIndex !== -1) {
+            this.channels[channelIndex] = newChannel;
+          }
+        }, error => {
+          this.toastr.error(error.error.message);
+        })
+      }
+    });
+  }
+
 }

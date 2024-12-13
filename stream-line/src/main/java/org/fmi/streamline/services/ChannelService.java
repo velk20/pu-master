@@ -229,4 +229,12 @@ public class ChannelService {
     public List<MessageDTO> getFriendMessages(FriendMessageDTO dto) {
         return this.messageService.getAllMessagesForFriend(dto).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
+    public ChannelDTO updateChannel(UpdateChannelDTO dto) {
+        ChannelEntity channelEntity = this.getById(dto.getId());
+        channelEntity.setName(dto.getName());
+
+        this.channelRepository.save(channelEntity);
+        return this.convertToChannelDTO(channelEntity);
+    }
 }

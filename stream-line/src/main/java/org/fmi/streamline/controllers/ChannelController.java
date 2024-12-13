@@ -151,6 +151,28 @@ public class ChannelController {
                 .build();
     }
 
+    @PutMapping()
+    @Operation(summary = "Update channel")
+    public ResponseEntity<?> updateChannel(@Valid @RequestBody UpdateChannelDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        ChannelDTO updated = channelService.updateChannel(dto);
+        return AppResponseUtil.created()
+                .withData(updated)
+                .withMessage("Channel updated successfully")
+                .build();
+    }
+
+
     @PostMapping
     @Operation(summary = "Create channel")
     public ResponseEntity<?> createChannel(@Valid @RequestBody ChannelDTO channelDTO, BindingResult bindingResult) {
