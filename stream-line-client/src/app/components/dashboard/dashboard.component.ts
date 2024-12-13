@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {DatePipe, NgForOf, NgIf} from "@angular/common";
 import {ChannelService} from "../../services/channel.service";
@@ -15,7 +15,7 @@ import {
 import {UserService} from "../../services/user.service";
 import {AddFriend, Friend, User} from "../../models/user";
 import {ToastrService} from "ngx-toastr";
-import { Modal } from 'bootstrap';
+import {Dropdown, Modal} from 'bootstrap';
 import Swal from 'sweetalert2';
 
 declare var bootstrap: any; // Add this line to declare bootstrap globally
@@ -27,12 +27,11 @@ declare var bootstrap: any; // Add this line to declare bootstrap globally
   imports: [
     FormsModule,
     NgForOf,
-    DatePipe,
-    NgIf
+    DatePipe
   ],
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
   channels: Channel[] = [];
 
   friends: Friend[] = [];
@@ -56,6 +55,13 @@ export class DashboardComponent implements OnInit {
               private authService: AuthService,
               private userService: UserService,
               private toastr: ToastrService,) {
+  }
+
+  ngAfterViewInit() {
+    const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+    dropdownElements.forEach((dropdown) => {
+      new Dropdown(dropdown);
+    });
   }
 
   ngOnInit(): void {

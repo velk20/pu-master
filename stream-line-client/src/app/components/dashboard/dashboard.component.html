@@ -13,15 +13,18 @@
             <button
               class="btn btn-sm btn-light"
               type="button"
-              id="channelMenuButton"
+              id="channelMenuButton{{ channel.id }}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
               <i class="bi bi-three-dots"></i>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelMenuButton">
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              [attr.aria-labelledby]="'channelMenuButton' + channel.id">
               <li><a class="dropdown-item" (click)="onRenameChannel(channel.id)">Rename</a></li>
-              <li><a class="dropdown-item text-danger" (click)="onDeleteChannel(channel.id)" >Delete</a></li>
+              <li><a class="dropdown-item text-danger" (click)="onDeleteChannel(channel.id)">Delete</a></li>
             </ul>
+
           </div>
         </li>
       </ul>
@@ -37,15 +40,18 @@
             <button
               class="btn btn-sm btn-light"
               type="button"
-              id="friendMenuButton"
+              id="friendMenuButton{{ friend.id }}"
               data-bs-toggle="dropdown"
               aria-expanded="false">
               <i class="bi bi-three-dots"></i>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="friendMenuButton">
-              <li><a class="dropdown-item" >Message</a></li>
-              <li><a class="dropdown-item text-danger" >Remove</a></li>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              [attr.aria-labelledby]="'friendMenuButton' + friend.id">
+              <li><a class="dropdown-item">Message</a></li>
+              <li><a class="dropdown-item text-danger">Remove</a></li>
             </ul>
+
           </div>
         </li>
       </ul>
