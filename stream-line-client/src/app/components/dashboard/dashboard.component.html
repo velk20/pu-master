@@ -21,6 +21,7 @@
             <ul
               class="dropdown-menu dropdown-menu-end"
               [attr.aria-labelledby]="'channelMenuButton' + channel.id">
+              <li *ngIf="currentLoggedUsername!=channel.ownerUsername"><a class="dropdown-item" (click)="onLeaveChannel(channel.id)">Leave channel</a></li>
               <li *ngIf="currentLoggedUsername==channel.ownerUsername"><a class="dropdown-item" (click)="onAddUserToChannel(channel.id)">Add member</a></li>
               <li *ngIf="currentLoggedUsername==channel.ownerUsername"><a class="dropdown-item" (click)="onRenameChannel(channel.id)">Rename</a></li>
               <li *ngIf="currentLoggedUsername==channel.ownerUsername"><a class="dropdown-item text-danger" (click)="onDeleteChannel(channel.id)">Delete</a></li>

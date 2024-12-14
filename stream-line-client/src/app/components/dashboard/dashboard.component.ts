@@ -456,4 +456,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  onLeaveChannel(channelId: string) {
+    //TODO
+  }
 }
