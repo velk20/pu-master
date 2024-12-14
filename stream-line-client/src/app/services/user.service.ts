@@ -23,4 +23,8 @@ export class UserService {
   addFriend(addFriend: AddFriend): Observable<AppResponseWithMessage> {
     return this.http.put<AppResponseWithMessage>(Constant.USERS_URL + `/addFriend`, addFriend);
   }
+
+  removeFriend(removeFriend: AddFriend): Observable<AppResponseWithMessage> {
+    return this.http.put<AppResponseWithMessage>(Constant.USERS_URL + `/removeFriend`, removeFriend);
+  }
 }

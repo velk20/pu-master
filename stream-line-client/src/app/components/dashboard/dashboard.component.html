@@ -48,8 +48,8 @@
             <ul
               class="dropdown-menu dropdown-menu-end"
               [attr.aria-labelledby]="'friendMenuButton' + friend.id">
-              <li><a class="dropdown-item">Message</a></li>
-              <li><a class="dropdown-item text-danger">Remove</a></li>
+              <li><a class="dropdown-item">Add to channel</a></li>
+              <li><a class="dropdown-item text-danger" (click)="onRemoveFriend(friend.username)">Remove</a></li>
             </ul>
 
           </div>

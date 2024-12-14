@@ -333,6 +333,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           if (channelIndex !== -1) {
             this.channels[channelIndex] = newChannel;
           }
+
+          this.selectedChatName = updateChannel.name;
+          Swal.fire('Success', `Channel was renamed successfully`, 'success');
         }, error => {
           this.toastr.error(error.error.message);
         })
@@ -340,4 +343,44 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onRemoveFriend(friendUsername: string) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to remove your friend? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Remove',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Perform the delete action (e.g., call an API to delete the channel)
+        this.removeFriend(this.currentLoggedUsername,friendUsername); // Example function to handle deletion
+
+        Swal.fire(
+          'Removed!',
+          `Friend with username: ${friendUsername} was removed!`,
+          'success'
+        );
+      }
+    });
+
+  }
+
+  private removeFriend(currentLoggedUsername: string, friendUsername: string) {
+    const removeFriend: AddFriend = {
+      friendUsername: friendUsername,
+      requesterUsername: currentLoggedUsername
+    }
+
+    this.userService.removeFriend(removeFriend).subscribe(res => {
+        const user = res.data as User;
+      const updatedFriends: Friend[] = user.friends;
+      this.friends = updatedFriends;
+
+    }, error => {
+      this.toastr.error(error.error.message);
+    })
+  }
 }
