@@ -75,6 +75,26 @@ public class UserController {
                 .build();
     }
 
+    @PutMapping("/removeFriend")
+    @Operation(summary = "Remove friend from user's friend list")
+    public ResponseEntity<?> removeFriend(@Valid @RequestBody AddFriendDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+        UserDetailDTO userDTO = this.userService.removeFriend(dto);
+        return AppResponseUtil.success()
+                .withData(userDTO)
+                .withMessage("Friend successfully removed")
+                .build();
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
         return AppResponseUtil.error(HttpStatus.BAD_REQUEST)

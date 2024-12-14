@@ -1,5 +1,6 @@
 package org.fmi.streamline.services;
 
+import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.user.AddFriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.UserEntity;
@@ -56,4 +57,25 @@ public class UserService {
         return this.userRepository.findAvailableFriends(userId).stream().map(e -> modelMapper.map(e, UserDetailDTO.class)).toList();
     }
 
+    public UserDetailDTO removeFriend( AddFriendDTO dto) {
+        if (dto.getFriendUsername().equals(dto.getRequesterUsername())) {
+            throw new IllegalArgumentException("User can't remove themselves as friend");
+        }
+
+        UserEntity requesterFriend = this.getByUsername(dto.getRequesterUsername());
+        UserEntity newFriend = this.getByUsername(dto.getFriendUsername());
+
+        if (!requesterFriend.getFriends().contains(newFriend)
+                || !newFriend.getFriends().contains(requesterFriend)) {
+            throw new IllegalArgumentException("User is not your friend friend");
+        }
+
+        requesterFriend.removeFriend(newFriend);
+        newFriend.removeFriend(requesterFriend);
+
+        UserEntity updatedUser = this.userRepository.save(requesterFriend);
+        this.userRepository.save(newFriend);
+
+        return this.modelMapper.map(updatedUser, UserDetailDTO.class);
+    }
 }
