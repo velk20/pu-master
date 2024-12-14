@@ -6,6 +6,7 @@ import org.fmi.streamline.dtos.channel.*;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
+import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.dtos.user.UserMembershipDTO;
 import org.fmi.streamline.entities.ChannelEntity;
 import org.fmi.streamline.entities.ChannelMembershipEntity;
@@ -236,5 +237,12 @@ public class ChannelService {
 
         this.channelRepository.save(channelEntity);
         return this.convertToChannelDTO(channelEntity);
+    }
+
+    public List<UserDetailDTO> getAllAvailableUsersTOAddToChannel(String channelId) {
+        this.getById(channelId);
+
+        List<UserEntity> usersNotInChannel = this.channelRepository.findUsersNotInChannel(channelId);
+        return usersNotInChannel.stream().map(u -> this.modelMapper.map(u, UserDetailDTO.class)).toList();
     }
 }

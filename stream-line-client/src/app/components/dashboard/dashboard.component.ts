@@ -9,7 +9,7 @@ import {
   Message,
   NewChannel,
   NewChannelName,
-  NewMessage,
+  NewMessage, NewUserToChannel,
   UserFriendMessage
 } from "../../models/channel";
 import {UserService} from "../../services/user.service";
@@ -27,7 +27,8 @@ declare var bootstrap: any; // Add this line to declare bootstrap globally
   imports: [
     FormsModule,
     NgForOf,
-    DatePipe
+    DatePipe,
+    NgIf
   ],
   styleUrls: ['./dashboard.component.css']
 })
@@ -382,5 +383,80 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }, error => {
       this.toastr.error(error.error.message);
     })
+  }
+
+  onAddUserToChannel(id: string) {
+    Swal.fire({
+      title: 'Add user to channel',
+      html: `
+    <input id="friend-username" class="swal2-input" placeholder="Enter user's username">
+    <ul id="autocomplete-list" style="list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+  `,
+      showCancelButton: true,
+      confirmButtonText: 'Add',
+      cancelButtonText: 'Cancel',
+      didOpen: () => {
+        const input = document.getElementById('friend-username') as HTMLInputElement;
+        const list = document.getElementById('autocomplete-list') as HTMLUListElement;
+
+        input.addEventListener('input', () => {
+          const query = input.value.toLowerCase();
+          list.innerHTML = ''; // Clear previous results
+
+          if (query) {
+            this.channelService.getAvailableUsersForChannel(id).subscribe(res => {
+              const usersAvailableForChannel = res.data as User[];
+              const matches = usersAvailableForChannel.filter((user) => user.username.toLowerCase().includes(query));
+              matches.forEach((user) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = user.username;
+                listItem.style.cursor = 'pointer';
+                listItem.style.padding = '5px 10px';
+                listItem.style.border = '1px solid #ddd';
+                listItem.style.marginBottom = '2px';
+
+                listItem.addEventListener('click', () => {
+                  input.value = user.username;
+                  list.innerHTML = ''; // Clear the list after selection
+                });
+
+                list.appendChild(listItem);
+              });
+            })
+          }
+        });
+      },
+      preConfirm: () => {
+        const input = document.getElementById('friend-username') as HTMLInputElement;
+        if (!input.value) {
+          Swal.showValidationMessage('Please enter a username.');
+        } else {
+          return input.value;
+        }
+
+        return ;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const username = result.value;
+        // Perform the action to add the friend with the provided username
+        const newUserToChannel:  NewUserToChannel={
+          channelId: id,
+          username: username,
+        }
+        this.channelService.addUserTOChannel(newUserToChannel).subscribe(res => {
+          let updatedChannel = res.data as Channel;
+          const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
+
+          if (channelIndex !== -1) {
+            this.channels[channelIndex] = updatedChannel;
+          }
+
+          Swal.fire('Success', `You have added "${username}" to the channel: ${updatedChannel.name}!`, 'success');
+        },error =>  {
+          this.toastr.error(error.error.message);
+        })
+      }
+    });
   }
 }

@@ -9,6 +9,7 @@ import org.fmi.streamline.dtos.channel.*;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
+import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.ChannelService;
@@ -41,6 +42,16 @@ public class ChannelController {
 
         return AppResponseUtil.success()
                 .withData(allChannelsByMember)
+                .build();
+    }
+
+    @GetMapping("/{channelId}/availableUsers")
+    @Operation(summary = "Get all available users to add to channel")
+    public ResponseEntity<?> getAvailableUsersByChannel(@Parameter(description = "ID of the channel")@PathVariable String channelId) {
+        List<UserDetailDTO> availableUsers = this.channelService.getAllAvailableUsersTOAddToChannel(channelId);
+
+        return AppResponseUtil.success()
+                .withData(availableUsers)
                 .build();
     }
 
