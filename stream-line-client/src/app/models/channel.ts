@@ -39,8 +39,11 @@ export interface FriendMessage{
   message: string;
 }
 
-export interface NewMessage {
+export interface NewUserToChannel {
   channelId: string;
   username: string;
+}
+
+export interface NewMessage extends NewUserToChannel{
   message: string;
 }
