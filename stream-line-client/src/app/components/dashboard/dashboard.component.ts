@@ -34,16 +34,13 @@ declare var bootstrap: any; // Add this line to declare bootstrap globally
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   channels: Channel[] = [];
-
   friends: Friend[] = [];
-
   messages:Message[]  = [];
 
   selectedChanelId: string = '';
   selectedFriendId: string = '';
   selectedChatName: string = 'Channel Name';
   newMessage: string = '';
-  newChannelName: string = '';
   currentLoggedUsername: string = '';
   currentLoggedUserId: string = '';
 
