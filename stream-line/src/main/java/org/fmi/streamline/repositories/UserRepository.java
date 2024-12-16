@@ -1,5 +1,6 @@
 package org.fmi.streamline.repositories;
 
+import jakarta.validation.constraints.NotEmpty;
 import org.fmi.streamline.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +20,10 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     Optional<UserEntity> findByUsernameAndIsActiveTrue(String username);
     Optional<UserEntity> findByEmailAndIsActiveTrue(String email);
     Optional<UserEntity> findByPhoneAndIsActiveTrue(String phone);
-
+    @Query("SELECT u FROM UserEntity u WHERE u.id NOT IN " +
+            "(SELECT cm.user.id FROM ChannelMembershipEntity cm WHERE cm.channel.id = :channelId)")
+    List<UserEntity> findUsersNotInChannel(@Param("channelId") String channelId);
+@Query("SELECT cm.user FROM ChannelMembershipEntity cm " +
+        "WHERE cm.channel.id = :channelId AND cm.user.username = :username")
+    Optional<UserEntity> findUserInChannel(String username, String channelId);
 }

@@ -1,6 +1,6 @@
 package org.fmi.streamline.services;
 
-import jakarta.validation.Valid;
+import org.fmi.streamline.dtos.channel.AddOrRemoveUserToChannelDTO;
 import org.fmi.streamline.dtos.user.AddFriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.UserEntity;
@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -77,5 +78,13 @@ public class UserService {
         this.userRepository.save(newFriend);
 
         return this.modelMapper.map(updatedUser, UserDetailDTO.class);
+    }
+
+    public List<UserEntity> findUsersNotInChannel(String channelId) {
+        return this.userRepository.findUsersNotInChannel(channelId);
+    }
+
+    public Optional<UserEntity> isUserInChannel(AddOrRemoveUserToChannelDTO dto) {
+        return this.userRepository.findUserInChannel(dto.getUsername(), dto.getChannelId());
     }
 }

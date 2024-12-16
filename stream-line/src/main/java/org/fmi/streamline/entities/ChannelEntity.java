@@ -38,4 +38,9 @@ public class ChannelEntity extends BaseEntity {
         memberships.add(membership);
         return this;
     }
+
+    public ChannelEntity removeMembership(ChannelMembershipEntity membership) {
+        memberships.remove(membership);
+        return this;
+    }
 }

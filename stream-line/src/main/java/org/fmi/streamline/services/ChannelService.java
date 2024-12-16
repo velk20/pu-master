@@ -137,7 +137,7 @@ public class ChannelService {
     }
 
     @Transactional
-    public ChannelDTO addNewUser(AddUserToChannelDTO dto) {
+    public ChannelDTO addNewUser(AddOrRemoveUserToChannelDTO dto) {
         UserEntity userEntity = this.userService.getByUsername(dto.getUsername());
         ChannelEntity channelEntity = this.getById(dto.getChannelId());
 
@@ -242,7 +242,18 @@ public class ChannelService {
     public List<UserDetailDTO> getAllAvailableUsersTOAddToChannel(String channelId) {
         this.getById(channelId);
 
-        List<UserEntity> usersNotInChannel = this.channelRepository.findUsersNotInChannel(channelId);
+        List<UserEntity> usersNotInChannel = this.userService.findUsersNotInChannel(channelId);
         return usersNotInChannel.stream().map(u -> this.modelMapper.map(u, UserDetailDTO.class)).toList();
+    }
+
+    public ChannelDTO removeUserFromChannel(AddOrRemoveUserToChannelDTO dto) {         ;
+        ChannelEntity channelEntity = this.getById(dto.getChannelId());
+        ChannelMembershipEntity membershipEntity = this.channelMembershipService
+                .findByUsernameAndChannelId(dto.getUsername(), dto.getChannelId())
+                .orElseThrow(() -> new IllegalArgumentException("User with username: " + dto.getUsername() + " is not part of this channel"));
+        channelEntity.removeMembership(membershipEntity);
+        ChannelMembershipEntity saved = this.channelMembershipService.save(membershipEntity);
+
+        return this.convertToChannelDTO(saved.getChannel());
     }
 }

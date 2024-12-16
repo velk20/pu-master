@@ -23,8 +23,8 @@ export class ChannelService {
     return this.http.get<AppResponse>(`${Constant.CHANNELS_URL}/${userId}`);
   }
 
-  addUserTOChannel(newUserToChannel: UserToChannel): Observable<AppResponse> {
-    return this.http.put<AppResponse>(`${Constant.CHANNELS_URL}/users`, newUserToChannel);
+  addOrRemoveUserFromChannel(userToChannel: UserToChannel): Observable<AppResponse> {
+    return this.http.put<AppResponse>(`${Constant.CHANNELS_URL}/users`, userToChannel);
   }
 
   addMessage(newMessage: NewMessage): Observable<AppResponseWithMessage> {

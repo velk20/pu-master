@@ -20,8 +20,4 @@ public interface ChannelRepository extends JpaRepository<ChannelEntity, String> 
             "JOIN c.memberships cm " +
             "WHERE cm.user.id = :userId AND c.deleted = false")
     List<ChannelEntity> findAllByUserIdAndDeletedFalse(String userId);
-
-    @Query("SELECT u FROM UserEntity u WHERE u.id NOT IN " +
-            "(SELECT cm.user.id FROM ChannelMembershipEntity cm WHERE cm.channel.id = :channelId)")
-    List<UserEntity> findUsersNotInChannel(@Param("channelId") String channelId);
 }

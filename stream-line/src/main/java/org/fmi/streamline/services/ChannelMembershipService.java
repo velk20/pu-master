@@ -4,12 +4,17 @@ import org.fmi.streamline.entities.ChannelMembershipEntity;
 import org.fmi.streamline.repositories.ChannelMembershipRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ChannelMembershipService {
     private final ChannelMembershipRepository channelMembershipRepository;
 
     public ChannelMembershipService(ChannelMembershipRepository channelMembershipRepository) {
         this.channelMembershipRepository = channelMembershipRepository;
+    }
+    public Optional<ChannelMembershipEntity> findByUsernameAndChannelId(String username, String channelId){
+        return this.channelMembershipRepository.findByChannelIdAndUserUsername(channelId, username);
     }
 
 

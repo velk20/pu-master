@@ -92,6 +92,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  resetChat(){
+    this.selectedFriendId = '';
+    this.selectedChanelId = '';
+    this.selectedChatName = 'Channel Name';
+    this.messages = [];
+  }
+
   selectFriend(friend: Friend) {
     this.selectedChanelId = '';
     this.selectedFriendId = friend.id;
@@ -441,7 +448,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           channelId: id,
           username: username,
         }
-        this.channelService.addUserTOChannel(newUserToChannel).subscribe(res => {
+        this.channelService.addOrRemoveUserFromChannel(newUserToChannel).subscribe(res => {
           let updatedChannel = res.data as Channel;
           const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
 
@@ -458,6 +465,46 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   onLeaveChannel(channelId: string) {
-    //TODO
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to leave from this channel? Action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Leave',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.leaveChannel(this.currentLoggedUsername,channelId);
+
+        Swal.fire(
+          'Left!',
+          `You left from channel with name: ${this.selectedChatName}!`,
+          'success'
+        );
+      }
+    });
+
+  }
+
+  private leaveChannel(currentLoggedUsername: string, channelId: string) {
+    this.channelService
+      .addOrRemoveUserFromChannel({channelId: channelId, username: currentLoggedUsername, remove: true})
+      .subscribe(res => {
+        const updatedChannel = res.data as Channel;
+        const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
+        console.log(updatedChannel)
+        if (channelIndex !== -1) {
+          this.channels.splice(channelIndex, 1);
+          if (this.channels.length > 0){
+            this.selectChannel(this.channels[0]);
+          } else {
+            this.resetChat();
+          }
+        }
+      }, error => {
+        this.toastr.error(error.error.message);
+      })
   }
 }

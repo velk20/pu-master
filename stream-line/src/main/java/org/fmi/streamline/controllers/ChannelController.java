@@ -10,7 +10,6 @@ import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
-import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.ChannelService;
 import org.fmi.streamline.util.AppResponseUtil;
@@ -76,9 +75,9 @@ public class ChannelController {
                 .build();
     }
 
-    @PutMapping("/addUser")
-    @Operation(summary = "Add new user to the channel")
-    public ResponseEntity<?> addUserToChannel(@Valid @RequestBody AddUserToChannelDTO dto,BindingResult bindingResult) {
+    @PutMapping("/users")
+    @Operation(summary = "Add/remove user to/from channel")
+    public ResponseEntity<?> addUserToChannel(@Valid @RequestBody AddOrRemoveUserToChannelDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()
                     .stream()
@@ -89,7 +88,12 @@ public class ChannelController {
                     .withErrors(errorMessages)
                     .build();
         }
-        ChannelDTO channelDTO = channelService.addNewUser(dto);
+        ChannelDTO channelDTO;
+        if (dto.isRemove()) {
+            channelDTO = channelService.removeUserFromChannel(dto);
+        } else {
+            channelDTO = channelService.addNewUser(dto);
+        }
 
         return AppResponseUtil.success()
                 .withData(channelDTO)
