@@ -584,7 +584,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
           if (query) {
             const availableChannels:Channel[] = this.channels
-              .filter(channel=> channel.memberships.filter(member => member.username != username));
+              .filter(channel=> channel.ownerUsername == this.currentLoggedUsername && channel.memberships.filter(member => member.username != username));
 
               const matches = availableChannels.filter((channel) => channel.name.toLowerCase().includes(query));
               matches.forEach((channel) => {
