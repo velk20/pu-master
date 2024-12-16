@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.channelService.getChannelsForUser(user.id).subscribe(res => {
       this.channels = res.data as Channel[];
       if (this.channels.length > 0) {
-        this.selectChannel(this.channels[0])
+        this.onSelectChannel(this.channels[0])
       }
     });
     this.userService.getUserById(user.id).subscribe(res => {
@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     })
     }
 
-  selectChannel(channel: Channel) {
+  onSelectChannel(channel: Channel) {
     this.selectedFriendId = '';
     this.selectedChanelId = channel.id;
     this.selectedChatName = channel.name;
@@ -99,7 +99,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.messages = [];
   }
 
-  selectFriend(friend: Friend) {
+  onSelectFriend(friend: Friend) {
     this.selectedChanelId = '';
     this.selectedFriendId = friend.id;
     this.selectedChatName = friend.username;
@@ -117,7 +117,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     })
   }
 
-  sendMessage() {
+  onSendMessage() {
     if (this.newMessage.trim()) {
       if (this.selectedChanelId){
         this.sendMessageToChannel()
@@ -128,7 +128,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  sendMessageToFriend(){
+  private sendMessageToFriend(){
       const friendMessage: FriendMessage = {
         friendId: this.selectedFriendId,
         senderId: this.currentLoggedUserId,
@@ -146,7 +146,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
   }
 
-  sendMessageToChannel(){
+  private sendMessageToChannel(){
     const newMessage: NewMessage={
       message: this.newMessage,
       username: this.currentLoggedUsername,
@@ -158,11 +158,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         const index = this.channels.findIndex(channel => channel.id === updatedChannel.id);
 
         if (index !== -1) {
-          // Update the channel in the channels array
           this.channels[index] = updatedChannel;
         }
 
-        // Optionally reassign the messages if this is the currently selected channel
         if (this.selectedChatName === updatedChannel.name) {
           this.messages = updatedChannel.messages.sort((a, b) =>
             new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
@@ -176,7 +174,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     );
   }
 
-  addFriend() {
+  onAddFriend() {
     Swal.fire({
       title: 'Add Friend',
       html: `
@@ -226,24 +224,27 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        const username = result.value;
-        // Perform the action to add the friend with the provided username
-        const newFriend:AddFriend={
-          requesterUsername: this.currentLoggedUsername,
-          friendUsername: username
-        }
-        this.userService.addFriend(newFriend).subscribe(res => {
-          const currentUser = res.data as User;
-          this.friends = currentUser.friends;
-          Swal.fire('Success', `You have added "${username}" as a friend!`, 'success');
-        })
-        this.selectedFriend = null;
-
+        this.addFriend(result.value);
       }
     });
   }
 
-  createChannel() {
+  private addFriend(friendUsername: string){
+    // Perform the action to add the friend with the provided username
+    const newFriend:AddFriend={
+      requesterUsername: this.currentLoggedUsername,
+      friendUsername: friendUsername
+    }
+    this.userService.addFriend(newFriend).subscribe(res => {
+      const currentUser = res.data as User;
+      this.friends = currentUser.friends;
+      Swal.fire('Success', `You have added "${friendUsername}" as a friend!`, 'success');
+    })
+    this.selectedFriend = null;
+
+  }
+
+  onCreateChannel() {
     Swal.fire({
       title: 'Create New Channel',
       input: 'text',
@@ -260,18 +261,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        const channelName = result.value;
-        const newChannel:NewChannel={
-          name: channelName,
-          ownerUsername: this.currentLoggedUsername,
-        }
-        this.channelService.createChannel(newChannel).subscribe(res => {
-          const newChannel = res.data as Channel; // The updated channel returned by the API
-          this.channels.push(newChannel);
-        })
-        Swal.fire('Success', `Channel "${channelName}" has been created!`, 'success');
+        this.createChannel(result.value)
       }
     });
+  }
+
+  private createChannel(channelName: string){
+    const newChannel:NewChannel={
+      name: channelName,
+      ownerUsername: this.currentLoggedUsername,
+    }
+    this.channelService.createChannel(newChannel).subscribe(res => {
+      const newChannel = res.data as Channel; // The updated channel returned by the API
+      this.channels.push(newChannel);
+    })
+    Swal.fire('Success', `Channel "${channelName}" has been created!`, 'success');
   }
 
   onDeleteChannel(id: string) {
@@ -286,23 +290,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        // Perform the delete action (e.g., call an API to delete the channel)
-        this.deleteChannelById(id); // Example function to handle deletion
+        this.deleteChannelById(id);
+      }
+    });
+  }
+
+  private deleteChannelById(id: string) {
+    this.channelService.deleteChannel(id).subscribe(res => {
+      this.toastr.info(res.message);
+      this.channels = this.channels.filter(channel => channel.id !== id);
 
         Swal.fire(
           'Deleted!',
           'The channel has been deleted.',
           'success'
         );
-      }
-    });
-  }
-
-  // Example function to delete the channel (replace this with your actual logic)
-  deleteChannelById(id: string) {
-    this.channelService.deleteChannel(id).subscribe(res => {
-      this.toastr.info(res.message);
-      this.channels = this.channels.filter(channel => channel.id !== id);
     },
       (error) => {
         this.toastr.error('Failed to delete the channel. Please try again.', 'Error');
@@ -326,28 +328,30 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     }).then((result) => {
       if (result.isConfirmed && result.value) {
-        const newName = result.value;
-        const updateChannel:NewChannelName ={
-          id: id,
-          name: newName,
-        }
-        this.channelService.renameChannel(updateChannel).subscribe(res => {
-          const newChannel = res.data as Channel;
-          const channelIndex = this.channels.findIndex(channel => channel.id === newChannel.id);
-
-          if (channelIndex !== -1) {
-            this.channels[channelIndex] = newChannel;
-          }
-
-          this.selectedChatName = updateChannel.name;
-          Swal.fire('Success', `Channel was renamed successfully`, 'success');
-        }, error => {
-          this.toastr.error(error.error.message);
-        })
+        this.renameChannel(id, result.value);
       }
     });
   }
 
+  private renameChannel(channelId: string, newChannelName:string){
+    const updateChannel:NewChannelName ={
+      id: channelId,
+      name: newChannelName,
+    }
+    this.channelService.renameChannel(updateChannel).subscribe(res => {
+      const newChannel = res.data as Channel;
+      const channelIndex = this.channels.findIndex(channel => channel.id === newChannel.id);
+
+      if (channelIndex !== -1) {
+        this.channels[channelIndex] = newChannel;
+      }
+
+      this.selectedChatName = updateChannel.name;
+      Swal.fire('Success', `Channel was renamed successfully`, 'success');
+    }, error => {
+      this.toastr.error(error.error.message);
+    })
+  }
   onRemoveFriend(friendUsername: string) {
     Swal.fire({
       title: 'Are you sure?',
@@ -380,7 +384,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     this.userService.removeFriend(removeFriend).subscribe(res => {
-        const user = res.data as User;
+      const user = res.data as User;
       const updatedFriends: Friend[] = user.friends;
       this.friends = updatedFriends;
 
@@ -442,26 +446,28 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        const username = result.value;
-        // Perform the action to add the friend with the provided username
-        const newUserToChannel:  UserToChannel={
-          channelId: id,
-          username: username,
-        }
-        this.channelService.addOrRemoveUserFromChannel(newUserToChannel).subscribe(res => {
-          let updatedChannel = res.data as Channel;
-          const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
-
-          if (channelIndex !== -1) {
-            this.channels[channelIndex] = updatedChannel;
-          }
-
-          Swal.fire('Success', `You have added "${username}" to the channel: ${updatedChannel.name}!`, 'success');
-        },error =>  {
-          this.toastr.error(error.error.message);
-        })
+       this.addUserToChannel(result.value, id);
       }
     });
+  }
+
+  private addUserToChannel(username: string, id: string){
+    const newUserToChannel:  UserToChannel={
+      channelId: id,
+      username: username,
+    }
+    this.channelService.addOrRemoveUserFromChannel(newUserToChannel).subscribe(res => {
+      let updatedChannel = res.data as Channel;
+      const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
+
+      if (channelIndex !== -1) {
+        this.channels[channelIndex] = updatedChannel;
+      }
+
+      Swal.fire('Success', `You have added "${username}" to the channel: ${updatedChannel.name}!`, 'success');
+    },error =>  {
+      this.toastr.error(error.error.message);
+    })
   }
 
   onLeaveChannel(channelId: string) {
@@ -477,12 +483,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.leaveChannel(this.currentLoggedUsername,channelId);
-
-        Swal.fire(
-          'Left!',
-          `You left from channel with name: ${this.selectedChatName}!`,
-          'success'
-        );
       }
     });
 
@@ -494,17 +494,26 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       .subscribe(res => {
         const updatedChannel = res.data as Channel;
         const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
-        console.log(updatedChannel)
         if (channelIndex !== -1) {
           this.channels.splice(channelIndex, 1);
           if (this.channels.length > 0){
-            this.selectChannel(this.channels[0]);
+            this.onSelectChannel(this.channels[0]);
           } else {
             this.resetChat();
           }
+
+          Swal.fire(
+            'Left!',
+            `You left from channel with name: ${this.selectedChatName}!`,
+            'success'
+          );
         }
       }, error => {
         this.toastr.error(error.error.message);
       })
+  }
+
+  onAddFriendToChannel(username: string) {
+
   }
 }
