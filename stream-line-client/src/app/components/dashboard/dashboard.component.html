@@ -21,10 +21,11 @@
             <ul
               class="dropdown-menu dropdown-menu-end"
               [attr.aria-labelledby]="'channelMenuButton' + channel.id">
+              <li><a class="dropdown-item" (click)="onViewMembers(channel.id)">View members</a></li>
               <li *ngIf="currentLoggedUsername!=channel.ownerUsername"><a class="dropdown-item" (click)="onLeaveChannel(channel.id)">Leave channel</a></li>
-              <li *ngIf="currentLoggedUsername==channel.ownerUsername"><a class="dropdown-item" (click)="onAddUserToChannel(channel.id)">Add member</a></li>
-              <li *ngIf="currentLoggedUsername==channel.ownerUsername"><a class="dropdown-item" (click)="onRenameChannel(channel.id)">Rename</a></li>
-              <li *ngIf="currentLoggedUsername==channel.ownerUsername"><a class="dropdown-item text-danger" (click)="onDeleteChannel(channel.id)">Delete</a></li>
+              <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item" (click)="onAddUserToChannel(channel.id)">Add member</a></li>
+              <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item" (click)="onRenameChannel(channel.id)">Rename</a></li>
+              <li *ngIf="isOwnerOfChannel(channel)"><a class="dropdown-item text-danger" (click)="onDeleteChannel(channel.id)">Delete</a></li>
             </ul>
 
           </div>
@@ -93,6 +94,25 @@
           </form>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden modal template -->
+<div #userListTemplate style="display: none;">
+  <div *ngFor="let user of channelsMembersList" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding: 5px;">
+    <span>{{ user.username }}</span>
+    <div>
+      <button
+        (click)="toggleAdmin(user.id)"
+        style="margin-right: 10px; background-color: green; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        {{ user.role ? 'Revoke Admin' : 'Make Admin' }}
+      </button>
+      <button
+        (click)="removeUser(user.username)"
+        style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        Remove User
+      </button>
     </div>
   </div>
 </div>

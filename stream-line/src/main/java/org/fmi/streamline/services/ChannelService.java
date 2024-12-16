@@ -45,6 +45,10 @@ public class ChannelService {
                 .orElseThrow(() -> new EntityNotFoundException("Channel with id " + id + " not found"));
     }
 
+    public Optional<ChannelEntity> getByName(String name) {
+        return this.channelRepository.findByNameAndDeletedFalse(name);
+    }
+
     public List<ChannelDTO> getAllChannelsByMember(String userId) {
         this.userService.getById(userId);
 
@@ -90,6 +94,10 @@ public class ChannelService {
     @Transactional
     public ChannelDTO createChannel(ChannelDTO channelDTO) {
         UserEntity userEntity = userService.getByUsername(channelDTO.getOwnerUsername());
+        Optional<ChannelEntity> optionalChannel = this.getByName(channelDTO.getName());
+        if (optionalChannel.isPresent()){
+            throw new IllegalArgumentException("Channel with name: " + channelDTO.getName() + " already exists");
+        }
 
         ChannelEntity channelEntity = ChannelEntity.builder()
                 .createdAt(LocalDateTime.now())
@@ -233,6 +241,11 @@ public class ChannelService {
 
     public ChannelDTO updateChannel(UpdateChannelDTO dto) {
         ChannelEntity channelEntity = this.getById(dto.getId());
+        Optional<ChannelEntity> channel = this.getByName(dto.getName());
+        if (channel.isPresent()){
+            throw new IllegalArgumentException("Channel with name: " + dto.getName() + " already exists");
+        }
+
         channelEntity.setName(dto.getName());
 
         this.channelRepository.save(channelEntity);

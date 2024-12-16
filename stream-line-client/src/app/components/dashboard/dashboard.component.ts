@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {DatePipe, NgForOf, NgIf} from "@angular/common";
 import {ChannelService} from "../../services/channel.service";
@@ -9,14 +9,16 @@ import {
   Message,
   NewChannel,
   NewChannelName,
-  NewMessage, UserToChannel,
-  UserFriendMessage
+  NewMessage,
+  UserFriendMessage,
+  UserToChannel
 } from "../../models/channel";
 import {UserService} from "../../services/user.service";
-import {AddFriend, Friend, User} from "../../models/user";
+import {AddFriend, Friend, User, UserMembership} from "../../models/user";
 import {ToastrService} from "ngx-toastr";
-import {Dropdown, Modal} from 'bootstrap';
+import {Dropdown} from 'bootstrap';
 import Swal from 'sweetalert2';
+import {JwtPayload} from "../../models/auth";
 
 declare var bootstrap: any; // Add this line to declare bootstrap globally
 
@@ -47,6 +49,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   availableFriends: Friend[] = [];
   selectedFriend: Friend | null = null;
 
+  @ViewChild('userListTemplate', { static: false }) userListTemplate!: ElementRef;
+  channelsMembersList: UserMembership[] = [];
+
   constructor(private channelService: ChannelService,
               private authService: AuthService,
               private userService: UserService,
@@ -61,26 +66,41 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    let user = this.authService.getUserFromJwt();
+    const user: JwtPayload = this.authService.getUserFromJwt();
     this.currentLoggedUsername = user.username;
     this.currentLoggedUserId = user.id;
 
-    this.channelService.getChannelsForUser(user.id).subscribe(res => {
+    this.getUserChannels(this.currentLoggedUserId);
+    this.getUserFriendsList(this.currentLoggedUserId);
+    }
+
+  private getUserChannels(userId:string) {
+    this.channelService.getChannelsForUser(userId).subscribe(res => {
       this.channels = res.data as Channel[];
       if (this.channels.length > 0) {
         this.onSelectChannel(this.channels[0])
       }
+    }, error => {
+      Swal.fire('Error', error.error.message, 'error');
     });
-    this.userService.getUserById(user.id).subscribe(res => {
+  }
+
+  private getAvailableFriendsForUser(userId: string) {
+    this.userService.getAllAvailableUserFriends(userId).subscribe(res => {
+      this.availableFriends = res.data as Friend[]
+    }, error => {
+      Swal.fire('Error', error.error.message, 'error');
+    });
+  }
+
+  private getUserFriendsList(userId: string) {
+    this.userService.getUserById(userId).subscribe(res => {
       const user = res.data as User;
       this.friends = user.friends
+    }, error => {
+      Swal.fire('Error', error.error.message, 'error');
     });
-    this.userService.getAllAvailableUserFriends(user.id).subscribe(res => {
-      console.log(res)
-      const friends = res.data as Friend[];
-      this.availableFriends = friends
-    })
-    }
+  }
 
   onSelectChannel(channel: Channel) {
     this.selectedFriendId = '';
@@ -114,6 +134,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.messages = this.messages.sort((a, b) =>
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
       );
+    },error => {
+      this.toastr.error(error.error.message);
     })
   }
 
@@ -193,6 +215,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           list.innerHTML = ''; // Clear previous results
 
           if (query) {
+            this.getAvailableFriendsForUser(this.currentLoggedUserId);
             const matches = this.availableFriends.filter((user) => user.username.toLowerCase().includes(query));
             matches.forEach((user) => {
               const listItem = document.createElement('li');
@@ -226,6 +249,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       if (result.isConfirmed) {
         this.addFriend(result.value);
       }
+    }).finally(()=>{
+      this.availableFriends = [];
     });
   }
 
@@ -239,6 +264,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       const currentUser = res.data as User;
       this.friends = currentUser.friends;
       Swal.fire('Success', `You have added "${friendUsername}" as a friend!`, 'success');
+    }, error => {
+      Swal.fire('Error', error.error.message, 'error');
     })
     this.selectedFriend = null;
 
@@ -274,8 +301,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.channelService.createChannel(newChannel).subscribe(res => {
       const newChannel = res.data as Channel; // The updated channel returned by the API
       this.channels.push(newChannel);
+      Swal.fire('Success', `Channel "${channelName}" has been created!`, 'success');
+    }, error => {
+      Swal.fire('Error', error.error.message, 'error');
     })
-    Swal.fire('Success', `Channel "${channelName}" has been created!`, 'success');
   }
 
   onDeleteChannel(id: string) {
@@ -307,6 +336,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         );
     },
       (error) => {
+        Swal.fire('Error', error.error.message, 'error');
         this.toastr.error('Failed to delete the channel. Please try again.', 'Error');
       })
   }
@@ -349,7 +379,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.selectedChatName = updateChannel.name;
       Swal.fire('Success', `Channel was renamed successfully`, 'success');
     }, error => {
-      this.toastr.error(error.error.message);
+      Swal.fire('Error', error.error.message, 'error');
     })
   }
   onRemoveFriend(friendUsername: string) {
@@ -364,14 +394,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        // Perform the delete action (e.g., call an API to delete the channel)
-        this.removeFriend(this.currentLoggedUsername,friendUsername); // Example function to handle deletion
-
-        Swal.fire(
-          'Removed!',
-          `Friend with username: ${friendUsername} was removed!`,
-          'success'
-        );
+        this.removeFriend(this.currentLoggedUsername,friendUsername);
       }
     });
 
@@ -387,9 +410,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       const user = res.data as User;
       const updatedFriends: Friend[] = user.friends;
       this.friends = updatedFriends;
-
+      Swal.fire(
+        'Removed!',
+        `Friend with username: ${friendUsername} was removed!`,
+        'success'
+      );
     }, error => {
-      this.toastr.error(error.error.message);
+      Swal.fire('Error', error.error.message, 'error');
     })
   }
 
@@ -466,7 +493,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
       Swal.fire('Success', `You have added "${username}" to the channel: ${updatedChannel.name}!`, 'success');
     },error =>  {
-      this.toastr.error(error.error.message);
+      Swal.fire('Error', error.error.message, 'error');
     })
   }
 
@@ -509,11 +536,130 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           );
         }
       }, error => {
-        this.toastr.error(error.error.message);
+        Swal.fire('Error', `${error.error.message}`, 'error');
       })
   }
 
   onAddFriendToChannel(username: string) {
+    Swal.fire({
+      title: 'Add friend to channel',
+      html: `
+    <input id="channel-name" class="swal2-input" placeholder="Enter channel's name">
+    <ul id="autocomplete-list" style="list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
+  `,
+      showCancelButton: true,
+      confirmButtonText: 'Add',
+      cancelButtonText: 'Cancel',
+      didOpen: () => {
+        const input = document.getElementById('channel-name') as HTMLInputElement;
+        const list = document.getElementById('autocomplete-list') as HTMLUListElement;
 
+        input.addEventListener('input', () => {
+          const query = input.value.toLowerCase();
+          list.innerHTML = ''; // Clear previous results
+
+          if (query) {
+            const availableChannels:Channel[] = this.channels
+              .filter(channel=> channel.memberships.filter(member => member.username != username));
+
+              const matches = availableChannels.filter((channel) => channel.name.toLowerCase().includes(query));
+              matches.forEach((channel) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = channel.name;
+                listItem.style.cursor = 'pointer';
+                listItem.style.padding = '5px 10px';
+                listItem.style.border = '1px solid #ddd';
+                listItem.style.marginBottom = '2px';
+
+                listItem.addEventListener('click', () => {
+                  input.value = channel.name;
+                  list.innerHTML = ''; // Clear the list after selection
+                });
+
+                list.appendChild(listItem);
+              });
+          }
+        });
+      },
+      preConfirm: () => {
+        const input = document.getElementById('channel-name') as HTMLInputElement;
+        if (!input.value) {
+          Swal.showValidationMessage('Please enter a channel name.');
+        } else {
+          return input.value;
+        }
+        return ;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.addFriendToChannel(username, result.value);
+      }
+    });
+  }
+
+  private addFriendToChannel(friendUsername: string, channelName: string){
+    const selectedChannels = this.channels.filter(c => c.name === channelName);
+    if (selectedChannels.length === 0){
+      Swal.fire('Error', `Channel with name: ${channelName} does not exist!`, 'error');
+      return;
+    }
+
+    const newUserToChannel:  UserToChannel={
+      channelId: selectedChannels[0].id,
+      username: friendUsername,
+    }
+    this.channelService.addOrRemoveUserFromChannel(newUserToChannel).subscribe(res => {
+      let updatedChannel = res.data as Channel;
+      const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
+
+      if (channelIndex !== -1) {
+        this.channels[channelIndex] = updatedChannel;
+      }
+
+      Swal.fire('Success', `You have added "${friendUsername}" to the channel: ${updatedChannel.name}!`, 'success');
+    },error =>  {
+      Swal.fire('Error', error.error.message, 'error');
+    })
+  }
+
+  isOwnerOfChannel(channel: Channel) {
+    return this.currentLoggedUsername === channel.ownerUsername;
+  }
+  isAdminOfChannel(channel: Channel) {
+    return channel.memberships.some(member =>
+      member.username === this.currentLoggedUsername
+      && member.role === 'ADMIN');
+  }
+
+  onViewMembers(channelId: string) {
+    this.channelsMembersList = this.channels.filter(c => c.id === channelId)[0].memberships
+    this.showUserModal();
+  }
+
+  showUserModal() {
+    // Get the template HTML from the ViewChild
+    const modalContent = this.userListTemplate.nativeElement.innerHTML;
+
+    // Inject the HTML into SweetAlert2 modal
+    Swal.fire({
+      title: `'${this.selectedChatName}' Members`,
+      html: modalContent,
+      showCloseButton: true,
+      showCancelButton: false,
+      showConfirmButton: false // No default confirm button
+    });
+  }
+
+  // Toggle admin status for a user
+  toggleAdmin(userId: string) {
+      Swal.close(); // Close the modal
+      this.showUserModal(); // Reopen to reflect changes
+  }
+
+  // Remove a user
+  removeUser(username: string) {
+    console.log(username)
+    Swal.close();
+    this.leaveChannel(username, this.selectedChanelId);
   }
 }
