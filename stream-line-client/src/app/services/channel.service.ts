@@ -8,7 +8,7 @@ import {
   NewChannel,
   NewChannelName,
   NewMessage,
-  NewUserToChannel,
+  UserToChannel,
   UserFriendMessage
 } from "../models/channel";
 
@@ -23,8 +23,8 @@ export class ChannelService {
     return this.http.get<AppResponse>(`${Constant.CHANNELS_URL}/${userId}`);
   }
 
-  addUserTOChannel(newUserToChannel: NewUserToChannel): Observable<AppResponse> {
-    return this.http.put<AppResponse>(`${Constant.CHANNELS_URL}/addUser`, newUserToChannel);
+  addUserTOChannel(newUserToChannel: UserToChannel): Observable<AppResponse> {
+    return this.http.put<AppResponse>(`${Constant.CHANNELS_URL}/users`, newUserToChannel);
   }
 
   addMessage(newMessage: NewMessage): Observable<AppResponseWithMessage> {

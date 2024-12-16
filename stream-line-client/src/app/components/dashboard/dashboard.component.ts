@@ -9,7 +9,7 @@ import {
   Message,
   NewChannel,
   NewChannelName,
-  NewMessage, NewUserToChannel,
+  NewMessage, UserToChannel,
   UserFriendMessage
 } from "../../models/channel";
 import {UserService} from "../../services/user.service";
@@ -437,7 +437,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       if (result.isConfirmed) {
         const username = result.value;
         // Perform the action to add the friend with the provided username
-        const newUserToChannel:  NewUserToChannel={
+        const newUserToChannel:  UserToChannel={
           channelId: id,
           username: username,
         }
