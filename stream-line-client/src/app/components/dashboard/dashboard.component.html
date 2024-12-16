@@ -98,21 +98,47 @@
   </div>
 </div>
 
-<!-- Hidden modal template -->
-<div #userListTemplate style="display: none;">
-  <div *ngFor="let user of channelsMembersList" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding: 5px;">
-    <span>{{ user.username }}</span>
-    <div>
-      <button
-        (click)="toggleAdmin(user.id)"
-        style="margin-right: 10px; background-color: green; color: white; border: none; padding: 5px 10px; cursor: pointer;">
-        {{ user.role ? 'Revoke Admin' : 'Make Admin' }}
-      </button>
-      <button
-        (click)="removeUser(user.username)"
-        style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">
-        Remove User
-      </button>
+<!-- Modal for Viewing Channel Members -->
+<div
+  class="modal fade"
+  id="viewMembersModal"
+  tabindex="-1"
+  aria-labelledby="viewMembersModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewMembersModalLabel">'{{selectedChatName}}' Members</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center"
+            *ngFor="let member of channelsMembersList">
+            <span>{{ member.username }}</span>
+            <span class="badge bg-primary ms-2">{{ member.role }}</span>
+            <div *ngIf="isCurrentLoggedUserOwner || isCurrentLoggedUserAdmin">
+              <button
+                class="btn btn-sm btn-warning me-2"
+                [disabled]="isUserOwner(member)"
+                (click)="toggleAdmin(member)">
+                {{!isUserAdmin(member)? 'Make Admin' : 'Remove Admin Rights' }}
+              </button>
+              <button
+                class="btn btn-sm btn-danger"
+                [disabled]="isUserOwner(member)"
+                (click)="removeUser(member.username)">
+                Remove
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

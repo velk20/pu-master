@@ -11,6 +11,7 @@ import {
   UserToChannel,
   UserFriendMessage
 } from "../models/channel";
+import {UserRoleToChannel} from "../models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -53,5 +54,9 @@ export class ChannelService {
 
   getAvailableUsersForChannel(channelId: string): Observable<AppResponse> {
     return this.http.get<AppResponse>(`${Constant.CHANNELS_URL}/${channelId}/availableUsers`);
+  }
+
+  updateUserRoleForChannel(newRoleUser: UserRoleToChannel):Observable<AppResponseWithMessage> {
+    return this.http.put<AppResponseWithMessage>(`${Constant.CHANNELS_URL}/userRole`, newRoleUser);
   }
 }

@@ -14,9 +14,9 @@ import {
   UserToChannel
 } from "../../models/channel";
 import {UserService} from "../../services/user.service";
-import {AddFriend, Friend, User, UserMembership} from "../../models/user";
+import {AddFriend, Friend, User, UserMembership, UserRoleToChannel} from "../../models/user";
 import {ToastrService} from "ngx-toastr";
-import {Dropdown} from 'bootstrap';
+import {Dropdown, Modal} from 'bootstrap';
 import Swal from 'sweetalert2';
 import {JwtPayload} from "../../models/auth";
 
@@ -45,12 +45,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   newMessage: string = '';
   currentLoggedUsername: string = '';
   currentLoggedUserId: string = '';
+  isCurrentLoggedUserOwner: boolean = false;
+  isCurrentLoggedUserAdmin: boolean = false;
 
   availableFriends: Friend[] = [];
   selectedFriend: Friend | null = null;
 
-  @ViewChild('userListTemplate', { static: false }) userListTemplate!: ElementRef;
   channelsMembersList: UserMembership[] = [];
+
+  private modalInstance: Modal | null = null; // Modal instance
 
   constructor(private channelService: ChannelService,
               private authService: AuthService,
@@ -540,6 +543,27 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       })
   }
 
+  private removeUserFromChannel(username: string, channelId: string) {
+    this.channelService
+      .addOrRemoveUserFromChannel({channelId: channelId, username: username, remove: true})
+      .subscribe(res => {
+        const updatedChannel = res.data as Channel;
+        const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
+        if (channelIndex !== -1) {
+          this.channels[channelIndex] = updatedChannel;
+            this.onSelectChannel(this.channels[channelIndex]);
+
+          Swal.fire(
+            'Removed!',
+            `User with username: ${username} was removed from channel with name: ${updatedChannel.name}!`,
+            'success'
+          );
+        }
+      }, error => {
+        Swal.fire('Error', `${error.error.message}`, 'error');
+      })
+  }
+
   onAddFriendToChannel(username: string) {
     Swal.fire({
       title: 'Add friend to channel',
@@ -632,34 +656,64 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   onViewMembers(channelId: string) {
-    this.channelsMembersList = this.channels.filter(c => c.id === channelId)[0].memberships
+    let channel = this.channels.filter(c => c.id === channelId)[0];
+    this.channelsMembersList = channel.memberships
+    this.isCurrentLoggedUserOwner = channel.ownerUsername === this.currentLoggedUsername;
+    this.isCurrentLoggedUserAdmin = channel.memberships
+      .filter(m => m.username === this.currentLoggedUsername && m.role == "ADMIN").length > 0;
     this.showUserModal();
   }
 
   showUserModal() {
-    // Get the template HTML from the ViewChild
-    const modalContent = this.userListTemplate.nativeElement.innerHTML;
-
-    // Inject the HTML into SweetAlert2 modal
-    Swal.fire({
-      title: `'${this.selectedChatName}' Members`,
-      html: modalContent,
-      showCloseButton: true,
-      showCancelButton: false,
-      showConfirmButton: false // No default confirm button
-    });
+    // Open the modal
+    const modalElement = document.getElementById('viewMembersModal');
+    if (modalElement) {
+      this.modalInstance = new Modal(modalElement);
+      this.modalInstance.show();
+    }
   }
 
-  // Toggle admin status for a user
-  toggleAdmin(userId: string) {
-      Swal.close(); // Close the modal
-      this.showUserModal(); // Reopen to reflect changes
+  closeModal() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+      this.modalInstance = null; // Reset the instance
+    }
   }
 
-  // Remove a user
+  toggleAdmin(member: UserMembership) {
+    const newRoleUser : UserRoleToChannel= {
+      role: member.role == 'ADMIN' ? 'GUEST' : 'ADMIN',
+      channelId: this.selectedChanelId,
+      username: member.username
+    }
+    this.channelService.updateUserRoleForChannel(newRoleUser).subscribe(res => {
+      const updatedChannel = res.data as Channel;
+      const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
+
+      if (channelIndex !== -1) {
+        this.channels[channelIndex] = updatedChannel;
+      }
+      this.toastr.info('Role updated successfully');
+      this.closeModal()
+    },error =>{
+        this.toastr.error(error.error.message);
+    })
+  }
+
   removeUser(username: string) {
-    console.log(username)
-    Swal.close();
-    this.leaveChannel(username, this.selectedChanelId);
+    this.removeUserFromChannel(username, this.selectedChanelId);
+    this.closeModal();
+  }
+
+  isUserAdmin(member: UserMembership) {
+    return member.role === 'ADMIN';
+  }
+
+  isUserGuest(member: UserMembership) {
+    return member.role === 'GUEST';
+  }
+
+  isUserOwner(member: UserMembership) {
+    return member.role === 'OWNER';
   }
 }

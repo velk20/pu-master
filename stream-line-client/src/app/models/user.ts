@@ -26,3 +26,9 @@ export interface UserMembership{
   username: string;
   role: string;
 }
+
+export interface UserRoleToChannel{
+  channelId: string;
+  username: string;
+  role: string;
+}
