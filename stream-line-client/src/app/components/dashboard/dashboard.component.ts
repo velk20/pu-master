@@ -331,6 +331,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.channelService.deleteChannel(id).subscribe(res => {
       this.toastr.info(res.message);
       this.channels = this.channels.filter(channel => channel.id !== id);
+        this.resetChat();
 
         Swal.fire(
           'Deleted!',
