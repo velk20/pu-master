@@ -22,7 +22,7 @@
               class="dropdown-menu dropdown-menu-end"
               [attr.aria-labelledby]="'channelMenuButton' + channel.id">
               <li><a class="dropdown-item" (click)="onViewMembers(channel.id)">View members</a></li>
-              <li *ngIf="currentLoggedUsername!=channel.ownerUsername"><a class="dropdown-item"
+              <li *ngIf="currentLoggedUsername!=channel.ownerUsername"><a class="dropdown-item text-danger"
                                                                           (click)="onLeaveChannel(channel.id)">Leave
                 channel</a></li>
               <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item"
