@@ -701,7 +701,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   removeUser(username: string) {
-    this.removeUserFromChannel(username, this.selectedChanelId);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you really want to remove this member from '${this.selectedChatName}'? This action cannot be undone.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Remove',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.removeUserFromChannel(username, this.selectedChanelId);
+      }
+    });
     this.closeModal();
   }
 
