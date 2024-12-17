@@ -96,14 +96,10 @@ public class ChannelService {
 
     @Transactional
     public ChannelDTO addNewUser(AddOrRemoveUserToChannelDTO dto) {
-        UserEntity userEntity = this.userService.getByUsername(dto.getUsername());
         ChannelEntity channelEntity = this.getById(dto.getChannelId());
+        validateNewUserToChannel(dto, channelEntity);
 
-        Optional<ChannelMembershipEntity> userPartOfChannel = this.isUserPartOfChannel(channelEntity, dto.getUsername());
-
-        if (userPartOfChannel.isPresent()) {
-            throw new IllegalArgumentException("User already in the channel");
-        }
+        UserEntity userEntity = this.userService.getByUsername(dto.getUsername());
 
         ChannelMembershipEntity entity = ChannelMembershipEntity.builder()
                 .channel(channelEntity)
@@ -214,6 +210,24 @@ public class ChannelService {
         ChannelMembershipEntity saved = this.channelMembershipService.save(membershipEntity);
 
         return this.convertToChannelDTO(saved.getChannel());
+    }
+
+    private void validateNewUserToChannel(AddOrRemoveUserToChannelDTO dto, ChannelEntity channelEntity) {
+        String currentLoggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<ChannelMembershipEntity> partOfChannel = this.isUserPartOfChannel(channelEntity, currentLoggedUsername);
+        if (partOfChannel.isEmpty()){
+            throw new IllegalArgumentException("You are not part of this channel in order to add users");
+        }
+        boolean hasPermissionsToAddUsers = this.isUserOwnerOrAdminOfChannel(partOfChannel.get());
+        if (!hasPermissionsToAddUsers){
+            throw new IllegalArgumentException("You don't have permissions to add users to this channel");
+        }
+
+        Optional<ChannelMembershipEntity> userPartOfChannel = this.isUserPartOfChannel(channelEntity, dto.getUsername());
+
+        if (userPartOfChannel.isPresent()) {
+            throw new IllegalArgumentException("User already in the channel");
+        }
     }
 
 
