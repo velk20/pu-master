@@ -132,7 +132,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       userId: this.currentLoggedUserId,
     };
 
-    this.channelService.getFriendMessages(getMessages).subscribe(res => {
+    this.userService.getFriendMessages(getMessages).subscribe(res => {
       this.messages = res.data as Message[];
       this.messages = this.messages.sort((a, b) =>
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
@@ -160,7 +160,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         message: this.newMessage
       }
 
-    this.channelService.sendMessage(friendMessage).subscribe(res => {
+    this.userService.sendMessage(friendMessage).subscribe(res => {
         this.messages.push(res.data as Message);
         this.messages = this.messages.sort((a, b) =>
           new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()

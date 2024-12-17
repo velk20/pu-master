@@ -13,6 +13,7 @@ import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.repositories.ChannelRepository;
+import org.fmi.streamline.util.ConverterUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChannelService {
-    private final ModelMapper modelMapper;
+    private final ConverterUtil converterUtil;
     private final ChannelRepository channelRepository;
     private final UserService userService;
     private final MessageService messageService;
     private final ChannelMembershipService channelMembershipService;
 
-    public ChannelService(ModelMapper modelMapper, ChannelRepository channelRepository, UserService userService, MessageService messageService, ChannelMembershipService channelMembershipService) {
-        this.modelMapper = modelMapper;
+    public ChannelService(ConverterUtil converterUtil, ChannelRepository channelRepository, UserService userService, MessageService messageService, ChannelMembershipService channelMembershipService) {
+        this.converterUtil = converterUtil;
         this.channelRepository = channelRepository;
         this.userService = userService;
         this.messageService = messageService;
@@ -49,13 +50,13 @@ public class ChannelService {
     }
 
     public List<ChannelDTO> getAll() {
-        return this.channelRepository.findAll().stream().map(this::convertToChannelDTO).toList();
+        return this.channelRepository.findAll().stream().map(converterUtil::convertToChannelDTO).toList();
     }
 
     public List<ChannelDTO> getAllChannelsByMember(String userId) {
         this.userService.getById(userId);
 
-        return this.channelRepository.findAllByUserIdAndDeletedFalse(userId).stream().map(this::convertToChannelDTO).toList();
+        return this.channelRepository.findAllByUserIdAndDeletedFalse(userId).stream().map(converterUtil::convertToChannelDTO).toList();
     }
 
     @Transactional
@@ -84,7 +85,7 @@ public class ChannelService {
         ChannelEntity channel = newChannel.addMembership(newChannelMembership);
         this.channelRepository.save(channel);
 
-        return this.convertToChannelDTO(channel);
+        return converterUtil.convertToChannelDTO(channel);
     }
 
     public void deleteChannel(String id) {
@@ -112,7 +113,7 @@ public class ChannelService {
         channelEntity.addMembership(newMember);
 
         ChannelEntity save = this.channelRepository.save(channelEntity);
-        return this.convertToChannelDTO(save);
+        return converterUtil.convertToChannelDTO(save);
     }
 
     @Transactional
@@ -132,7 +133,7 @@ public class ChannelService {
 
         ChannelEntity updated = this.channelRepository.save(channelEntity);
 
-        return this.convertToChannelDTO(updated);
+        return converterUtil.convertToChannelDTO(updated);
     }
 
     public ChannelDTO addMessageToChannel(AddMessageToChannelDTO dto) {
@@ -156,28 +157,7 @@ public class ChannelService {
 
         this.messageService.save(messageEntity);
 
-        return this.convertToChannelDTO(this.getById(dto.getChannelId()));
-    }
-
-    public MessageDTO sendMessageToFriend(SendMessageToFriendDTO dto) {
-        UserEntity receiverUser = userService.getById(dto.getFriendId());
-        UserEntity senderUser = userService.getById(dto.getSenderId());
-
-        MessageEntity newMessage = MessageEntity.builder()
-                .receiver(receiverUser)
-                .channel(null)
-                .content(dto.getMessage())
-                .timestamp(LocalDateTime.now())
-                .deleted(false)
-                .author(senderUser)
-                .build();
-
-        MessageEntity saved = this.messageService.save(newMessage);
-        return this.convertToDTO(saved);
-    }
-
-    public List<MessageDTO> getFriendMessages(FriendMessageDTO dto) {
-        return this.messageService.getAllMessagesForFriend(dto).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return converterUtil.convertToChannelDTO(this.getById(dto.getChannelId()));
     }
 
     public ChannelDTO updateChannel(UpdateChannelDTO dto) {
@@ -189,14 +169,14 @@ public class ChannelService {
         channelEntity.setName(dto.getName());
 
         this.channelRepository.save(channelEntity);
-        return this.convertToChannelDTO(channelEntity);
+        return converterUtil.convertToChannelDTO(channelEntity);
     }
 
     public List<UserDetailDTO> getAllAvailableUsersToAddToChannel(String channelId) {
         this.getById(channelId);
 
         List<UserEntity> usersNotInChannel = this.userService.findUsersNotInChannel(channelId);
-        return usersNotInChannel.stream().map(u -> this.modelMapper.map(u, UserDetailDTO.class)).toList();
+        return usersNotInChannel.stream().map(converterUtil::convertToDTO).toList();
     }
 
     public ChannelDTO removeUserFromChannel(AddOrRemoveUserToChannelDTO dto) {         ;
@@ -209,7 +189,7 @@ public class ChannelService {
         channelEntity.removeMembership(membershipEntity);
         ChannelMembershipEntity saved = this.channelMembershipService.save(membershipEntity);
 
-        return this.convertToChannelDTO(saved.getChannel());
+        return converterUtil.convertToChannelDTO(saved.getChannel());
     }
 
     private void validateNewUserToChannel(AddOrRemoveUserToChannelDTO dto, ChannelEntity channelEntity) {
@@ -262,31 +242,5 @@ public class ChannelService {
     private boolean isUserOwnerOrAdminOfChannel(ChannelMembershipEntity membership){
         return membership.getRole().equals(ChannelMembershipEntity.Role.OWNER)
                 || membership.getRole().equals(ChannelMembershipEntity.Role.ADMIN);
-    }
-
-    private ChannelDTO convertToChannelDTO(ChannelEntity channelEntity) {
-        List<MessageDTO> list = channelEntity.getMessages().stream().map(this::convertToDTO).toList();
-        List<UserMembershipDTO> userMembershipDTOS = channelEntity.getMemberships().stream().map(this::convertToDTO).toList();
-        ChannelDTO channelDTO = this.convertToDTO(channelEntity);
-        channelDTO.setMessages(list);
-        channelDTO.setMemberships(userMembershipDTOS);
-        return channelDTO;
-    }
-
-    private UserMembershipDTO convertToDTO(ChannelMembershipEntity channelMembershipEntity) {
-        return  UserMembershipDTO
-                .builder()
-                .id(channelMembershipEntity.getUser().getId())
-                .username(channelMembershipEntity.getUser().getUsername())
-                .role(channelMembershipEntity.getRole().name())
-                .build();
-    }
-
-    private ChannelDTO convertToDTO(ChannelEntity channelEntity) {
-        return modelMapper.map(channelEntity, ChannelDTO.class);
-    }
-
-    private MessageDTO convertToDTO(MessageEntity messageEntity) {
-        return modelMapper.map(messageEntity, MessageDTO.class);
     }
 }

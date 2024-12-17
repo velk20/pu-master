@@ -1,9 +1,13 @@
 package org.fmi.streamline.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.fmi.streamline.dtos.message.FriendMessageDTO;
+import org.fmi.streamline.dtos.message.MessageDTO;
+import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.AddFriendDTO;
 import org.fmi.streamline.dtos.user.FriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
@@ -52,6 +56,38 @@ public class UserController {
         return AppResponseUtil.success()
                 .withData(this.modelMapper.map(userEntity, UserDetailDTO.class)
                         .setFriends(list))
+                .build();
+    }
+
+    @GetMapping("/{userId}/friendMessages/{friendId}")
+    @Operation(summary = "Get all messages for friend")
+    public ResponseEntity<?> getFriendMessages(@Parameter(description = "ID of the user")@PathVariable String userId,
+                                               @Parameter(description = "Id of the friend")@PathVariable String friendId) {
+        FriendMessageDTO dto = new FriendMessageDTO(userId, friendId);
+        List<MessageDTO> messages = userService.getFriendMessages(dto);
+        return AppResponseUtil.success()
+                .withData(messages)
+                .build();
+    }
+
+    @PostMapping("/sendMessage")
+    @Operation(summary = "Send message to friend")
+    public ResponseEntity<?> sendMessageToFriend(@Valid @RequestBody SendMessageToFriendDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        MessageDTO messageDTO = this.userService.sendMessageToFriend(dto);
+
+        return AppResponseUtil.success()
+                .withData(messageDTO)
                 .build();
     }
 

@@ -35,7 +35,7 @@ public class ChannelController {
     }
 
     @GetMapping("/{userId}")
-    @Operation(summary = "Get channels")
+    @Operation(summary = "Get channels that this user is member")
     public ResponseEntity<?> getChannelsByUserMember(@Parameter(description = "ID of the user")@PathVariable String userId) {
         List<ChannelDTO> allChannelsByMember = channelService.getAllChannelsByMember(userId);
 
@@ -61,17 +61,6 @@ public class ChannelController {
 
         return AppResponseUtil.success()
                 .withData(all)
-                .build();
-    }
-
-    @GetMapping("/{userId}/friendMessages/{friendId}")
-    @Operation(summary = "Get all messages for friend")
-    public ResponseEntity<?> getFriendMessages(@Parameter(description = "ID of the user")@PathVariable String userId,
-                                               @Parameter(description = "Id of the friend")@PathVariable String friendId) {
-        FriendMessageDTO dto = new FriendMessageDTO(userId, friendId);
-        List<MessageDTO> messages = channelService.getFriendMessages(dto);
-        return AppResponseUtil.success()
-                .withData(messages)
                 .build();
     }
 
@@ -120,27 +109,6 @@ public class ChannelController {
         return AppResponseUtil.success()
                 .withMessage("Successfully created message in channel: " + channelDTO.getName())
                 .withData(channelDTO)
-                .build();
-    }
-
-    @PostMapping("/sendMessage")
-    @Operation(summary = "Send message to friend")
-    public ResponseEntity<?> sendMessageToFriend(@Valid @RequestBody SendMessageToFriendDTO dto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
-                    .withErrors(errorMessages)
-                    .build();
-        }
-
-        MessageDTO messageDTO = this.channelService.sendMessageToFriend(dto);
-
-        return AppResponseUtil.success()
-                .withData(messageDTO)
                 .build();
     }
 

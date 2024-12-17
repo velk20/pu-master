@@ -32,20 +32,12 @@ export class ChannelService {
     return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}/addMessage`, newMessage);
   }
 
-  sendMessage(friendMessage: FriendMessage): Observable<AppResponseWithMessage> {
-    return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}/sendMessage`, friendMessage)
-  }
-
   createChannel(newChannel: NewChannel):Observable<AppResponseWithMessage> {
     return this.http.post<AppResponseWithMessage>(`${Constant.CHANNELS_URL}`, newChannel);
   }
 
   deleteChannel(id: string):Observable<AppResponseWithNoData> {
     return this.http.delete<AppResponseWithNoData>(`${Constant.CHANNELS_URL}/${id}`);
-  }
-
-  getFriendMessages(getMessages: UserFriendMessage):Observable<AppResponse> {
-    return this.http.get<AppResponse>(`${Constant.CHANNELS_URL}/${getMessages.userId}/friendMessages/${getMessages.friendId}`);
   }
 
   renameChannel(updateChannel: NewChannelName):Observable<AppResponseWithMessage> {

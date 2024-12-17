@@ -10,11 +10,10 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        // Optionally configure ModelMapper for strict matching or other optimizations
         modelMapper.getConfiguration()
-                .setFieldMatchingEnabled(true) // Enable matching fields directly
-                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE) // Allow private fields
-                .setSkipNullEnabled(true); // Ignore null values during mapping
+                .setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+                .setSkipNullEnabled(true);
 
         return modelMapper;
     }

@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {AppResponse, AppResponseWithMessage} from "../utils/app.response";
 import {Constant} from "../utils/constant";
 import {AddFriend} from "../models/user";
+import {FriendMessage, UserFriendMessage} from "../models/channel";
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +27,13 @@ export class UserService {
 
   removeFriend(removeFriend: AddFriend): Observable<AppResponseWithMessage> {
     return this.http.put<AppResponseWithMessage>(Constant.USERS_URL + `/removeFriend`, removeFriend);
+  }
+
+  sendMessage(friendMessage: FriendMessage): Observable<AppResponseWithMessage> {
+    return this.http.post<AppResponseWithMessage>(`${Constant.USERS_URL}/sendMessage`, friendMessage)
+  }
+
+  getFriendMessages(getMessages: UserFriendMessage):Observable<AppResponse> {
+    return this.http.get<AppResponse>(`${Constant.USERS_URL}/${getMessages.userId}/friendMessages/${getMessages.friendId}`);
   }
 }
