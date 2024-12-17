@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { catchError } from 'rxjs/operators';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
+import Swal from "sweetalert2";
 
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
@@ -24,6 +25,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
+        console.log(error);
+        if (error.status == 500 && error.error.message.includes('JWT')) {
+            this.authService.logout();
+            this.router.navigate(['/']);
+
+        }
         if (error.status == 401) {
           console.error('Unauthorized request, logging out...');
           this.authService.logout();
