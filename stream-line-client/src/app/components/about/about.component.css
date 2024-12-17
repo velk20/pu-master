@@ -1,18 +1,58 @@
-.about-header {
-  background: url('https://via.placeholder.com/1920x400') no-repeat center center/cover; /* Replace with your image */
-  color: white;
-  text-align: center;
-  padding: 100px 20px;
+/* General Section Styling */
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  text-transform: capitalize;
 }
+
+.text-muted {
+  color: #6c757d;
+}
+
 .icon-box {
-  padding: 20px;
-  text-align: center;
-  border-radius: 10px;
-  background-color: #f8f9fa;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 15px;
+  background-color: #fff;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .icon-box i {
-  font-size: 50px;
+  font-size: 3rem;
   color: #007bff;
-  margin-bottom: 15px;
+}
+
+.icon-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.team-section {
+  background: #f8f9fa;
+}
+
+.team-section img {
+  width: 150px;
+  height: 150px;
+  border: 3px solid #007bff;
+}
+
+.team-section h5 {
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.shadow-lg {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Add Responsive Styling */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.75rem;
+  }
+  .icon-box {
+    padding: 20px;
+  }
 }

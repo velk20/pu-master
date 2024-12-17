@@ -1,3 +1,45 @@
+.sidebar ul{
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+/* Ensure the sidebar maintains full height */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: #e3f2fd; /* Light blue */
+  height: 90vh; /* Full height */
+  padding: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevent overflow of the sidebar content */
+}
+
+/* Scrollable lists within the sidebar */
+.sidebar ul {
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Allow lists to grow and use available space */
+  overflow-y: auto; /* Enable scrolling for overflowing lists */
+}
+
+/* Ensure individual list sections share available space */
+.sidebar ul.list-group {
+  max-height: calc(40vh - 30px); /* Respect your existing constraints */
+}
+
+/* Optional: Adjust padding for create channel and add friend buttons */
+.sidebar .p-3 {
+  margin-top: auto; /* Push buttons to the bottom of the sidebar */
+}
+
+
+.sidebar h5 {
+  color: #0d47a1; /* Dark blue */
+  font-weight: bold;
+  padding-left: 15px;
+  border-bottom: 2px solid #90caf9;
+}
+
 .sidebar ul {
   padding: 0;
   margin: 0;
@@ -5,17 +47,171 @@
 
 .channel-item {
   cursor: pointer;
+  padding: 10px 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .channel-item:hover {
-  background-color: #e9ecef;
+  background-color: #bbdefb; /* Soft blue hover */
+  transform: scale(1.02);
 }
 
-.chat-messages {
-  border-radius: 5px;
+.channel-item span {
+  font-weight: 500;
+  color: #1565c0; /* Medium blue */
 }
 
+.dropdown-menu {
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+  color: #1565c0; /* Medium blue */
+}
+
+/* Buttons */
 button {
   border-radius: 5px;
   font-size: 17px;
 }
+
+.btn-success {
+  background-color: #43a047; /* Green */
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #66bb6a; /* Light green */
+}
+
+.btn-primary {
+  background-color: #1e88e5; /* Bright blue */
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #42a5f5; /* Lighter blue */
+}
+
+.btn-danger {
+  background-color: #e53935; /* Bright red */
+}
+
+.btn-danger:hover {
+  background-color: #ef5350; /* Light red */
+}
+
+/* Chat Area */
+.chat {
+  background-color: #ffffff;
+  padding: 0;
+}
+
+.chat-messages {
+  border-radius: 5px;
+  background-color: #f9fbe7; /* Light yellow-green */
+  padding: 15px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chat-messages div {
+  padding: 10px 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #4caf50; /* Accent border */
+}
+
+.chat-messages div:hover {
+  background-color: #f1f1f1;
+}
+
+.chat-messages strong {
+  color: #0d47a1; /* Dark blue */
+}
+
+.chat-messages .text-muted {
+  font-size: 0.8em;
+  color: #9e9e9e; /* Soft gray */
+}
+
+/* Input Area */
+form {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form input {
+  border: 1px solid #cfd8dc; /* Gray */
+  border-radius: 5px;
+}
+
+form input:focus {
+  border-color: #42a5f5; /* Focus blue */
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+form button {
+  font-size: 16px;
+  padding: 8px 16px;
+}
+
+/* Modal */
+.modal-content {
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background-color: #e3f2fd; /* Light blue */
+  border-bottom: 1px solid #bbdefb;
+}
+
+.modal-title {
+  color: #0d47a1; /* Dark blue */
+  font-weight: bold;
+}
+
+.list-group-item {
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: #ffe082; /* Soft orange hover */
+  transform: scale(1.01);
+}
+
+.list-group-item span {
+  color: #424242; /* Dark gray */
+}
+
+.list-group-item .badge {
+  background-color: #42a5f5; /* Bright blue badge */
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #90caf9; /* Blue scrollbar */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #42a5f5; /* Bright blue */
+}
+

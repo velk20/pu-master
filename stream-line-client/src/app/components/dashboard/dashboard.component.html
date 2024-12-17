@@ -8,7 +8,7 @@
           class="list-group-item d-flex justify-content-between align-items-center channel-item"
           *ngFor="let channel of channels"
           (click)="onSelectChannel(channel)">
-          <span >{{ channel.name }}</span>
+          <span>{{ channel.name.length > 45 ? channel.name.slice(0, 45) + '...' : channel.name }}</span>
           <div class="dropdown">
             <button
               class="btn btn-sm btn-light"
@@ -22,10 +22,17 @@
               class="dropdown-menu dropdown-menu-end"
               [attr.aria-labelledby]="'channelMenuButton' + channel.id">
               <li><a class="dropdown-item" (click)="onViewMembers(channel.id)">View members</a></li>
-              <li *ngIf="currentLoggedUsername!=channel.ownerUsername"><a class="dropdown-item" (click)="onLeaveChannel(channel.id)">Leave channel</a></li>
-              <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item" (click)="onAddUserToChannel(channel.id)">Add member</a></li>
-              <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item" (click)="onRenameChannel(channel.id)">Rename</a></li>
-              <li *ngIf="isOwnerOfChannel(channel)"><a class="dropdown-item text-danger" (click)="onDeleteChannel(channel.id)">Delete</a></li>
+              <li *ngIf="currentLoggedUsername!=channel.ownerUsername"><a class="dropdown-item"
+                                                                          (click)="onLeaveChannel(channel.id)">Leave
+                channel</a></li>
+              <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item"
+                                                                                    (click)="onAddUserToChannel(channel.id)">Add
+                member</a></li>
+              <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item"
+                                                                                    (click)="onRenameChannel(channel.id)">Rename</a>
+              </li>
+              <li *ngIf="isOwnerOfChannel(channel)"><a class="dropdown-item text-danger"
+                                                       (click)="onDeleteChannel(channel.id)">Delete</a></li>
             </ul>
 
           </div>
@@ -38,7 +45,7 @@
           class="list-group-item d-flex justify-content-between align-items-center channel-item"
           *ngFor="let friend of friends"
           (click)="onSelectFriend(friend)">
-          <span >{{ friend.username }}</span>
+          <span>{{ friend.username.length > 45 ? friend.username.slice(0, 45) + '...' : friend.username }}</span>
           <div class="dropdown">
             <button
               class="btn btn-sm btn-light"
@@ -76,8 +83,10 @@
         <h4 class="border-bottom pb-2">{{ selectedChatName }}</h4>
         <div class="chat-messages" style="height: 80vh; overflow-y: auto; background-color: #f1f1f1; padding: 10px;">
           <div *ngFor="let message of messages" class="mb-3">
-            <strong>{{ message.authorUsername == currentLoggedUsername ? 'You' : message.authorUsername }}:</strong> {{ message.content }}
-            <span class="text-muted" style="font-size: 0.9em;">{{ message.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}</span>
+            <strong>{{ message.authorUsername == currentLoggedUsername ? 'You' : message.authorUsername }}
+              :</strong> {{ message.content }}
+            <span class="text-muted"
+                  style="font-size: 0.9em;">{{ message.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}</span>
           </div>
         </div>
 
@@ -108,7 +117,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="viewMembersModalLabel">'{{selectedChatName}}' Members</h5>
+        <h5 class="modal-title" id="viewMembersModalLabel">'{{ selectedChatName }}' Members</h5>
         <button
           type="button"
           class="btn-close"
@@ -120,14 +129,20 @@
           <li
             class="list-group-item d-flex justify-content-between align-items-center"
             *ngFor="let member of channelsMembersList">
-            <span>{{ member.username }}</span>
+            <span><ng-container *ngIf="currentLoggedUsername === member.username; else showUsername">
+                   <b>You</b>
+                  </ng-container>
+                  <ng-template #showUsername>
+                    {{ member.username }}
+                  </ng-template>
+            </span>
             <span class="badge bg-primary ms-2">{{ member.role }}</span>
             <div *ngIf="isCurrentLoggedUserOwner || isCurrentLoggedUserAdmin">
               <button
                 class="btn btn-sm btn-warning me-2"
                 [disabled]="isUserOwner(member)"
                 (click)="toggleAdmin(member)">
-                {{!isUserAdmin(member)? 'Make Admin' : 'Remove Admin Rights' }}
+                {{ !isUserAdmin(member) ? 'Make Admin' : 'Remove Admin Rights' }}
               </button>
               <button
                 class="btn btn-sm btn-danger"
