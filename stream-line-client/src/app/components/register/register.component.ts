@@ -67,11 +67,8 @@ export class RegisterComponent {
         this.toastrService.success('Register successfully!');
       },
       (err) => {
-        console.log(err)
-        let message: number = err.error.message;
         let errors: string[] = err.error.errors;
 
-        this.toastrService.error(`${message}`);
         errors.forEach(error => {
           this.toastrService.error(error);
         });

@@ -47,7 +47,7 @@ public class ChannelController {
     @GetMapping("/{channelId}/availableUsers")
     @Operation(summary = "Get all available users to add to channel")
     public ResponseEntity<?> getAvailableUsersByChannel(@Parameter(description = "ID of the channel")@PathVariable String channelId) {
-        List<UserDetailDTO> availableUsers = this.channelService.getAllAvailableUsersTOAddToChannel(channelId);
+        List<UserDetailDTO> availableUsers = this.channelService.getAllAvailableUsersToAddToChannel(channelId);
 
         return AppResponseUtil.success()
                 .withData(availableUsers)
@@ -77,7 +77,7 @@ public class ChannelController {
 
     @PutMapping("/users")
     @Operation(summary = "Add/remove user to/from channel")
-    public ResponseEntity<?> addUserToChannel(@Valid @RequestBody AddOrRemoveUserToChannelDTO dto, BindingResult bindingResult) {
+    public ResponseEntity<?> addOrRemoveUserToChannel(@Valid @RequestBody AddOrRemoveUserToChannelDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()
                     .stream()
@@ -124,8 +124,8 @@ public class ChannelController {
     }
 
     @PostMapping("/sendMessage")
-    @Operation(summary = "Add new message to channel")
-    public ResponseEntity<?> addMessageToChannel(@Valid @RequestBody SendMessageToFriendDTO dto, BindingResult bindingResult) {
+    @Operation(summary = "Send message to friend")
+    public ResponseEntity<?> sendMessageToFriend(@Valid @RequestBody SendMessageToFriendDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()
                     .stream()
@@ -166,7 +166,7 @@ public class ChannelController {
                 .build();
     }
 
-    @PutMapping()
+    @PutMapping
     @Operation(summary = "Update channel")
     public ResponseEntity<?> updateChannel(@Valid @RequestBody UpdateChannelDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

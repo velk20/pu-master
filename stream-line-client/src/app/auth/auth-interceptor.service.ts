@@ -24,13 +24,15 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
+        if (error.status == 401) {
           console.error('Unauthorized request, logging out...');
           this.authService.logout();
+          this.router.navigate(['/login']);
         }
-        this.toastr.error(error.error.message);
-        this.authService.logout();
-        this.router.navigate(['/login']);
+        if (error.error.details){
+          this.toastr.error(error.error.details);
+        }
+
         return throwError(() => error);
       })
     );

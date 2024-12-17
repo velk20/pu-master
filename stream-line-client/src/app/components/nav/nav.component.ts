@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {AuthService} from "../../services/auth.service";
@@ -14,11 +14,11 @@ import {AuthService} from "../../services/auth.service";
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
-export class NavComponent {
+export class NavComponent implements OnInit {
   isLoggedIn: boolean = false;
 
   constructor(private authService: AuthService,
-              private router: Router,) {
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -31,5 +31,6 @@ export class NavComponent {
     this.authService.logout();
     this.router.navigate(['/']);
   }
+
 
 }

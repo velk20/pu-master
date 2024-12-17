@@ -44,12 +44,6 @@ export class LoginComponent {
         this.authService.login(res.data as JwtTokenResponse);
         this.router.navigate(['/dashboard']);
         this.toastrService.success('Login successfully!');
-      },
-      (err) => {
-        console.log(err)
-        let message: number = err.error.message;
-
-        this.toastrService.error(`${message}`);
       }
     )
   }
