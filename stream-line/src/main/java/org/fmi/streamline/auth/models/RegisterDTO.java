@@ -30,7 +30,6 @@ public class RegisterDTO {
     @UniqueUsername(message = "Username is already taken.")
     private String username;
     @NotEmpty(message = "Phone is required.")
-    @Pattern(regexp = "[0-9]\\d{1,20}", message = "Phone is invalid.")
     @UniquePhoneNumber(message = "Phone number is already taken.")
     private String phone;
     @Min(value = 10, message = "Minimum age is 10.")
