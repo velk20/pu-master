@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
-import org.fmi.streamline.dtos.user.AddFriendDTO;
+import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
 import org.fmi.streamline.dtos.user.FriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.UserEntity;
@@ -93,7 +93,7 @@ public class UserController {
 
     @PutMapping("/addFriend")
     @Operation(summary = "Add User friend")
-    public ResponseEntity<?> addUserFriend(@Valid @RequestBody AddFriendDTO dto, BindingResult bindingResult) {
+    public ResponseEntity<?> addUserFriend(@Valid @RequestBody AddOrRemoveFriendDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()
                     .stream()
@@ -113,7 +113,7 @@ public class UserController {
 
     @PutMapping("/removeFriend")
     @Operation(summary = "Remove friend from user's friend list")
-    public ResponseEntity<?> removeFriend(@Valid @RequestBody AddFriendDTO dto, BindingResult bindingResult) {
+    public ResponseEntity<?> removeFriend(@Valid @RequestBody AddOrRemoveFriendDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()
                     .stream()

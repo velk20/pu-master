@@ -1,11 +1,10 @@
 package org.fmi.streamline.services;
 
-import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.channel.AddOrRemoveUserToChannelDTO;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
-import org.fmi.streamline.dtos.user.AddFriendDTO;
+import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.entities.UserEntity;
@@ -42,7 +41,7 @@ public class UserService {
                 .orElseThrow(()-> new EntityNotFoundException("User with id " + id + " not found"));
     }
 
-    public UserDetailDTO addFriend(AddFriendDTO dto) {
+    public UserDetailDTO addFriend(AddOrRemoveFriendDTO dto) {
         if (dto.getFriendUsername().equals(dto.getRequesterUsername())) {
             throw new IllegalArgumentException("User can't add themselves as friend");
         }
@@ -68,7 +67,7 @@ public class UserService {
         return this.userRepository.findAvailableFriends(userId).stream().map(converterUtil::convertToDTO).toList();
     }
 
-    public UserDetailDTO removeFriend( AddFriendDTO dto) {
+    public UserDetailDTO removeFriend( AddOrRemoveFriendDTO dto) {
         if (dto.getFriendUsername().equals(dto.getRequesterUsername())) {
             throw new IllegalArgumentException("User can't remove themselves as friend");
         }

@@ -64,6 +64,71 @@ public class ChannelController {
                 .build();
     }
 
+
+    @PostMapping("/addMessage")
+    @Operation(summary = "Add new message to channel")
+    public ResponseEntity<?> addMessageToChannel(@Valid @RequestBody AddMessageToChannelDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        ChannelDTO channelDTO = this.channelService.addMessageToChannel(dto);
+
+        return AppResponseUtil.success()
+                .withMessage("Successfully created message in channel: " + channelDTO.getName())
+                .withData(channelDTO)
+                .build();
+    }
+
+    @PostMapping
+    @Operation(summary = "Create channel")
+    public ResponseEntity<?> createChannel(@Valid @RequestBody ChannelDTO channelDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        ChannelDTO newChannel = channelService.createChannel(channelDTO);
+        return AppResponseUtil.created()
+                .withData(newChannel)
+                .withMessage("Channel created successfully")
+                .build();
+    }
+
+    @PutMapping
+    @Operation(summary = "Rename channel")
+    public ResponseEntity<?> updateChannel(@Valid @RequestBody UpdateChannelDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        ChannelDTO updated = channelService.updateChannel(dto);
+        return AppResponseUtil.created()
+                .withData(updated)
+                .withMessage("Channel updated successfully")
+                .build();
+    }
+
     @PutMapping("/users")
     @Operation(summary = "Add/remove user to/from channel")
     public ResponseEntity<?> addOrRemoveUserToChannel(@Valid @RequestBody AddOrRemoveUserToChannelDTO dto, BindingResult bindingResult) {
@@ -90,28 +155,6 @@ public class ChannelController {
                 .build();
     }
 
-    @PostMapping("/addMessage")
-    @Operation(summary = "Add new message to channel")
-    public ResponseEntity<?> addMessageToChannel(@Valid @RequestBody AddMessageToChannelDTO dto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
-                    .withErrors(errorMessages)
-                    .build();
-        }
-
-        ChannelDTO channelDTO = this.channelService.addMessageToChannel(dto);
-
-        return AppResponseUtil.success()
-                .withMessage("Successfully created message in channel: " + channelDTO.getName())
-                .withData(channelDTO)
-                .build();
-    }
-
     @PutMapping("/userRole")
     @Operation(summary = "Update user role in channel")
     public ResponseEntity<?> updateUserRoleToChannel(@Valid @RequestBody UpdateUserRoleToChannelDTO dto, BindingResult bindingResult) {
@@ -131,49 +174,6 @@ public class ChannelController {
         return AppResponseUtil.success()
                 .withMessage("Successfully updated user role in channel")
                 .withData(channelDTO)
-                .build();
-    }
-
-    @PutMapping
-    @Operation(summary = "Update channel")
-    public ResponseEntity<?> updateChannel(@Valid @RequestBody UpdateChannelDTO dto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
-                    .withErrors(errorMessages)
-                    .build();
-        }
-
-        ChannelDTO updated = channelService.updateChannel(dto);
-        return AppResponseUtil.created()
-                .withData(updated)
-                .withMessage("Channel updated successfully")
-                .build();
-    }
-
-
-    @PostMapping
-    @Operation(summary = "Create channel")
-    public ResponseEntity<?> createChannel(@Valid @RequestBody ChannelDTO channelDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
-                    .withErrors(errorMessages)
-                    .build();
-        }
-
-        ChannelDTO newChannel = channelService.createChannel(channelDTO);
-        return AppResponseUtil.created()
-                .withData(newChannel)
-                .withMessage("Channel created successfully")
                 .build();
     }
 
