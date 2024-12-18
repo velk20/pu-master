@@ -2,11 +2,7 @@ package org.fmi.streamline.services;
 
 import jakarta.transaction.Transactional;
 import org.fmi.streamline.dtos.channel.*;
-import org.fmi.streamline.dtos.message.FriendMessageDTO;
-import org.fmi.streamline.dtos.message.MessageDTO;
-import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
-import org.fmi.streamline.dtos.user.UserMembershipDTO;
 import org.fmi.streamline.entities.ChannelEntity;
 import org.fmi.streamline.entities.ChannelMembershipEntity;
 import org.fmi.streamline.entities.MessageEntity;
@@ -14,7 +10,6 @@ import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.repositories.ChannelRepository;
 import org.fmi.streamline.util.ConverterUtil;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ChannelService {
@@ -88,9 +82,16 @@ public class ChannelService {
         return converterUtil.convertToChannelDTO(channel);
     }
 
+    @Transactional
     public void deleteChannel(String id) {
         ChannelEntity channelEntity = this.getById(id);
         channelEntity.setDeleted(true);
+
+        channelEntity.getMessages()
+                .forEach(messageEntity -> {
+                    messageEntity.setDeleted(true);
+                    this.messageService.save(messageEntity);
+                });
 
         this.channelRepository.save(channelEntity);
     }
@@ -122,7 +123,7 @@ public class ChannelService {
         ChannelEntity channelEntity = this.getById(dto.getChannelId());
 
         Optional<ChannelMembershipEntity> userPartOfChannel = this.isUserPartOfChannel(channelEntity, dto.getUsername());
-        if (userPartOfChannel.isEmpty()){
+        if (userPartOfChannel.isEmpty()) {
             throw new IllegalArgumentException("User is not part of this channel");
         }
 
@@ -141,7 +142,7 @@ public class ChannelService {
         ChannelEntity channel = this.getById(dto.getChannelId());
 
         Optional<ChannelMembershipEntity> userPartOfChannel = this.isUserPartOfChannel(channel, dto.getUsername());
-        if (userPartOfChannel.isEmpty()){
+        if (userPartOfChannel.isEmpty()) {
             throw new IllegalArgumentException("User is not part of this channel");
         }
 
@@ -179,10 +180,11 @@ public class ChannelService {
         return usersNotInChannel.stream().map(converterUtil::convertToDTO).toList();
     }
 
-    public ChannelDTO removeUserFromChannel(AddOrRemoveUserToChannelDTO dto) {         ;
+    public ChannelDTO removeUserFromChannel(AddOrRemoveUserToChannelDTO dto) {
+        ;
         ChannelEntity channelEntity = this.getById(dto.getChannelId());
         Optional<ChannelMembershipEntity> userPartOfChannel = this.isUserPartOfChannel(channelEntity, dto.getUsername());
-        if (userPartOfChannel.isEmpty()){
+        if (userPartOfChannel.isEmpty()) {
             throw new IllegalArgumentException("User is not part of this channel");
         }
         ChannelMembershipEntity membershipEntity = userPartOfChannel.get();
@@ -195,11 +197,11 @@ public class ChannelService {
     private void validateNewUserToChannel(AddOrRemoveUserToChannelDTO dto, ChannelEntity channelEntity) {
         String currentLoggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<ChannelMembershipEntity> partOfChannel = this.isUserPartOfChannel(channelEntity, currentLoggedUsername);
-        if (partOfChannel.isEmpty()){
+        if (partOfChannel.isEmpty()) {
             throw new IllegalArgumentException("You are not part of this channel in order to add users");
         }
         boolean hasPermissionsToAddUsers = this.isUserOwnerOrAdminOfChannel(partOfChannel.get());
-        if (!hasPermissionsToAddUsers){
+        if (!hasPermissionsToAddUsers) {
             throw new IllegalArgumentException("You don't have permissions to add users to this channel");
         }
 
@@ -213,11 +215,11 @@ public class ChannelService {
 
     private void validateChannelForUpdate(UpdateChannelDTO dto, ChannelEntity channelEntity, String currentLoggedUsername) {
         Optional<ChannelMembershipEntity> userPartOfChannel = isUserPartOfChannel(channelEntity, currentLoggedUsername);
-        if (userPartOfChannel.isEmpty()){
+        if (userPartOfChannel.isEmpty()) {
             throw new IllegalArgumentException("User is not part of this channel");
         }
 
-        if (!isUserOwnerOrAdminOfChannel(userPartOfChannel.get())){
+        if (!isUserOwnerOrAdminOfChannel(userPartOfChannel.get())) {
             throw new IllegalArgumentException("User is not owner or admin of this channel");
         }
 
@@ -232,14 +234,14 @@ public class ChannelService {
         }
     }
 
-    private Optional<ChannelMembershipEntity> isUserPartOfChannel(ChannelEntity channelEntity, String username){
-       return channelEntity.getMemberships()
+    private Optional<ChannelMembershipEntity> isUserPartOfChannel(ChannelEntity channelEntity, String username) {
+        return channelEntity.getMemberships()
                 .stream()
                 .filter(m -> m.getUser().getUsername().equals(username))
                 .findFirst();
     }
 
-    private boolean isUserOwnerOrAdminOfChannel(ChannelMembershipEntity membership){
+    private boolean isUserOwnerOrAdminOfChannel(ChannelMembershipEntity membership) {
         return membership.getRole().equals(ChannelMembershipEntity.Role.OWNER)
                 || membership.getRole().equals(ChannelMembershipEntity.Role.ADMIN);
     }

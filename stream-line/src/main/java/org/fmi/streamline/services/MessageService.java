@@ -1,5 +1,6 @@
 package org.fmi.streamline.services;
 
+import jakarta.transaction.Transactional;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.repositories.MessageRepository;
@@ -21,5 +22,10 @@ public class MessageService {
 
     public List<MessageEntity> getAllMessagesForFriend(FriendMessageDTO dto) {
         return this.messageRepository.findMessagesByChannelNullAndReceiverAuthorSwapped(dto.getFriendId(), dto.getUserId());
+    }
+
+    @Transactional
+    public void deleteFriendsMessages(String requesterUsername, String friendUsername) {
+        this.messageRepository.deleteMessagesBetweenFriends(requesterUsername,friendUsername);
     }
 }

@@ -51,7 +51,7 @@ public class UserService {
 
         if (requesterFriend.getFriends().contains(newFriend)
                 || newFriend.getFriends().contains(requesterFriend)) {
-            throw new IllegalArgumentException("User already is friend");
+            throw new IllegalArgumentException(newFriend.getUsername() + " is already your friend");
         }
 
         requesterFriend.addFriend(newFriend);
@@ -79,6 +79,8 @@ public class UserService {
                 || !newFriend.getFriends().contains(requesterFriend)) {
             throw new IllegalArgumentException("User is not your friend friend");
         }
+
+        this.messageService.deleteFriendsMessages(dto.getRequesterUsername(), dto.getFriendUsername());
 
         requesterFriend.removeFriend(newFriend);
         newFriend.removeFriend(requesterFriend);
