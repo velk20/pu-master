@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AppResponse, AppResponseWithMessage, AppResponseWithNoData} from "../utils/app.response";
 import {Constant} from "../utils/constant";
-import {AddFriend} from "../models/user";
+import {AddFriend, Profile} from "../models/user";
 import {FriendMessage, UserFriendMessage} from "../models/channel";
 
 @Injectable({
@@ -39,5 +39,9 @@ export class UserService {
 
   deleteUser(userId: string): Observable<AppResponseWithNoData> {
     return this.http.delete<AppResponseWithNoData>(`${Constant.USERS_URL}/${userId}`);
+  }
+
+  updateProfile(userId: string, user: Profile): Observable<AppResponseWithMessage> {
+    return this.http.put<AppResponseWithMessage>(`${Constant.USERS_URL}/${userId}`, user)
   }
 }

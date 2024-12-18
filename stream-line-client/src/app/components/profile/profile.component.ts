@@ -21,7 +21,6 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
 export class ProfileComponent implements OnInit {
   isEditing: boolean = false;
   userId: string = '';
-
   user: Profile = {
     username: '',
     email: '',
@@ -54,10 +53,11 @@ export class ProfileComponent implements OnInit {
 
   onSaveChanges() {
     this.isEditing = false;
-    // Save updated profile data (e.g., API call)
-    console.log('Profile updated:', this.user);
+  this.userService.updateProfile(this.userId, this.user).subscribe(res=>{
+    //TODO
+  })
   }
-  
+
   onChangePassword() {
     // Navigate to change password page or open a modal
     this.router.navigate(['/change-password']);
