@@ -12,14 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDetailDTO {
+public class UserDetailDTO extends ProfileDTO{
     private String id;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private Integer age;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;

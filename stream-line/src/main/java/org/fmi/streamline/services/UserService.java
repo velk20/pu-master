@@ -1,10 +1,13 @@
 package org.fmi.streamline.services;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.channel.AddOrRemoveUserToChannelDTO;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
+import org.fmi.streamline.dtos.user.ProfileDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.entities.UserEntity;
@@ -119,4 +122,25 @@ public class UserService {
         MessageEntity saved = this.messageService.save(newMessage);
         return converterUtil.convertToDTO(saved);
     }
+
+    @Transactional
+    public void deleteUser(String userId) {
+        UserEntity userEntity = this.getById(userId);
+
+        this.userRepository.deleteUser(userEntity.getId());
+    }
+
+    public UserDetailDTO updateProfile(String userId, ProfileDTO dto) {
+        UserEntity userEntity = this.getById(userId);
+        userEntity.setAge(dto.getAge());
+        userEntity.setEmail(dto.getEmail());
+        userEntity.setFirstName(dto.getFirstName());
+        userEntity.setLastName(dto.getLastName());
+        userEntity.setUsername(dto.getUsername());
+        userEntity.setPhone(dto.getPhone());
+        userEntity.setLastModified(LocalDateTime.now());
+
+        return converterUtil.convertToDTO(this.userRepository.save(userEntity));
+    }
+
 }
