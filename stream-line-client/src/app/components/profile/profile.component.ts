@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import {AuthService} from "../../services/auth.service";
 import {UserService} from "../../services/user.service";
 import {Profile, User} from "../../models/user";
-import {error} from "@angular/compiler-cli/src/transformers/util";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-profile',
@@ -31,6 +31,7 @@ export class ProfileComponent implements OnInit {
   };
 
   constructor(private router: Router,
+              private toastrService: ToastrService,
               private authService: AuthService,
               private userService: UserService) {}
 
@@ -55,6 +56,10 @@ export class ProfileComponent implements OnInit {
     this.isEditing = false;
   this.userService.updateProfile(this.userId, this.user).subscribe(res=>{
     //TODO
+  },error=>{
+    error.error.errors.forEach((err: string | undefined) =>{
+      this.toastrService.error(err);
+    })
   })
   }
 
