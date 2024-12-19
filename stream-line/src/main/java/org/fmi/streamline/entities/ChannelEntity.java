@@ -2,7 +2,7 @@ package org.fmi.streamline.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ public class ChannelEntity extends BaseEntity {
     private Set<ChannelMembershipEntity> memberships = new HashSet<>();
 
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = "deleted = false")
+    @SQLRestriction("deleted = false")
     private Set<MessageEntity> messages = new HashSet<>();
 
     @Column(nullable = false)

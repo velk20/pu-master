@@ -414,6 +414,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       const user = res.data as User;
       const updatedFriends: Friend[] = user.friends;
       this.friends = updatedFriends;
+      this.resetChat();
       Swal.fire(
         'Removed!',
         `Friend with username: ${friendUsername} was removed!`,
