@@ -8,13 +8,16 @@ export interface AddFriend{
   friendUsername: string;
 }
 
-export interface User{
+export interface Profile {
   username: string;
   email: string;
   firstName: string;
   lastName: string;
   phone: string;
   age: number;
+}
+
+export interface User extends Profile{
   createdAt: string;
   lastModified: string;
   role?: string;

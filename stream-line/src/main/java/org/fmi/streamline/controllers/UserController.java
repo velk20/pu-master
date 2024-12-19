@@ -10,6 +10,7 @@ import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
 import org.fmi.streamline.dtos.user.FriendDTO;
+import org.fmi.streamline.dtos.user.ProfileDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
@@ -91,6 +92,29 @@ public class UserController {
                 .build();
     }
 
+    @PutMapping("/{userId}")
+    @Operation(summary = "Update profile")
+    public ResponseEntity<?> updateProfile(@PathVariable("userId") String userId,
+                                           @Valid @RequestBody ProfileDTO dto,
+                                           BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        UserDetailDTO updateProfile = this.userService.updateProfile(userId, dto);
+        return AppResponseUtil.success()
+                .withMessage("Profile updated successfully")
+                .withData(updateProfile)
+                .build();
+    }
+
     @PutMapping("/addFriend")
     @Operation(summary = "Add User friend")
     public ResponseEntity<?> addUserFriend(@Valid @RequestBody AddOrRemoveFriendDTO dto, BindingResult bindingResult) {
@@ -128,6 +152,16 @@ public class UserController {
         return AppResponseUtil.success()
                 .withData(userDTO)
                 .withMessage("Friend successfully removed")
+                .build();
+    }
+
+    @DeleteMapping("/{userId}")
+    @Operation(summary = "Delete user by ID")
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") String userId) {
+        this.userService.deleteUser(userId);
+        return AppResponseUtil
+                .success()
+                .withMessage("User was deleted!")
                 .build();
     }
 
