@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
+import {ChangeUserPassword} from "../../models/user";
+import {UserService} from "../../services/user.service";
+import {ToastrService} from "ngx-toastr";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-change-password',
@@ -12,7 +16,10 @@ import {Router} from "@angular/router";
   styleUrl: './change-password.component.css'
 })
 export class ChangePasswordComponent {
-  constructor(private router: Router) {
+  constructor(private router: Router,
+              private userService: UserService,
+              private toastr: ToastrService,
+              private authService: AuthService) {
   }
   passwordData = {
     oldPassword: '',
@@ -21,38 +28,29 @@ export class ChangePasswordComponent {
   };
 
   onChangePassword() {
-    const { oldPassword, newPassword, confirmPassword } = this.passwordData;
+    const changePassword: ChangeUserPassword = this.passwordData;
+    this.userService.changePassword(changePassword).subscribe(res=>{
+      this.toastr.success(res.message, 'Success');
+      this.toastr.info('Please login with your username and new password', 'Info');
+      this.logoutUser();
+    }, error=>{
+      if (error.status === 400 && error.error.errors) {
+        let errors: string[] = error.error.errors;
+        for (const err of errors) {
+          this.toastr.error(err, 'Error');
+        }
+      }
+      else{
+        this.toastr.error(error.error.message, 'Error');
+      }
 
-    // Basic validation
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      alert('All fields are required.');
-      return;
-    }
+      this.resetForm();
+    })
 
-    if (newPassword !== confirmPassword) {
-      alert('New password and confirm password do not match.');
-      return;
-    }
-
-    // Simulate password change logic
-    // Replace this with a service call to update the password
-    console.log('Password changed successfully:', {
-      oldPassword,
-      newPassword
-    });
-    alert('Password changed successfully.');
-
-    // Clear the form after successful submission
-    this.passwordData = {
-      oldPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    };
   }
 
   onCancelChangePassword() {
     this.resetForm();
-
     this.router.navigate(['/profile'])
   }
 
@@ -63,5 +61,10 @@ export class ChangePasswordComponent {
       newPassword: '',
       confirmPassword: ''
     };
+  }
+
+  private logoutUser() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

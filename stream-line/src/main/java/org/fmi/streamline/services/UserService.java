@@ -1,11 +1,14 @@
 package org.fmi.streamline.services;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.fmi.streamline.auth.service.CustomUserDetails;
 import org.fmi.streamline.dtos.channel.AddOrRemoveUserToChannelDTO;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
+import org.fmi.streamline.dtos.user.ChangeUserPasswordDTO;
 import org.fmi.streamline.dtos.user.UpdateProfileDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.MessageEntity;
@@ -15,6 +18,7 @@ import org.fmi.streamline.repositories.UserRepository;
 import org.fmi.streamline.util.ConverterUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,11 +31,14 @@ public class UserService {
     private final ConverterUtil converterUtil;
     private final UserRepository userRepository;
     private final MessageService messageService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(ModelMapper modelMapper, ConverterUtil converterUtil, UserRepository userRepository, MessageService messageService) {
+
+    public UserService(ModelMapper modelMapper, ConverterUtil converterUtil, UserRepository userRepository, MessageService messageService, PasswordEncoder passwordEncoder) {
         this.converterUtil = converterUtil;
         this.userRepository = userRepository;
         this.messageService = messageService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserEntity getByUsername(String username) {
@@ -172,4 +179,15 @@ public class UserService {
         }
     }
 
+    public void changePassword(ChangeUserPasswordDTO dto) {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userEntity = this.getByUsername(userDetails.getUsername());
+
+        if (this.passwordEncoder.matches(dto.getOldPassword(), userEntity.getPassword())) {
+            userEntity.setPassword(this.passwordEncoder.encode(dto.getNewPassword()));
+            this.userRepository.save(userEntity);
+        } else {
+            throw new IllegalArgumentException("Old password is incorrect");
+        }
+    }
 }

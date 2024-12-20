@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
-import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
-import org.fmi.streamline.dtos.user.FriendDTO;
-import org.fmi.streamline.dtos.user.UpdateProfileDTO;
-import org.fmi.streamline.dtos.user.UserDetailDTO;
+import org.fmi.streamline.dtos.user.*;
 import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.services.UserService;
@@ -112,6 +109,26 @@ public class UserController {
         return AppResponseUtil.success()
                 .withMessage("Profile updated successfully")
                 .withData(updateProfile)
+                .build();
+    }
+
+    @PutMapping("/change-password")
+    @Operation(summary = "Update user password")
+    public ResponseEntity<?> updateUserPassword(@Valid @RequestBody ChangeUserPasswordDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            return AppResponseUtil.error(HttpStatus.BAD_REQUEST)
+                    .withErrors(errorMessages)
+                    .build();
+        }
+
+        this.userService.changePassword(dto);
+        return AppResponseUtil.success()
+                .withMessage("Password updated successfully")
                 .build();
     }
 

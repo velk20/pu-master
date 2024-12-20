@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AppResponse, AppResponseWithMessage, AppResponseWithNoData} from "../utils/app.response";
 import {Constant} from "../utils/constant";
-import {AddFriend, Profile} from "../models/user";
+import {AddFriend, ChangeUserPassword, Profile} from "../models/user";
 import {FriendMessage, UserFriendMessage} from "../models/channel";
 
 @Injectable({
@@ -43,5 +43,9 @@ export class UserService {
 
   updateProfile(userId: string, user: Profile): Observable<AppResponseWithMessage> {
     return this.http.put<AppResponseWithMessage>(`${Constant.USERS_URL}/${userId}`, user)
+  }
+
+  changePassword(changePassword:ChangeUserPassword):Observable<AppResponseWithNoData> {
+    return this.http.put<AppResponseWithNoData>(`${Constant.USERS_URL}/change-password`, changePassword);
   }
 }

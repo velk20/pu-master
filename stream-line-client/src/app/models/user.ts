@@ -3,9 +3,15 @@ export interface Friend {
   username: string;
 }
 
-export interface AddFriend{
+export interface AddFriend {
   requesterUsername: string;
   friendUsername: string;
+}
+
+export interface ChangeUserPassword {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface Profile {
@@ -17,20 +23,20 @@ export interface Profile {
   age: number;
 }
 
-export interface User extends Profile{
+export interface User extends Profile {
   createdAt: string;
   lastModified: string;
   role?: string;
   friends: Friend[];
 }
 
-export interface UserMembership{
+export interface UserMembership {
   id: string;
   username: string;
   role: string;
 }
 
-export interface UserRoleToChannel{
+export interface UserRoleToChannel {
   channelId: string;
   username: string;
   role: string;
