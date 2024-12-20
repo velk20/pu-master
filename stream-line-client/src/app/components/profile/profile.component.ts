@@ -21,6 +21,8 @@ import {ToastrService} from "ngx-toastr";
 export class ProfileComponent implements OnInit {
   isEditing: boolean = false;
   userId: string = '';
+  username: string = '';
+
   user: Profile = {
     username: '',
     email: '',
@@ -36,13 +38,19 @@ export class ProfileComponent implements OnInit {
               private userService: UserService) {}
 
   ngOnInit(): void {
-    this.userId = this.authService.getUserFromJwt().id;
-    this.userService.getUserById(this.userId).subscribe(res=>{
+    let jwt = this.authService.getUserFromJwt();
+    this.userId = jwt.id;
+    this.username = jwt.username;
+    this.fetchUserProfile();
+  }
+
+  private fetchUserProfile() {
+    this.userService.getUserById(this.userId).subscribe(res => {
       this.user = res.data as Profile;
-    }, error=>{
+    }, error => {
       Swal.fire('Error', error.error.message, 'error');
     })
-    }
+  }
 
   onEditProfile() {
     this.isEditing = true;
@@ -54,13 +62,24 @@ export class ProfileComponent implements OnInit {
 
   onSaveChanges() {
     this.isEditing = false;
-  this.userService.updateProfile(this.userId, this.user).subscribe(res=>{
-    //TODO
-  },error=>{
-    error.error.errors.forEach((err: string | undefined) =>{
-      this.toastrService.error(err);
+    this.userService.updateProfile(this.userId, this.user).subscribe(res=>{
+      this.toastrService.success('Profile updated successfully', 'Success');
+      if (this.user.username !== this.username) {
+        this.toastrService.info('Please login with your new username and password', 'Info');
+        this.logoutUser();
+      }
+    },error=>{
+      if (error.status === 400 && error.error.errors) {
+        let errors: string[] = error.error.errors;
+        for (const err of errors) {
+          this.toastrService.error(err, 'Error');
+        }
+      }
+      else{
+        this.toastrService.error(error.error.message, 'Error');
+      }
+      this.fetchUserProfile();
     })
-  })
   }
 
   onChangePassword() {
@@ -92,8 +111,7 @@ export class ProfileComponent implements OnInit {
         'Your profile has been deleted.',
         'success'
       ).then(() => {
-        this.authService.logout();
-        this.router.navigate(['/']);
+        this.logoutUser();
       });
     },error => {
       Swal.fire(
@@ -102,5 +120,10 @@ export class ProfileComponent implements OnInit {
         'error'
       )
     })
+  }
+
+  private logoutUser() {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }
