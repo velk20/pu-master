@@ -11,6 +11,7 @@ import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
 import org.fmi.streamline.dtos.user.ChangeUserPasswordDTO;
 import org.fmi.streamline.dtos.user.UpdateProfileDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
+import org.fmi.streamline.entities.ChannelMembershipEntity;
 import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
@@ -24,19 +25,22 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final ConverterUtil converterUtil;
     private final UserRepository userRepository;
+    private final ChannelMembershipService channelMembershipService;
     private final MessageService messageService;
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserService(ModelMapper modelMapper, ConverterUtil converterUtil, UserRepository userRepository, MessageService messageService, PasswordEncoder passwordEncoder) {
+    public UserService(ModelMapper modelMapper, ConverterUtil converterUtil, UserRepository userRepository, ChannelMembershipService channelMembershipService, MessageService messageService, PasswordEncoder passwordEncoder) {
         this.converterUtil = converterUtil;
         this.userRepository = userRepository;
+        this.channelMembershipService = channelMembershipService;
         this.messageService = messageService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -133,6 +137,15 @@ public class UserService {
     @Transactional
     public void deleteUser(String userId) {
         UserEntity userEntity = this.getById(userId);
+
+        Set<UserEntity> friends = userEntity.getFriends();
+        for (UserEntity friend : friends) {
+            friend.removeFriend(userEntity);
+            this.userRepository.save(friend);
+        }
+
+        List<ChannelMembershipEntity> membershipEntities = this.channelMembershipService.findAllByUser(userEntity);
+        this.channelMembershipService.deleteAll(membershipEntities);
 
         this.userRepository.deleteUser(userEntity.getId());
     }
