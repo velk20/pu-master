@@ -203,6 +203,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     Swal.fire({
       title: 'Add Friend',
       html: `
+    <label for="friend-username">Friend's username</label>
     <input id="friend-username" class="swal2-input" placeholder="Enter friend's username">
     <ul id="autocomplete-list" style="list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto;"></ul>
   `,
