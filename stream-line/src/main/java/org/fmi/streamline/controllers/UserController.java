@@ -10,7 +10,7 @@ import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
 import org.fmi.streamline.dtos.user.FriendDTO;
-import org.fmi.streamline.dtos.user.ProfileDTO;
+import org.fmi.streamline.dtos.user.UpdateProfileDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.UserEntity;
 import org.fmi.streamline.exception.EntityNotFoundException;
@@ -95,7 +95,7 @@ public class UserController {
     @PutMapping("/{userId}")
     @Operation(summary = "Update profile")
     public ResponseEntity<?> updateProfile(@PathVariable("userId") String userId,
-                                           @Valid @RequestBody ProfileDTO dto,
+                                           @Valid @RequestBody UpdateProfileDTO dto,
                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors()

@@ -1,13 +1,12 @@
 package org.fmi.streamline.services;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.fmi.streamline.dtos.channel.AddOrRemoveUserToChannelDTO;
 import org.fmi.streamline.dtos.message.FriendMessageDTO;
 import org.fmi.streamline.dtos.message.MessageDTO;
 import org.fmi.streamline.dtos.message.SendMessageToFriendDTO;
 import org.fmi.streamline.dtos.user.AddOrRemoveFriendDTO;
-import org.fmi.streamline.dtos.user.ProfileDTO;
+import org.fmi.streamline.dtos.user.UpdateProfileDTO;
 import org.fmi.streamline.dtos.user.UserDetailDTO;
 import org.fmi.streamline.entities.MessageEntity;
 import org.fmi.streamline.entities.UserEntity;
@@ -15,6 +14,7 @@ import org.fmi.streamline.exception.EntityNotFoundException;
 import org.fmi.streamline.repositories.UserRepository;
 import org.fmi.streamline.util.ConverterUtil;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -130,17 +130,46 @@ public class UserService {
         this.userRepository.deleteUser(userEntity.getId());
     }
 
-    public UserDetailDTO updateProfile(String userId, ProfileDTO dto) {
+    public UserDetailDTO updateProfile(String userId, UpdateProfileDTO dto) {
         UserEntity userEntity = this.getById(userId);
+
+        validateProfileForUpdate(dto, userEntity);
+
         userEntity.setAge(dto.getAge());
-        userEntity.setEmail(dto.getEmail());
         userEntity.setFirstName(dto.getFirstName());
         userEntity.setLastName(dto.getLastName());
-        userEntity.setUsername(dto.getUsername());
-        userEntity.setPhone(dto.getPhone());
         userEntity.setLastModified(LocalDateTime.now());
 
         return converterUtil.convertToDTO(this.userRepository.save(userEntity));
+    }
+
+    private void validateProfileForUpdate(UpdateProfileDTO dto, UserEntity userEntity) {
+        if (!userEntity.getUsername().equals(dto.getUsername())) {
+            Optional<UserEntity> user = this.userRepository.findByUsernameAndIsActiveTrue(dto.getUsername());
+            if (user.isPresent()) {
+                throw new IllegalArgumentException("Username " + dto.getUsername() + " is already taken");
+            } else {
+                userEntity.setUsername(dto.getUsername());
+            }
+        }
+
+        if (!userEntity.getEmail().equals(dto.getEmail())) {
+            Optional<UserEntity> user = this.userRepository.findByEmailAndIsActiveTrue(dto.getEmail());
+            if (user.isPresent()) {
+                throw new IllegalArgumentException("Email " + dto.getEmail() + " is already taken");
+            } else {
+                userEntity.setEmail(dto.getEmail());
+            }
+        }
+
+        if (!userEntity.getPhone().equals(dto.getPhone())) {
+            Optional<UserEntity> user = this.userRepository.findByPhoneAndIsActiveTrue(dto.getPhone());
+            if (user.isPresent()) {
+                throw new IllegalArgumentException("Phone " + dto.getPhone() + " is already taken");
+            } else {
+                userEntity.setPhone(dto.getPhone());
+            }
+        }
     }
 
 }
