@@ -19,6 +19,7 @@ import {ToastrService} from "ngx-toastr";
 import {Dropdown, Modal} from 'bootstrap';
 import Swal from 'sweetalert2';
 import {JwtPayload} from "../../models/auth";
+import {MessageService} from "../../services/message.service";
 
 declare var bootstrap: any; // Add this line to declare bootstrap globally
 
@@ -37,7 +38,7 @@ declare var bootstrap: any; // Add this line to declare bootstrap globally
 export class DashboardComponent implements OnInit, AfterViewInit {
   channels: Channel[] = [];
   friends: Friend[] = [];
-  messages:Message[]  = [];
+  messages: Message[] = [];
 
   selectedChanelId: string = '';
   selectedFriendId: string = '';
@@ -47,6 +48,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   currentLoggedUserId: string = '';
   isCurrentLoggedUserOwner: boolean = false;
   isCurrentLoggedUserAdmin: boolean = false;
+
+  contextMenuVisible = false;
+  contextMenuPosition = {x: 0, y: 0};
+  selectedMessage: any | null = null;
 
   availableFriends: Friend[] = [];
   selectedFriend: Friend | null = null;
@@ -58,6 +63,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   constructor(private channelService: ChannelService,
               private authService: AuthService,
               private userService: UserService,
+              private messageService: MessageService,
               private toastr: ToastrService,) {
   }
 
@@ -75,9 +81,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     this.getUserChannels(this.currentLoggedUserId);
     this.getUserFriendsList(this.currentLoggedUserId);
-    }
+  }
 
-  private getUserChannels(userId:string) {
+  private getUserChannels(userId: string) {
     this.channelService.getChannelsForUser(userId).subscribe(res => {
       this.channels = res.data as Channel[];
       if (this.channels.length > 0) {
@@ -115,7 +121,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  resetChat(){
+  resetChat() {
     this.selectedFriendId = '';
     this.selectedChanelId = '';
     this.selectedChatName = 'Channel Name';
@@ -137,14 +143,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.messages = this.messages.sort((a, b) =>
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
       );
-    },error => {
+    }, error => {
       this.toastr.error(error.error.message);
     })
   }
 
   onSendMessage() {
     if (this.newMessage.trim()) {
-      if (this.selectedChanelId){
+      if (this.selectedChanelId) {
         this.sendMessageToChannel()
       } else {
         this.sendMessageToFriend()
@@ -153,12 +159,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private sendMessageToFriend(){
-      const friendMessage: FriendMessage = {
-        friendId: this.selectedFriendId,
-        senderId: this.currentLoggedUserId,
-        message: this.newMessage
-      }
+  private sendMessageToFriend() {
+    const friendMessage: FriendMessage = {
+      friendId: this.selectedFriendId,
+      senderId: this.currentLoggedUserId,
+      message: this.newMessage
+    }
 
     this.userService.sendMessage(friendMessage).subscribe(res => {
         this.messages.push(res.data as Message);
@@ -171,8 +177,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
   }
 
-  private sendMessageToChannel(){
-    const newMessage: NewMessage={
+  private sendMessageToChannel() {
+    const newMessage: NewMessage = {
       message: this.newMessage,
       username: this.currentLoggedUsername,
       channelId: this.selectedChanelId
@@ -247,20 +253,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return input.value;
         }
 
-        return ;
+        return;
       },
     }).then((result) => {
       if (result.isConfirmed) {
         this.addFriend(result.value);
       }
-    }).finally(()=>{
+    }).finally(() => {
       this.availableFriends = [];
     });
   }
 
-  private addFriend(friendUsername: string){
+  private addFriend(friendUsername: string) {
     // Perform the action to add the friend with the provided username
-    const newFriend:AddFriend={
+    const newFriend: AddFriend = {
       requesterUsername: this.currentLoggedUsername,
       friendUsername: friendUsername
     }
@@ -297,8 +303,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private createChannel(channelName: string){
-    const newChannel:NewChannel={
+  private createChannel(channelName: string) {
+    const newChannel: NewChannel = {
       name: channelName,
       ownerUsername: this.currentLoggedUsername,
     }
@@ -330,8 +336,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   private deleteChannelById(id: string) {
     this.channelService.deleteChannel(id).subscribe(res => {
-      this.toastr.info(res.message);
-      this.channels = this.channels.filter(channel => channel.id !== id);
+        this.toastr.info(res.message);
+        this.channels = this.channels.filter(channel => channel.id !== id);
         this.resetChat();
 
         Swal.fire(
@@ -339,7 +345,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           'The channel has been deleted.',
           'success'
         );
-    },
+      },
       (error) => {
         Swal.fire('Error', error.error.message, 'error');
         this.toastr.error('Failed to delete the channel. Please try again.', 'Error');
@@ -368,8 +374,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private renameChannel(channelId: string, newChannelName:string){
-    const updateChannel:NewChannelName ={
+  private renameChannel(channelId: string, newChannelName: string) {
+    const updateChannel: NewChannelName = {
       id: channelId,
       name: newChannelName,
     }
@@ -387,6 +393,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       Swal.fire('Error', error.error.message, 'error');
     })
   }
+
   onRemoveFriend(friendUsername: string) {
     Swal.fire({
       title: 'Are you sure?',
@@ -399,7 +406,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.removeFriend(this.currentLoggedUsername,friendUsername);
+        this.removeFriend(this.currentLoggedUsername, friendUsername);
       }
     });
 
@@ -475,17 +482,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return input.value;
         }
 
-        return ;
+        return;
       },
     }).then((result) => {
       if (result.isConfirmed) {
-       this.addUserToChannel(result.value, id);
+        this.addUserToChannel(result.value, id);
       }
     });
   }
 
-  private addUserToChannel(username: string, id: string){
-    const newUserToChannel:  UserToChannel={
+  private addUserToChannel(username: string, id: string) {
+    const newUserToChannel: UserToChannel = {
       channelId: id,
       username: username,
     }
@@ -498,7 +505,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
 
       Swal.fire('Success', `You have added "${username}" to the channel: ${updatedChannel.name}!`, 'success');
-    },error =>  {
+    }, error => {
       Swal.fire('Error', error.error.message, 'error');
     })
   }
@@ -515,7 +522,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.leaveChannel(this.currentLoggedUsername,channelId);
+        this.leaveChannel(this.currentLoggedUsername, channelId);
       }
     });
 
@@ -529,7 +536,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
         if (channelIndex !== -1) {
           this.channels.splice(channelIndex, 1);
-          if (this.channels.length > 0){
+          if (this.channels.length > 0) {
             this.onSelectChannel(this.channels[0]);
           } else {
             this.resetChat();
@@ -554,7 +561,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         const channelIndex = this.channels.findIndex(channel => channel.id === updatedChannel.id);
         if (channelIndex !== -1) {
           this.channels[channelIndex] = updatedChannel;
-            this.onSelectChannel(this.channels[channelIndex]);
+          this.onSelectChannel(this.channels[channelIndex]);
 
           Swal.fire(
             'Removed!',
@@ -586,25 +593,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           list.innerHTML = ''; // Clear previous results
 
           if (query) {
-            const availableChannels:Channel[] = this.channels
-              .filter(channel=> channel.ownerUsername == this.currentLoggedUsername && channel.memberships.filter(member => member.username != username));
+            const availableChannels: Channel[] = this.channels
+              .filter(channel => channel.ownerUsername == this.currentLoggedUsername && channel.memberships.filter(member => member.username != username));
 
-              const matches = availableChannels.filter((channel) => channel.name.toLowerCase().includes(query));
-              matches.forEach((channel) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = channel.name;
-                listItem.style.cursor = 'pointer';
-                listItem.style.padding = '5px 10px';
-                listItem.style.border = '1px solid #ddd';
-                listItem.style.marginBottom = '2px';
+            const matches = availableChannels.filter((channel) => channel.name.toLowerCase().includes(query));
+            matches.forEach((channel) => {
+              const listItem = document.createElement('li');
+              listItem.textContent = channel.name;
+              listItem.style.cursor = 'pointer';
+              listItem.style.padding = '5px 10px';
+              listItem.style.border = '1px solid #ddd';
+              listItem.style.marginBottom = '2px';
 
-                listItem.addEventListener('click', () => {
-                  input.value = channel.name;
-                  list.innerHTML = ''; // Clear the list after selection
-                });
-
-                list.appendChild(listItem);
+              listItem.addEventListener('click', () => {
+                input.value = channel.name;
+                list.innerHTML = ''; // Clear the list after selection
               });
+
+              list.appendChild(listItem);
+            });
           }
         });
       },
@@ -615,7 +622,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         } else {
           return input.value;
         }
-        return ;
+        return;
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -624,14 +631,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private addFriendToChannel(friendUsername: string, channelName: string){
+  private addFriendToChannel(friendUsername: string, channelName: string) {
     const selectedChannels = this.channels.filter(c => c.name === channelName);
-    if (selectedChannels.length === 0){
+    if (selectedChannels.length === 0) {
       Swal.fire('Error', `Channel with name: ${channelName} does not exist!`, 'error');
       return;
     }
 
-    const newUserToChannel:  UserToChannel={
+    const newUserToChannel: UserToChannel = {
       channelId: selectedChannels[0].id,
       username: friendUsername,
     }
@@ -644,7 +651,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
 
       Swal.fire('Success', `You have added "${friendUsername}" to the channel: ${updatedChannel.name}!`, 'success');
-    },error =>  {
+    }, error => {
       Swal.fire('Error', error.error.message, 'error');
     })
   }
@@ -652,6 +659,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   isOwnerOfChannel(channel: Channel) {
     return this.currentLoggedUsername === channel.ownerUsername;
   }
+
   isAdminOfChannel(channel: Channel) {
     return channel.memberships.some(member =>
       member.username === this.currentLoggedUsername
@@ -684,7 +692,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   toggleAdmin(member: UserMembership) {
-    const newRoleUser : UserRoleToChannel= {
+    const newRoleUser: UserRoleToChannel = {
       role: member.role == 'ADMIN' ? 'GUEST' : 'ADMIN',
       channelId: this.selectedChanelId,
       username: member.username
@@ -698,8 +706,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
       this.toastr.info('Role updated successfully');
       this.closeModal()
-    },error =>{
-        this.toastr.error(error.error.message);
+    }, error => {
+      this.toastr.error(error.error.message);
     })
   }
 
@@ -731,5 +739,92 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   isUserOwner(member: UserMembership) {
     return member.role === 'OWNER';
+  }
+
+  openContextMenu(event: MouseEvent, message: any): void {
+    event.preventDefault(); // Prevent default right-click menu
+    this.contextMenuVisible = true;
+    this.contextMenuPosition = {x: event.clientX, y: event.clientY};
+    this.selectedMessage = message;
+  }
+
+  closeContextMenu(): void {
+    this.contextMenuVisible = false;
+    this.selectedMessage = null;
+  }
+
+  onDeleteMessage(messageId: string) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you really want to delete this message`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deleteUserMessage(messageId, this.currentLoggedUserId);
+      }
+    });
+    this.closeModal();
+  }
+
+  private deleteUserMessage(messageId: string, currentLoggedUserId: string) {
+    this.messageService.deleteMessage(messageId, currentLoggedUserId).subscribe(res => {
+      Swal.fire(
+        'Deleted!',
+        `${res.message}`,
+        'success'
+      );
+
+      let deletedMessageIndex = this.messages.findIndex(c => c.id == messageId);
+      if (deletedMessageIndex !== -1) {
+        this.messages.splice(deletedMessageIndex, 1);
+      }
+    }, error => {
+      Swal.fire('Error', `${error.error.message}`, 'error');
+    })
+  }
+
+  onEditMessage(messageId: string) {
+    Swal.fire({
+      title: 'Edit Message',
+      input: 'text',
+      inputLabel: 'Content',
+      inputPlaceholder: 'Enter the edited message',
+      showCancelButton: true,
+      confirmButtonText: 'Edit',
+      cancelButtonText: 'Cancel',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Message is required!';
+        }
+        return null;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.editMessage(result.value, this.currentLoggedUserId, messageId)
+      }
+    });
+
+  }
+
+  private editMessage(content: string, userId: string, messageId: string) {
+    this.messageService.editMessage(content, userId, messageId).subscribe(res => {
+      Swal.fire(
+        'Edited!',
+        `${res.message}`,
+        'success'
+      );
+
+      let editedMessageIndex = this.messages.findIndex(c => c.id == messageId);
+      if (editedMessageIndex !== -1) {
+        this.messages[editedMessageIndex] = res.data as Message
+      }
+    }, error => {
+      Swal.fire('Error', `${error.error.message}`, 'error');
+    })
   }
 }

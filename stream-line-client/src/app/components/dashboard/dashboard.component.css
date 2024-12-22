@@ -215,3 +215,30 @@ form button {
   background-color: #42a5f5; /* Bright blue */
 }
 
+
+.context-menu {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  width: 150px;
+}
+
+.context-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.context-menu li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.context-menu li:hover {
+  background-color: #f8f9fa;
+}
+

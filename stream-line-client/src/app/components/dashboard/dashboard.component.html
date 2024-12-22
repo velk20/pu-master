@@ -81,14 +81,43 @@
     <div class="col-md-9 chat">
       <div class="p-3">
         <h4 class="border-bottom pb-2">{{ selectedChatName }}</h4>
-        <div class="chat-messages" style="height: 80vh; overflow-y: auto; background-color: #f1f1f1; padding: 10px;">
-          <div *ngFor="let message of messages" class="mb-3">
-            <strong>{{ message.authorUsername == currentLoggedUsername ? 'You' : message.authorUsername }}
-              :</strong> {{ message.content }}
-            <span class="text-muted"
-                  style="font-size: 0.9em;">{{ message.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}</span>
+        <div
+          class="chat-messages"
+          style="height: 80vh; overflow-y: auto; background-color: #f1f1f1; padding: 10px;"
+          (click)="closeContextMenu()">
+          <div
+            *ngFor="let message of messages"
+            class="mb-3 position-relative"
+            (contextmenu)="openContextMenu($event, message)">
+            <strong>{{ message.authorUsername === currentLoggedUsername ? 'You' : message.authorUsername }}:</strong>
+            {{ message.content }}
+            <span class="text-muted" style="font-size: 0.9em;">
+                {{ message.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}
+            </span>
+          </div>
+
+          <!-- Context Menu -->
+          <div
+            *ngIf="contextMenuVisible && selectedMessage?.authorUsername === currentLoggedUsername"
+            class="context-menu"
+            [style.top.px]="contextMenuPosition.y"
+            [style.left.px]="contextMenuPosition.x">
+            <ul class="list-group">
+              <li
+                class="list-group-item text-warning"
+                (click)="onEditMessage(selectedMessage.id)">
+                Edit Message
+              </li>
+              <br>
+              <li
+                class="list-group-item text-danger"
+                (click)="onDeleteMessage(selectedMessage.id)">
+                Delete Message
+              </li>
+            </ul>
           </div>
         </div>
+
 
         <!-- Chat Input -->
         <div class="mt-3">
