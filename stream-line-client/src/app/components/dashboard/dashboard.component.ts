@@ -20,6 +20,8 @@ import {Dropdown, Modal} from 'bootstrap';
 import Swal from 'sweetalert2';
 import {JwtPayload} from "../../models/auth";
 import {MessageService} from "../../services/message.service";
+import {PickerModule} from "@ctrl/ngx-emoji-mart";
+
 
 declare var bootstrap: any; // Add this line to declare bootstrap globally
 
@@ -31,7 +33,8 @@ declare var bootstrap: any; // Add this line to declare bootstrap globally
     FormsModule,
     NgForOf,
     DatePipe,
-    NgIf
+    NgIf,
+    PickerModule
   ],
   styleUrls: ['./dashboard.component.css']
 })
@@ -43,7 +46,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   selectedChanelId: string = '';
   selectedFriendId: string = '';
   selectedChatName: string = 'Channel Name';
+
+  emojiPickerVisible = false;
+  emojiPickerPosition = { x: 0, y: 120 };
   newMessage: string = '';
+
   currentLoggedUsername: string = '';
   currentLoggedUserId: string = '';
   isCurrentLoggedUserOwner: boolean = false;
@@ -155,6 +162,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       } else {
         this.sendMessageToFriend()
       }
+      this.emojiPickerVisible = false;
       this.newMessage = '';
     }
   }
@@ -827,4 +835,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       Swal.fire('Error', `${error.error.message}`, 'error');
     })
   }
+
+  toggleEmojiPicker() {
+    this.emojiPickerVisible = !this.emojiPickerVisible;
+  }
+
+  addEmoji(event: any) {
+    this.newMessage += event.emoji.native;
+  }
+
 }
