@@ -711,7 +711,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       if (channelIndex !== -1) {
         this.channels[channelIndex] = updatedChannel;
       }
-      this.toastr.info(res.message);
+      this.toastr.info(res.message, 'Info');
       this.closeModal()
     }, error => {
       this.toastr.error(error.error.message);
