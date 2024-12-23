@@ -46,7 +46,7 @@ public class AuthController {
         AuthResponse registered = authService.register(dto);
         return AppResponseUtil.created()
                 .withData(registered)
-                .withMessage("User successfully registered")
+                .withMessage("Registration was successfully")
                 .build();
     }
 
