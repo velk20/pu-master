@@ -63,7 +63,7 @@ export class ProfileComponent implements OnInit {
   onSaveChanges() {
     this.isEditing = false;
     this.userService.updateProfile(this.userId, this.user).subscribe(res=>{
-      this.toastrService.success('Profile updated successfully', 'Success');
+      this.toastrService.success(res.message, 'Success');
       if (this.user.username !== this.username) {
         this.toastrService.info('Please login with your new username and password', 'Info');
         this.logoutUser();
