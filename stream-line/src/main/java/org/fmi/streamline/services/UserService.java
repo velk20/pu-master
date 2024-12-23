@@ -197,6 +197,7 @@ public class UserService {
         UserEntity userEntity = this.getByUsername(userDetails.getUsername());
 
         if (this.passwordEncoder.matches(dto.getOldPassword(), userEntity.getPassword())) {
+            userEntity.setLastModified(LocalDateTime.now());
             userEntity.setPassword(this.passwordEncoder.encode(dto.getNewPassword()));
             this.userRepository.save(userEntity);
         } else {
