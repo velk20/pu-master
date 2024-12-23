@@ -29,7 +29,7 @@
                                                                                     (click)="onAddUserToChannel(channel.id)">Add
                 member</a></li>
               <li *ngIf="isAdminOfChannel(channel) || isOwnerOfChannel(channel)"><a class="dropdown-item"
-                                                                                    (click)="onRenameChannel(channel.id)">Rename</a>
+                                                                                    (click)="onRenameChannel(channel.id, channel.name)">Rename</a>
               </li>
               <li *ngIf="isOwnerOfChannel(channel)"><a class="dropdown-item text-danger"
                                                        (click)="onDeleteChannel(channel.id)">Delete</a></li>
@@ -98,14 +98,16 @@
 
           <!-- Context Menu -->
           <div
-            *ngIf="contextMenuVisible && selectedMessage?.authorUsername === currentLoggedUsername"
+            *ngIf="contextMenuVisible
+                  && selectedMessage
+                  && selectedMessage.authorUsername === currentLoggedUsername"
             class="context-menu"
             [style.top.px]="contextMenuPosition.y"
             [style.left.px]="contextMenuPosition.x">
             <ul class="list-group">
               <li
                 class="list-group-item text-warning"
-                (click)="onEditMessage(selectedMessage.id)">
+                (click)="onEditMessage(selectedMessage.id, selectedMessage.content)">
                 Edit Message
               </li>
               <br>

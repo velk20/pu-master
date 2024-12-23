@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   contextMenuVisible = false;
   contextMenuPosition = {x: 0, y: 0};
-  selectedMessage: any | null = null;
+  selectedMessage: Message | null = null;
 
   availableFriends: Friend[] = [];
   selectedFriend: Friend | null = null;
@@ -193,7 +193,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     this.channelService.addMessage(newMessage).subscribe(res => {
-        const updatedChannel = res.data as Channel; // The updated channel returned by the API
+        const updatedChannel = res.data as Channel;
         const index = this.channels.findIndex(channel => channel.id === updatedChannel.id);
 
         if (index !== -1) {
@@ -273,7 +273,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   private addFriend(friendUsername: string) {
-    // Perform the action to add the friend with the provided username
     const newFriend: AddFriend = {
       requesterUsername: this.currentLoggedUsername,
       friendUsername: friendUsername
@@ -281,7 +280,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.userService.addFriend(newFriend).subscribe(res => {
       const currentUser = res.data as User;
       this.friends = currentUser.friends;
-      Swal.fire('Success', `You have added "${friendUsername}" as a friend!`, 'success');
+      Swal.fire('Success', `${res.message}`, 'success');
     }, error => {
       Swal.fire('Error', error.error.message, 'error');
     })
@@ -317,9 +316,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       ownerUsername: this.currentLoggedUsername,
     }
     this.channelService.createChannel(newChannel).subscribe(res => {
-      const newChannel = res.data as Channel; // The updated channel returned by the API
+      const newChannel = res.data as Channel;
       this.channels.push(newChannel);
-      Swal.fire('Success', `Channel "${channelName}" has been created!`, 'success');
+      Swal.fire('Success', `${res.message}`, 'success');
     }, error => {
       Swal.fire('Error', error.error.message, 'error');
     })
@@ -350,7 +349,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
         Swal.fire(
           'Deleted!',
-          'The channel has been deleted.',
+          `${res.message}`,
           'success'
         );
       },
@@ -360,10 +359,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       })
   }
 
-  onRenameChannel(id: string) {
+  onRenameChannel(id: string, name: string) {
     Swal.fire({
       title: 'Enter new channel name',
       input: 'text',
+      inputValue: name,
       inputPlaceholder: 'New channel name',
       showCancelButton: true,
       confirmButtonText: 'Rename',
@@ -372,7 +372,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         if (!value) {
           return 'You need to enter a name!';
         }
-
         return;
       }
     }).then((result) => {
@@ -396,7 +395,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
 
       this.selectedChatName = updateChannel.name;
-      Swal.fire('Success', `Channel was renamed successfully`, 'success');
+      Swal.fire('Success', `${res.message}`, 'success');
     }, error => {
       Swal.fire('Error', error.error.message, 'error');
     })
@@ -433,7 +432,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.resetChat();
       Swal.fire(
         'Removed!',
-        `Friend with username: ${friendUsername} was removed!`,
+        `${res.message}`,
         'success'
       );
     }, error => {
@@ -712,7 +711,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       if (channelIndex !== -1) {
         this.channels[channelIndex] = updatedChannel;
       }
-      this.toastr.info('Role updated successfully');
+      this.toastr.info(res.message);
       this.closeModal()
     }, error => {
       this.toastr.error(error.error.message);
@@ -749,8 +748,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     return member.role === 'OWNER';
   }
 
-  openContextMenu(event: MouseEvent, message: any): void {
-    event.preventDefault(); // Prevent default right-click menu
+  openContextMenu(event: MouseEvent, message: Message): void {
+    event.preventDefault();
     this.contextMenuVisible = true;
     this.contextMenuPosition = {x: event.clientX, y: event.clientY};
     this.selectedMessage = message;
@@ -796,11 +795,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     })
   }
 
-  onEditMessage(messageId: string) {
+  onEditMessage(messageId: string, messageContent: string) {
     Swal.fire({
       title: 'Edit Message',
       input: 'text',
       inputLabel: 'Content',
+      inputValue: messageContent,
       inputPlaceholder: 'Enter the edited message',
       showCancelButton: true,
       confirmButtonText: 'Edit',
@@ -843,5 +843,4 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   addEmoji(event: any) {
     this.newMessage += event.emoji.native;
   }
-
 }
