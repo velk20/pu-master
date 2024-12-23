@@ -19,10 +19,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		security = @SecurityRequirement(name = "bearerAuth")
 )
 @SecurityScheme(
-		name = "bearerAuth", // Reference name for the security requirement
+		name = "bearerAuth",
 		type = SecuritySchemeType.HTTP,
 		scheme = "bearer",
-		bearerFormat = "JWT" // Optional: indicate the format of the token
+		bearerFormat = "JWT"
 )
 @SpringBootApplication(scanBasePackages = "org.fmi.streamline")
 public class StreamLineApplication {
