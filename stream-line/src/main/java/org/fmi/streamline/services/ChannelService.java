@@ -181,7 +181,6 @@ public class ChannelService {
     }
 
     public ChannelDTO removeUserFromChannel(AddOrRemoveUserToChannelDTO dto) {
-        ;
         ChannelEntity channelEntity = this.getById(dto.getChannelId());
         Optional<ChannelMembershipEntity> userPartOfChannel = this.isUserPartOfChannel(channelEntity, dto.getUsername());
         if (userPartOfChannel.isEmpty()) {
