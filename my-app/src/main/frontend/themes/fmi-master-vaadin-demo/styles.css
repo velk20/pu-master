@@ -1,0 +1,17 @@
+@import url('./main-layout.css');
+@import url('./views/data-grid-view.css');
+@import url('./views/dashboard-view.css');
+@import url('./views/master-detail-view.css');
+@import url('./views/chat-view.css');
+@import url('./views/gridwith-filters-view.css');
+@import url('@fontsource/comfortaa/index.css');    html {
+      --lumo-border-radius-s: calc(var(--lumo-size-m) / 6);
+      --lumo-border-radius-m: calc(var(--lumo-size-m) / 2);
+      --lumo-border-radius-l: var(--lumo-size-m);
+--lumo-font-family: Comfortaa;
+
+    }
+
+    [theme~="dark"] {
+
+    }
