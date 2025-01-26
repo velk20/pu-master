@@ -2,12 +2,13 @@ package com.example.application.views.product;
 
 import com.example.application.data.Product;
 import com.example.application.services.ProductService;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -47,6 +48,7 @@ public class ProductDialog extends Dialog {
 
         saveBtn = new Button("Save", event -> {
             try {
+                binder.validate();
                 binder.writeBean(product);
                 productService.save(product);
                 this.close();
@@ -61,5 +63,9 @@ public class ProductDialog extends Dialog {
         });
 
         this.getFooter().add(saveBtn,cancel);
+    }
+
+    public void addSaveListener(ComponentEventListener<ClickEvent<Button>> listener) {
+        saveBtn.addClickListener(listener);
     }
 }
