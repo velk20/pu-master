@@ -14,8 +14,12 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepo.findAll();
+    public List<Product> getAllProducts(boolean isAdmin) {
+        if (isAdmin) {
+            return productRepo.findAll();
+        }
+        return productRepo.findByIsActive(1);
+
     }
 
     public Product save(Product product) {
