@@ -10,12 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<MessageEntity, String> {
+    List<MessageEntity> findByAuthorId(String userId);
     Optional<MessageEntity> findByIdAndDeletedFalse(String messageId);
     @Query("""
-    SELECT m FROM MessageEntity m 
+    SELECT m FROM MessageEntity m
     WHERE m.channel IS NULL AND m.deleted = false
       AND (
-        (m.receiver.id = :receiverId AND m.author.id = :authorId) 
+        (m.receiver.id = :receiverId AND m.author.id = :authorId)
         OR (m.receiver.id = :authorId AND m.author.id = :receiverId)
       )
 """)
@@ -26,10 +27,10 @@ public interface MessageRepository extends JpaRepository<MessageEntity, String> 
 
     @Modifying
     @Query("""
-    UPDATE MessageEntity m 
-    SET m.deleted = true 
+    UPDATE MessageEntity m
+    SET m.deleted = true
     WHERE m.channel IS NULL AND (
-        (m.receiver.username = :receiverUsername AND m.author.username = :authorUsername) 
+        (m.receiver.username = :receiverUsername AND m.author.username = :authorUsername)
         OR (m.receiver.username = :authorUsername AND m.author.username = :receiverUsername)
       )
 """)

@@ -147,6 +147,9 @@ public class UserService {
         List<ChannelMembershipEntity> membershipEntities = this.channelMembershipService.findAllByUser(userEntity);
         this.channelMembershipService.deleteAll(membershipEntities);
 
+        List<MessageEntity> allUserMessages = this.messageService.getAllUserMessages(userId);
+        allUserMessages.forEach(m -> messageService.deleteMessage(m.getId(), userId));
+
         this.userRepository.deleteUser(userEntity.getId());
     }
 

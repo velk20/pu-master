@@ -36,6 +36,10 @@ public class MessageService {
                 .orElseThrow(() -> new EntityNotFoundException("Message with id " + id + " not found"));
     }
 
+    public List<MessageEntity> getAllUserMessages(String userId) {
+        return this.messageRepository.findByAuthorId(userId);
+    }
+
     public List<MessageEntity> getAllMessagesForFriend(FriendMessageDTO dto) {
         return this.messageRepository.findMessagesByChannelNullAndReceiverAuthorSwapped(dto.getFriendId(), dto.getUserId());
     }
