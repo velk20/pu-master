@@ -2,6 +2,7 @@
   <div class="row">
     <!-- Sidebar -->
     <div class="col-md-3 sidebar border-end">
+      <!--      CHANNELS    -->
       <h5 class="p-3">Channels</h5>
       <ul class="list-group list-group-flush" style="max-height: 40vh; overflow-y: auto;">
         <li
@@ -9,7 +10,8 @@
           *ngFor="let channel of channels"
           (click)="onSelectChannel(channel)">
           <span>{{ channel.name.length > 45 ? channel.name.slice(0, 45) + '...' : channel.name }}</span>
-          <span class="badge bg-primary ms-2">{{ channel.ownerUsername == this.currentLoggedUsername ? 'Owner' : '' }}</span>
+          <span
+            class="badge bg-primary ms-2">{{ channel.ownerUsername == this.currentLoggedUsername ? 'Owner' : '' }}</span>
           <div class="dropdown">
             <button
               class="btn btn-sm btn-light"
@@ -40,6 +42,7 @@
         </li>
       </ul>
 
+      <!--      FRIENDS     -->
       <h5 class="p-3">Friends</h5>
       <ul class="list-group list-group-flush" style="max-height: 40vh; overflow-y: auto;">
         <li
