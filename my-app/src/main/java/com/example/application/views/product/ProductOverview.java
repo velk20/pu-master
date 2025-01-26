@@ -73,6 +73,7 @@ public class ProductOverview extends VerticalLayout {
                 .setKey("companyName")
                 .setHeader("Company Name")
                 .setFooter(footer);
+
         grid.addColumn(Product::getBuyPrice)
                 .setSortable(true)
                 .setKey("buyPrice")
