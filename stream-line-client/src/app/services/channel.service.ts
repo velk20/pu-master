@@ -4,12 +4,10 @@ import { Constant } from "../utils/constant";
 import { Observable } from "rxjs";
 import {AppResponse, AppResponseWithMessage, AppResponseWithNoData} from "../utils/app.response";
 import {
-  FriendMessage,
   NewChannel,
   NewChannelName,
   NewMessage,
-  UserToChannel,
-  UserFriendMessage
+  UserToChannel
 } from "../models/channel";
 import {UserRoleToChannel} from "../models/user";
 

@@ -3,7 +3,6 @@ import {RegisterUser} from "../../models/auth";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
-import {UserService} from "../../services/user.service";
 import {YearsValidator} from "../../validators/years.validator";
 import {AuthService} from "../../services/auth.service";
 import {NgIf} from "@angular/common";

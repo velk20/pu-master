@@ -127,6 +127,7 @@
           <form class="d-flex align-items-center" (ngSubmit)="onSendMessage()">
             <!-- Emoji Picker Trigger -->
             <button
+              *ngIf="isChatSelected()"
               type="button"
               class="btn btn-light me-2"
               (click)="toggleEmojiPicker()">
@@ -144,13 +145,14 @@
 
             <!-- Message Input -->
             <input
+              [disabled]="!isChatSelected()"
               type="text"
               class="form-control me-2"
               placeholder="Type a message..."
               [(ngModel)]="newMessage"
               name="messageInput">
             <!-- Send Button -->
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button type="submit" [disabled]="!isChatSelected()" class="btn btn-primary">Send</button>
           </form>
         </div>
       </div>

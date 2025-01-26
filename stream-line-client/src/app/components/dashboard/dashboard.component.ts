@@ -128,6 +128,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  isChatSelected(): boolean {
+    return this.selectedChatName != '' && this.selectedChatName != 'Channel Name';
+  }
+
   resetChat() {
     this.selectedFriendId = '';
     this.selectedChanelId = '';

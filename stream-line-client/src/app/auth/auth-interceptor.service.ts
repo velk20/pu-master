@@ -5,7 +5,6 @@ import { AuthService } from '../services/auth.service';
 import { catchError } from 'rxjs/operators';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
-import Swal from "sweetalert2";
 
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
