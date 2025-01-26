@@ -4,6 +4,7 @@ import com.example.application.data.Product;
 import com.example.application.services.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.charts.model.Label;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -20,6 +21,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
@@ -65,15 +67,12 @@ public class ProductOverview extends VerticalLayout {
     private Grid<Product> getProductGrid() {
         Grid<Product> grid = new Grid<>(Product.class, false);
         footer = new NativeLabel("Total products:" + productService.getAllProducts(isAdmin).size());
-        HeaderRow headerRow = grid.prependHeaderRow();
-
         Grid.Column<Product> companyNameColumn = grid.addColumn(Product::getCompanyShortName);
         companyNameColumn
                 .setSortable(true)
                 .setKey("companyName")
                 .setHeader("Company Name")
                 .setFooter(footer);
-
         grid.addColumn(Product::getBuyPrice)
                 .setSortable(true)
                 .setKey("buyPrice")
@@ -113,13 +112,15 @@ public class ProductOverview extends VerticalLayout {
             isActiveFilter.setSizeFull();
             isActiveFilter.setClearButtonVisible(true);
 
+            HeaderRow headerRow = grid.prependHeaderRow();
             headerRow.getCell(activeColumn)
                     .setComponent(isActiveFilter);
 
         }
+        HeaderRow header = grid.prependHeaderRow();
         TextField companyNameFilter = new TextField();
         companyNameFilter.setSizeFull();
-        headerRow.getCell(companyNameColumn).setComponent(companyNameFilter);
+        header.getCell(companyNameColumn).setComponent(companyNameFilter);
         initGridData(grid);
 
         return grid;
