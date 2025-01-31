@@ -27,6 +27,10 @@ export class NavComponent implements OnInit {
     });
   }
 
+  getLoggedUserUsername(){
+    return this.authService.getUserFromJwt().username;
+  }
+
   onLogout() {
     this.authService.logout();
     this.router.navigate(['/']);
