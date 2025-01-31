@@ -44,9 +44,9 @@ export class RegisterComponent {
 
     if (password !== repassword) {
       this.toastrService.error(`Passwords do not match.`);
+      this.registerForm.get('password')?.reset();
+      this.registerForm.get('repassword')?.reset();
       return;
-      this.registerForm.value.repassword = '';
-      this.registerForm.value.password = '';
     }
 
     let user: RegisterUser = {
