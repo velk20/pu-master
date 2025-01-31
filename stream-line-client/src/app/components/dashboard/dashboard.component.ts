@@ -605,7 +605,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
           if (query) {
             const availableChannels: Channel[] = this.channels
-              .filter(channel => channel.ownerUsername == this.currentLoggedUsername && channel.memberships.filter(member => member.username != username));
+              .filter(channel => channel.ownerUsername == this.currentLoggedUsername && !this.isUserPartOfChannel(channel, username));
 
             const matches = availableChannels.filter((channel) => channel.name.toLowerCase().includes(query));
             matches.forEach((channel) => {
@@ -630,16 +630,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         const input = document.getElementById('channel-name') as HTMLInputElement;
         if (!input.value) {
           Swal.showValidationMessage('Please enter a channel name.');
+           return undefined;
         } else {
           return input.value;
         }
-        return;
       },
     }).then((result) => {
       if (result.isConfirmed) {
         this.addFriendToChannel(username, result.value);
       }
     });
+  }
+
+  private isUserPartOfChannel(channel: Channel, username: string) {
+    return channel.memberships.some(member => member.username == username);
   }
 
   private addFriendToChannel(friendUsername: string, channelName: string) {
@@ -846,5 +850,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   addEmoji(event: any) {
     this.newMessage += event.emoji.native;
+  }
+
+  isMessageEmpty() {
+    return this.newMessage.trim().length === 0;
   }
 }

@@ -155,7 +155,7 @@
               [(ngModel)]="newMessage"
               name="messageInput">
             <!-- Send Button -->
-            <button type="submit" [disabled]="!isChatSelected()" class="btn btn-primary">Send</button>
+            <button type="submit" [disabled]="!isChatSelected() || isMessageEmpty()" class="btn btn-primary">Send</button>
           </form>
         </div>
       </div>
