@@ -1,5 +1,6 @@
 package com.fmi.master.web;
 
+import com.fmi.master.web.model.ArticleWikiPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,13 +50,15 @@ public class TestWithSelenium {
         searchButton.get(0).click();
         Thread.sleep(500);
 
-        title = driver.getTitle();
-        assertEquals("Bulgaria - Wikipedia", title);
+        ArticleWikiPage page = new ArticleWikiPage(driver);
 
-        List<WebElement> titleElement = driver.findElements(By.cssSelector("#firstHeading > span"));
-        assertEquals(1, titleElement.size());
+        assertEquals("Bulgaria - Wikipedia", page.pageTitle());
+        assertEquals("Bulgaria", page.getArticleTitle());
 
-        title = titleElement.get(0).getText();
-        assertEquals("Bulgaria", title);
+        page.search("Poland");
+        Thread.sleep(500);
+
+        assertEquals("Poland - Wikipedia", page.pageTitle());
+        assertEquals("Poland", page.getArticleTitle());
     }
 }
