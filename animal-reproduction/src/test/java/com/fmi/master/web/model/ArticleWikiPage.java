@@ -15,7 +15,7 @@ public class ArticleWikiPage {
     }
 
     @FindBy(css = "#firstHeading > span")
-    WebElement articleTitle;
+    public WebElement articleTitle;
 
     @FindBy(name = "search")
     public WebElement searchInput;
