@@ -56,7 +56,7 @@ public class ParameterizedLoginServiceTest {
     public String expectedMessage;
 
     @Test
-    public void testRegister() {
+    public void testLogin() {
         String message = loginService.loginUser(username, password);
         assertEquals(expectedMessage, message);
     }
